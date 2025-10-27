@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up ShellCheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
+      - name: Lint all scripts
+        run: shellcheck cli.sh scripts/*.sh
+      - name: Set up shfmt
+        run: sudo apt-get install -y shfmt
+      - name: Format check
+        run: shfmt -d cli.sh scripts/*.sh
+      - name: Run basic script tests
+        run: |
+          chmod +x cli.sh scripts/*.sh
+          ./cli.sh hello

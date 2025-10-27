@@ -1,0 +1,4 @@
+# Ignore system/user config and cache files
+.config/
+# Or, to be more specific:
+.config/chromium/
