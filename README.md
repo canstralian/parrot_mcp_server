@@ -1,4 +1,26 @@
+
 # 🦜 Parrot MCP Server
+
+[![Build Status](https://github.com/canstralian/parrot_mcp_server/actions/workflows/build.yml/badge.svg)](https://github.com/canstralian/parrot_mcp_server/actions/workflows/build.yml)
+[![Tests](https://github.com/canstralian/parrot_mcp_server/actions/workflows/test.yml/badge.svg)](https://github.com/canstralian/parrot_mcp_server/actions/workflows/test.yml)
+[![Shell Lint](https://github.com/canstralian/parrot_mcp_server/actions/workflows/lint.yml/badge.svg)](https://github.com/canstralian/parrot_mcp_server/actions/workflows/lint.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/canstralian/parrot_mcp_server/issues)
+[![Built with ❤️ by Humans and Parrots](https://img.shields.io/badge/built%20with-%E2%9D%A4%EF%B8%8F%20by%20parrots-blueviolet)](https://github.com/canstralian/parrot_mcp_server)
+
+**Hardware setup? See [`HARDWARE_BOM.md`](./HARDWARE_BOM.md) for a complete bill of materials and assembly checklist for the Rackmate T0 Parrot MCP Edge Node.**
+
+## 🔒 Security & Portability
+
+- All scripts are POSIX-compliant and require only standard Bash and coreutils.
+- No external dependencies or language runtimes are required.
+- Environment variables:
+  - `ENABLE_SENSORS=1` (optional, for hardware integrations)
+  - `LOG_LEVEL` (optional, for future log verbosity control)
+- Hardware assumptions:
+  - Designed for Raspberry Pi 5 (8 GB) but portable to any modern Linux SBC or VM.
+  - For edge deployments, see [`HARDWARE_BOM.md`](./HARDWARE_BOM.md).
+- CI: All scripts are linted and tested in GitHub Actions (see badges above).
 
 [![Build Status](https://github.com/canstralian/parrot_mcp_server/actions/workflows/build.yml/badge.svg)](https://github.com/canstralian/parrot_mcp_server/actions/workflows/build.yml)
 [![Tests](https://github.com/canstralian/parrot_mcp_server/actions/workflows/test.yml/badge.svg)](https://github.com/canstralian/parrot_mcp_server/actions/workflows/test.yml)
@@ -7,8 +29,8 @@
 [![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/canstralian/parrot_mcp_server/issues)
 [![Built with ❤️ by Humans and Parrots](https://img.shields.io/badge/built%20with-%E2%9D%A4%EF%B8%8F%20by%20parrots-blueviolet)](#)
 
-**Hardware setup? See [`HARDWARE_BOM.md`](./HARDWARE_BOM.md) for a complete bill of materials and assembly checklist for the Rackmate T0 Parrot MCP Edge Node.**
-A lightweight, modular, and hacker-friendly **Model Context Protocol (MCP)** server designed to make your AI integrations sing.  
+
+A lightweight, modular, and hacker-friendly **Model Context Protocol (MCP)** server designed to make your AI integrations sing.
 Built for tinkerers, researchers, and developers who believe that communication between machines should be as elegant as parrots mimicking poetry.
 
 ---
@@ -68,18 +90,22 @@ The best way to understand a system is to build it, break it, and build it again
 
 🤝 Contributing
 
+
 We welcome pull requests, issue reports, and wild ideas.
-	1.	Fork the repo
-	2.	Create a feature branch (git checkout -b feature/your-idea)
-	3.	Commit changes with meaning (git commit -m "Add rainbow squawk support")
-	4.	Push and open a PR
+
+1. Fork the repo
+2. Create a feature branch (`git checkout -b feature/your-idea`)
+3. Commit changes with meaning (`git commit -m "Add rainbow squawk support"`)
+4. Push and open a PR
 
 Please follow good shell practices:
-	•	Use portable Bash syntax (#!/usr/bin/env bash)
-	•	Comment clearly, especially for edge-case handling
-	•	Keep functions small and composable
+
+- Use portable Bash syntax (`#!/usr/bin/env bash`)
+- Comment clearly, especially for edge-case handling
+- Keep functions small and composable
 
 ⸻
+
 
 🧪 Testing
 
@@ -92,6 +118,7 @@ Integrate with GitHub Actions or any Bash-compatible runner — the scripts are 
 
 ⸻
 
+
 🦜 Community and Collaboration
 
 This project thrives on curiosity.
@@ -102,6 +129,7 @@ If you make something weird or brilliant, please tell us — parrots love to ech
 
 ⸻
 
+
 🪶 License
 
 Released under the MIT License.
@@ -109,13 +137,16 @@ You’re free to use, modify, and redistribute — just keep the credits intact.
 
 ⸻
 
+
 🌈 Future Directions
-	•	Add Python and Go bindings for hybrid setups
-	•	Support for WebSocket-based AI toolchains
-	•	Optional encryption layer for secure context exchange
-	•	Visualization dashboard for active context sessions
+
+- Add Python and Go bindings for hybrid setups
+- Support for WebSocket-based AI toolchains
+- Optional encryption layer for secure context exchange
+- Visualization dashboard for active context sessions
 
 ⸻
+
 
 🗣️ Final Words
 
