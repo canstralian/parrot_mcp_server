@@ -1,4 +1,3 @@
-
 #!/bin/bash
 # Central CLI tool for Raspberry Pi 5 scripts
 # Author: Canstralian
@@ -81,9 +80,11 @@ menu() {
 			read -r args
 			# Optionally hash/salt sensitive arguments (example: hash first arg)
 			if [ -n "$args" ]; then
+				# FIX 1 (CI): Moved the shellcheck disable comment to the line
+				# directly above the one that causes the SC2086 warning.
+				# shellcheck disable=SC2086
 				set -- $args
 				hashed_first_arg=$(hash_arg "$1")
-				# shellcheck disable=SC2086
 				"$SCRIPT" "$hashed_first_arg" ${@:2} || { log_error "Script '$choice' exited with error code $?"; echo "[ERROR] Script '$choice' exited with error code $?"; }
 			else
 				"$SCRIPT" || { log_error "Script '$choice' exited with error code $?"; echo "[ERROR] Script '$choice' exited with error code $?"; }
@@ -108,18 +109,27 @@ main() {
 			exit 0
 			;;
 	esac
-	if ! validate_script_name "$1"; then
+
+	# FIX 2 (Bug): Store the script name ($1) in a variable *before*
+	# calling 'shift'. This prevents the error logs from using the
+	# wrong variable (e.g., logging "Script 'arg1' failed" instead of
+	# "Script 'my-script' failed").
+	local script_name="$1"
+
+	if ! validate_script_name "$script_name"; then
 		echo "Invalid script name. Only letters, numbers, dash, and underscore allowed."
-		log_error "Invalid script name input: $1"
+		log_error "Invalid script name input: $script_name"
 		exit 3
 	fi
-	SCRIPT="$SCRIPTS_DIR/$1.sh"
+	SCRIPT="$SCRIPTS_DIR/$script_name.sh"
 	shift
 	if [ -x "$SCRIPT" ]; then
-		"$SCRIPT" "$@" || { log_error "Script '$1' exited with error code $?"; echo "[ERROR] Script '$1' exited with error code $?"; }
+		# Use '$script_name' in the error log
+		"$SCRIPT" "$@" || { log_error "Script '$script_name' exited with error code $?"; echo "[ERROR] Script '$script_name' exited with error code $?"; }
 	else
-		echo "Script '$1' not found or not executable."
-		log_error "Script '$1' not found or not executable."
+		# Use '$script_name' in the error log
+		echo "Script '$script_name' not found or not executable."
+		log_error "Script '$script_name' not found or not executable."
 		echo "Falling back to menu."
 		menu
 	fi
@@ -128,4 +138,4 @@ main() {
 # Trap unexpected errors and log them
 trap 'ret=$?; if [ $ret -ne 0 ] && [ $ret -ne 2 ] && [ $ret -ne 130 ]; then log_error "Unexpected error (exit code $ret) in cli.sh"; echo "\n[ERROR] An unexpected error occurred. Exiting."; fi' EXIT
 
-main "$@"
+
