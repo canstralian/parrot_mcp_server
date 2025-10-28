@@ -6,7 +6,7 @@
 
 set -euo pipefail
 
-LOG_FILE="/var/log/health_check.log"
+LOG_FILE="./logs/health_check.log"
 ALERT_EMAIL="${ALERT_EMAIL:-}"
 
 log() {
@@ -34,7 +34,7 @@ check_disk() {
 
 # Check recent workflow logs
 check_workflows() {
-    local workflow_log="/var/log/daily_workflow.log"
+    local workflow_log="./logs/daily_workflow.log"
     if [ -f "$workflow_log" ]; then
         local last_run
         last_run=$(tail -1 "$workflow_log" | cut -d' ' -f1-2)

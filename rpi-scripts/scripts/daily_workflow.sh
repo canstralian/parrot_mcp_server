@@ -7,7 +7,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(dirname "$0")/.."
-LOG_FILE="/var/log/daily_workflow.log"
+LOG_FILE="./logs/daily_workflow.log"
 NOTIFY_EMAIL="${NOTIFY_EMAIL:-}"  # Optional email for notifications
 
 log() {
