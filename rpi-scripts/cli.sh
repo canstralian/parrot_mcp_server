@@ -80,12 +80,10 @@ menu() {
 			read -r args
 			# Optionally hash/salt sensitive arguments (example: hash first arg)
 			if [ -n "$args" ]; then
-				# FIX 1 (CI): Moved the shellcheck disable comment to the line
-				# directly above the one that causes the SC2086 warning.
-				# shellcheck disable=SC2086
+				# shellcheck disable=SC2068
 				set -- $args
 				hashed_first_arg=$(hash_arg "$1")
-				"$SCRIPT" "$hashed_first_arg" ${@:2} || { log_error "Script '$choice' exited with error code $?"; echo "[ERROR] Script '$choice' exited with error code $?"; }
+				"$SCRIPT" "$hashed_first_arg" "${@:2}" || { log_error "Script '$choice' exited with error code $?"; echo "[ERROR] Script '$choice' exited with error code $?"; }
 			else
 				"$SCRIPT" || { log_error "Script '$choice' exited with error code $?"; echo "[ERROR] Script '$choice' exited with error code $?"; }
 			fi
@@ -94,7 +92,7 @@ menu() {
 			log_error "Script '$choice' not found or not executable."
 		fi
 		echo
-		read -p "Press Enter to return to menu..." _
+	read -r -p "Press Enter to return to menu..." _
 	done
 }
 
@@ -136,6 +134,6 @@ main() {
 }
 
 # Trap unexpected errors and log them
-trap 'ret=$?; if [ $ret -ne 0 ] && [ $ret -ne 2 ] && [ $ret -ne 130 ]; then log_error "Unexpected error (exit code $ret) in cli.sh"; echo "\n[ERROR] An unexpected error occurred. Exiting."; fi' EXIT
+trap 'ret=$?; if [ "$ret" -ne 0 ] && [ "$ret" -ne 2 ] && [ "$ret" -ne 130 ]; then log_error "Unexpected error (exit code $ret) in cli.sh"; echo "\n[ERROR] An unexpected error occurred. Exiting."; fi' EXIT
 
 

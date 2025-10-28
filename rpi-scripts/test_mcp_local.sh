@@ -5,7 +5,7 @@
 
 set -euo pipefail
 
-LOG=./logs/parrot_test.log
+LOG=./logs/parrot_test.log # (unused)
 SERVER=./rpi-scripts/start_mcp_server.sh
 STOP=./rpi-scripts/stop_mcp_server.sh
 
@@ -15,13 +15,13 @@ SERVER_PID=$!
 sleep 2
 
 echo "[TEST] Sending valid MCP message..."
-echo '{"type":"mcp_message","content":"ping"}' > /tmp/mcp_in.json
+echo '{"type":"mcp_message","content":"ping"}' >/tmp/mcp_in.json
 # Simulate sending to server (replace with actual protocol if needed)
-cat /tmp/mcp_in.json > /dev/null
+cat /tmp/mcp_in.json >/dev/null
 
 echo "[TEST] Sending malformed MCP message..."
-echo '{"type":"mcp_message",' > /tmp/mcp_bad.json
-cat /tmp/mcp_bad.json > /dev/null
+echo '{"type":"mcp_message",' >/tmp/mcp_bad.json
+cat /tmp/mcp_bad.json >/dev/null
 
 # Check logs for expected output
 if grep -q 'ping' ./logs/parrot.log; then
