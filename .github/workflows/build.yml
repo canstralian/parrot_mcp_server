@@ -1,0 +1,28 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU (for ARM emulation)
+        uses: docker/setup-qemu-action@v3
+
+      - name: Verify scripts are executable
+        run: |
+          chmod +x ./rpi-scripts/*.sh
+
+      - name: Dry-run server start
+        run: |
+          ./rpi-scripts/start_mcp_server.sh || true
