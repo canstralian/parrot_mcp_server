@@ -40,23 +40,11 @@ Clone and run locally:
 git clone https://github.com/canstralian/parrot_mcp_server.git
 cd parrot_mcp_server
 chmod +x ./rpi-scripts/*.sh
+```
 
-To start the server:
+---
 
-./rpi-scripts/start_mcp_server.sh
-
-To stop it:
-
-./rpi-scripts/stop_mcp_server.sh
-
-To check logs:
-
-tail -f ./logs/parrot.log
-
-
-⸻
-
-🧠 Philosophy
+## 🧠 Philosophy
 
 This project is an invitation — not a product.
 Its mission is to demystify the infrastructure that connects AIs to their contexts.
@@ -64,9 +52,9 @@ In a world of opaque LLM integrations, Parrot MCP aims for clarity, transparency
 
 The best way to understand a system is to build it, break it, and build it again.
 
-⸻
+---
 
-🤝 Contributing
+## 🤝 Contributing
 
 We welcome pull requests, issue reports, and wild ideas.
 	1.	Fork the repo
@@ -79,9 +67,9 @@ Please follow good shell practices:
 	•	Comment clearly, especially for edge-case handling
 	•	Keep functions small and composable
 
-⸻
+---
 
-🧪 Testing
+## 🧪 Testing
 
 If you have a Raspberry Pi or similar SBC:
 
@@ -90,9 +78,9 @@ If you have a Raspberry Pi or similar SBC:
 Want to run tests headless on CI/CD?
 Integrate with GitHub Actions or any Bash-compatible runner — the scripts are designed to work cleanly in isolated environments.
 
-⸻
+---
 
-🦜 Community and Collaboration
+## 🦜 Community and Collaboration
 
 This project thrives on curiosity.
 You don’t need to be a veteran developer to join — only to care about making AI tools more open, more understandable, and more fun.
@@ -100,30 +88,33 @@ You don’t need to be a veteran developer to join — only to care about making
 Join discussions, open issues, and share insights.
 If you make something weird or brilliant, please tell us — parrots love to echo brilliance.
 
-⸻
+---
 
-🪶 License
+## 🪶 License
 
 Released under the MIT License.
 You’re free to use, modify, and redistribute — just keep the credits intact.
 
-⸻
+---
 
-🌈 Future Directions
-	•	Add Python and Go bindings for hybrid setups
-	•	Support for WebSocket-based AI toolchains
-	•	Optional encryption layer for secure context exchange
-	•	Visualization dashboard for active context sessions
+## 🌈 Future Directions
 
-⸻
+- Add Python and Go bindings for hybrid setups
+- Support for WebSocket-based AI toolchains
+- Optional encryption layer for secure context exchange
+- Visualization dashboard for active context sessions
 
-🗣️ Final Words
+---
+
+## 🗣️ Final Words
 
 This isn’t just a server — it’s a conversation starter between humans, code, and context.
 The MCP is young, and the ecosystem needs explorers.
 Let’s make open source speak louder, clearer, and stranger together.
 
-“When machines talk, may they do so in the voice of a parrot — endlessly curious, delightfully weird, and never dull.”
+---
+
+"When machines talk, may they do so in the voice of a parrot — endlessly curious, delightfully weird, and never dull."
 
 ⸻
 

@@ -1,3 +1,27 @@
+# -----------------------------------------------------------------------------
+# stop_mcp_server.sh
+#
+# Description:
+#   This script stops the Parrot MCP Server by terminating the process whose PID
+#   is stored in ./logs/mcp_server.pid. It logs all actions and errors to
+#   ./logs/parrot.log with a timestamp and unique message ID.
+#
+# Usage:
+#   ./stop_mcp_server.sh
+#
+# Behavior:
+#   - Checks for the existence of the PID file.
+#   - If found, attempts to kill the process and removes the PID file.
+#   - Logs success or failure to the log file.
+#   - If the PID file is missing, logs a warning and exits with an error.
+#
+# Log Format:
+#   [YYYY-MM-DD HH:MM:SS] [LEVEL] [msgid:UNIQUE_ID] Message
+#
+# Exit Codes:
+#   0 - Success
+#   1 - Failure (e.g., PID file missing or process could not be killed)
+# -----------------------------------------------------------------------------
 #!/usr/bin/env bash
 # Stop the Parrot MCP Server (minimal stub)
 LOG=./logs/parrot.log
