@@ -5,8 +5,8 @@
 
 set -euo pipefail
 
-SERVER=./rpi-scripts/start_mcp_server.sh
-STOP=./rpi-scripts/stop_mcp_server.sh
+SERVER=./start_mcp_server.sh
+STOP=./stop_mcp_server.sh
 
 # Start the server
 $SERVER &
