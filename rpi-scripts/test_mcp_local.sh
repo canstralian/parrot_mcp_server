@@ -5,7 +5,6 @@
 
 set -euo pipefail
 
-LOG=./logs/parrot_test.log # (unused)
 SERVER=./rpi-scripts/start_mcp_server.sh
 STOP=./rpi-scripts/stop_mcp_server.sh
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 # clean_cache.sh - Clean system cache and temporary files
-# 
+#
 # This script performs system maintenance by cleaning up package caches and removing
 # unused packages and temporary files. It is intended for use on Debian-based systems.
 #

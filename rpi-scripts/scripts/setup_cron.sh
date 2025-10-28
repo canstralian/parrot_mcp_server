@@ -11,7 +11,7 @@ set -euo pipefail
 CRON_FILE="/tmp/rpi_maintenance_cron"
 SCRIPT_DIR="$(dirname "$0")/.."
 
-cat > "$CRON_FILE" <<EOF
+cat >"$CRON_FILE" <<EOF
 # System update every Sunday at 2am
 0 2 * * 0 $SCRIPT_DIR/cli.sh system_update >> /var/log/system_update.log 2>&1
 # Clean cache daily at 3am

@@ -10,7 +10,6 @@ set -euo pipefail
 
 THRESHOLD="${1:-80}"
 USAGE=$(df --output=pcent / | tail -1 | awk '{gsub(/%/,""); print $1}')
-
 if [ "$USAGE" -ge "$THRESHOLD" ]; then
 	echo "Warning: Disk usage is at ${USAGE}% (threshold: ${THRESHOLD}%)" >&2
 else
