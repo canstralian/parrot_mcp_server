@@ -1,3 +1,20 @@
+# GitHub Actions workflow for Continuous Integration (CI)
+#
+# This workflow is triggered on push and pull request events to the 'main' branch.
+#
+# Jobs:
+#   lint-and-test:
+#     - Runs on the latest Ubuntu runner.
+#     - Checks out the repository code.
+#     - Installs and runs ShellCheck to lint all shell scripts (cli.sh and scripts/*.sh).
+#     - Installs and runs shfmt to check shell script formatting.
+#     - Installs Bats and runs unit tests.
+#     - Runs MCP server protocol tests.
+#     - Lints markdown files.
+#     - Sets execute permissions and runs basic script tests.
+#
+# Purpose:
+#   Ensures shell scripts are linted, properly formatted, pass tests, and documentation is clean on every push or pull request to 'main'.
 name: CI
 
 on:
@@ -11,15 +28,47 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Set up ShellCheck
-        run: sudo apt-get update && sudo apt-get install -y shellcheck
-      - name: Lint all scripts
+
+      - name: Cache apt packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            /var/cache/apt/archives
+            /var/lib/apt/lists
+          key: ${{ runner.os }}-apt-${{ hashFiles('**/ci.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-apt-
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck shfmt bats jq
+
+      - name: Lint shell scripts
         run: shellcheck cli.sh scripts/*.sh
-      - name: Set up shfmt
-        run: sudo apt-get install -y shfmt
-      - name: Format check
-        run: shfmt -d cli.sh scripts/*.sh
+
+      - name: Check shell script formatting
+        run: shfmt -d -i 4 -ci -s cli.sh scripts/*.sh
+
+      - name: Set execute permissions
+        run: chmod +x cli.sh scripts/*.sh
+
+      - name: Run Bats tests
+        run: bats tests/*.bats
+
+      - name: Test MCP server
+        run: ./test_mcp_local.sh
+
+      - name: Lint markdown files
+        uses: DavidAnson/markdownlint-cli2-action@v16
+        with:
+          globs: |
+            ../README.md
+            ../GEMINI.md
+            ../HARDWARE_BOM.md
+            ../docs/*.md
+
       - name: Run basic script tests
         run: |
-          chmod +x cli.sh scripts/*.sh
-          ./cli.sh hello
+          ./cli.sh check_disk
+          ./cli.sh system_update --dry-run
