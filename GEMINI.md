@@ -1,3 +1,8 @@
+<!--
+GEMINI.md — Documentation Comment
+
+This file outlines integration guidelines and best practices for using Google Gemini or similar LLMs with the Parrot MCP Server project. It details the project's context, structured MCP message formats (request, response, error), and provides automation flow examples for tasks such as system updates and purple team security operations. The document emphasizes spec-driven, portable POSIX Bash scripting, comprehensive logging for auditability, and explicit error handling. References to additional project documentation are included for further context.
+-->
 
 # GEMINI.md — Parrot MCP Server Project
 
