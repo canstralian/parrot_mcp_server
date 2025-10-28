@@ -1,3 +1,8 @@
+<!--
+    HARDWARE_BOM.md
+
+    This file documents the complete hardware Bill of Materials (BOM) for the Rackmate T0 Parrot MCP Edge Node project. It provides a detailed list of required and optional components, system overview, power and cooling diagrams, networking layout, assembly checklist, and sourcing references. The BOM is intended to guide users through the assembly and sourcing of parts for building a compact 4U AI edge computing chassis based on the Raspberry Pi 5 platform.
+-->
 # 🧰 Rackmate T0 Hardware Bill of Materials (BOM)
 
 This document lists all components, parts, and optional accessories required to build a **Rackmate T0 Parrot MCP Edge Node** — a compact 4U chassis designed for AI edge computing and network orchestration with a Raspberry Pi 5 core.

@@ -1,0 +1,4 @@
+[2025-10-28 16:46:01] MCP server started (stub)
+[2025-10-28 16:46:01] MCP message received: ping
+[2025-10-28 16:46:01] error: Malformed MCP message received
+[2025-10-28 16:46:03] MCP server stopped
