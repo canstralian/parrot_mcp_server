@@ -59,7 +59,9 @@ set -euo pipefail
 
 log_error() {
 	local msg="$1"
-	echo "[$(date '+%Y-%m-%d %H:%M:%S')] $msg" >> "$LOG_FILE"
+	local msgid
+	msgid=$(date +%s%N)
+	echo "[$(date '+%Y-%m-%d %H:%M:%S')] [ERROR] [msgid:$msgid] $msg" >> "$LOG_FILE"
 }
 
 ascii_art() {
@@ -119,7 +121,7 @@ menu() {
 			continue
 		fi
 		if ! validate_script_name "$choice"; then
-			echo "Invalid script name. Only letters, numbers, dash, and underscore allowed."
+			echo "[ERROR] Invalid script name. Only letters, numbers, dash, and underscore allowed."
 			log_error "Invalid script name input: $choice"
 			continue
 		fi
@@ -132,12 +134,12 @@ menu() {
 				# shellcheck disable=SC2068
 				set -- $args
 				hashed_first_arg=$(hash_arg "$1")
-				"$SCRIPT" "$hashed_first_arg" "${@:2}" || { log_error "Script '$choice' exited with error code $?"; echo "[ERROR] Script '$choice' exited with error code $?"; }
+				"$SCRIPT" "$hashed_first_arg" "${@:2}" || { log_error "Script '$choice' exited with error code $? (menu mode)"; echo "[ERROR] Script '$choice' exited with error code $?"; }
 			else
-				"$SCRIPT" || { log_error "Script '$choice' exited with error code $?"; echo "[ERROR] Script '$choice' exited with error code $?"; }
+				"$SCRIPT" || { log_error "Script '$choice' exited with error code $? (menu mode)"; echo "[ERROR] Script '$choice' exited with error code $?"; }
 			fi
 		else
-			echo "Script '$choice' not found or not executable."
+			echo "[ERROR] Script '$choice' not found or not executable."
 			log_error "Script '$choice' not found or not executable."
 		fi
 		echo
@@ -164,7 +166,7 @@ main() {
 	script_name="$1"
 
 	if ! validate_script_name "$script_name"; then
-		echo "Invalid script name. Only letters, numbers, dash, and underscore allowed."
+		echo "[ERROR] Invalid script name. Only letters, numbers, dash, and underscore allowed."
 		log_error "Invalid script name input: $script_name"
 		exit 3
 	fi
@@ -175,12 +177,12 @@ main() {
 		"$SCRIPT" "$@"
 		status=$?
 		if [ "$status" -ne 0 ]; then
-			log_error "Script '$script_name' exited with error code $status"
+			log_error "Script '$script_name' exited with error code $status (direct mode)"
 			echo "[ERROR] Script '$script_name' exited with error code $status"
 		fi
 	else
 		# Use '$script_name' in the error log
-		echo "Script '$script_name' not found or not executable."
+		echo "[ERROR] Script '$script_name' not found or not executable."
 		log_error "Script '$script_name' not found or not executable."
 		echo "Falling back to menu."
 		menu
