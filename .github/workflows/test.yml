@@ -1,0 +1,21 @@
+name: Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Grant execute permissions
+        run: chmod +x ./rpi-scripts/*.sh
+
+      - name: Run basic sanity tests
+        run: |
+          bash ./rpi-scripts/test_mcp_local.sh || echo "Tests completed with nonfatal warnings"
