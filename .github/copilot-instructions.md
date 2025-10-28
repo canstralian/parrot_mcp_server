@@ -1,3 +1,14 @@
+# Spec-driven development and MCP compliance
+
+This repository follows the Model Context Protocol (MCP) specification and Anthropic's best practices for spec-driven coding:
+- **Spec-first:** All features and changes should be guided by the official MCP Server spec. If in doubt, consult the spec before implementing or modifying behavior.
+- **Semantic compliance:** Scripts must preserve the intent and contract of the MCP protocol—structured message exchange, clear context boundaries, and auditable data flows.
+- **Literal compliance:** Code should be portable, POSIX-compliant Bash, and avoid hidden dependencies. All protocol interactions must be testable and observable via logs or test harnesses.
+- **Transparency:** Favor explicit, auditable shell logic over cleverness. Document edge cases and protocol boundaries in comments.
+- **Testability:** Use `rpi-scripts/test_mcp_local.sh` and `tests/` to validate protocol compliance. Add new tests for any protocol-relevant change.
+- **Spec updates:** If the MCP spec changes, update scripts and documentation to match. Note any spec deltas in PRs.
+
+Reference: See the official MCP Server specification and Anthropic’s guidelines for further details. If unsure, ask the maintainer for clarification before deviating from the spec or introducing new patterns.
 <!-- Copilot instructions tailored for the parrot_mcp_server repository -->
 
 # Parrot MCP Server — AI assistant instructions
