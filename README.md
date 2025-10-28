@@ -1,5 +1,12 @@
 # 🦜 Parrot MCP Server
 
+[![Build Status](https://github.com/canstralian/parrot_mcp_server/actions/workflows/build.yml/badge.svg)](https://github.com/canstralian/parrot_mcp_server/actions/workflows/build.yml)
+[![Tests](https://github.com/canstralian/parrot_mcp_server/actions/workflows/test.yml/badge.svg)](https://github.com/canstralian/parrot_mcp_server/actions/workflows/test.yml)
+[![Shell Lint](https://github.com/canstralian/parrot_mcp_server/actions/workflows/lint.yml/badge.svg)](https://github.com/canstralian/parrot_mcp_server/actions/workflows/lint.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/canstralian/parrot_mcp_server/issues)
+[![Built with ❤️ by Humans and Parrots](https://img.shields.io/badge/built%20with-%E2%9D%A4%EF%B8%8F%20by%20parrots-blueviolet)](#)
+
 A lightweight, modular, and hacker-friendly **Model Context Protocol (MCP)** server designed to make your AI integrations sing.  
 Built for tinkerers, researchers, and developers who believe that communication between machines should be as elegant as parrots mimicking poetry.
 
