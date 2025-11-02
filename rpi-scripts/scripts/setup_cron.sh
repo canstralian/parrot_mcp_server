@@ -9,7 +9,7 @@
 set -euo pipefail
 
 CRON_FILE="/tmp/rpi_maintenance_cron"
-SCRIPT_DIR="$(dirname "$0")/.."
+SCRIPT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
 cat > "$CRON_FILE" <<EOF
 # System update every Sunday at 2am

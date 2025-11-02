@@ -2,10 +2,31 @@
 # system_update.sh - Update and upgrade system packages
 # Author: Canstralian
 # Created: 2025-10-28
-# Last Modified: 2025-10-28
-# Description: Updates package lists and upgrades all packages on Raspberry Pi 5.
+# Last Modified: 2025-10-30
+# Description: Updates package lists, upgrades all packages, cleans up unused packages, and checks if a reboot is required.
 # Usage: ./system_update.sh
 
 set -euo pipefail
 
-sudo apt-get update && sudo apt-get full-upgrade -y
+LOG_FILE="/var/log/system_update.log"
+exec &> >(tee -a "$LOG_FILE")
+
+echo "Starting system update at $(date)"
+
+echo "--> Updating package lists..."
+sudo apt-get update
+
+echo "--> Upgrading packages..."
+sudo apt-get full-upgrade -y
+
+echo "--> Removing unused packages..."
+sudo apt-get autoremove -y
+
+echo "--> Cleaning up local repository..."
+sudo apt-get clean
+
+echo "System update finished at $(date)"
+
+if [ -f /var/run/reboot-required ]; then
+    echo "A reboot is required."
+fi
