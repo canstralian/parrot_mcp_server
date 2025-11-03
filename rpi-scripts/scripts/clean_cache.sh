@@ -28,4 +28,6 @@ set -euo pipefail
 sudo apt-get autoremove -y
 sudo apt-get autoclean -y
 sudo apt-get clean
-find /tmp -mindepth 1 -exec rm -rf -- {} +
+# Only delete files in /tmp older than 7 days to avoid breaking running applications
+find /tmp -mindepth 1 -type f -mtime +7 -delete
+find /tmp -mindepth 1 -type d -empty -mtime +7 -delete

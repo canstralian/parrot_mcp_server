@@ -46,11 +46,6 @@ validate_script_name() {
 	[[ "$1" =~ ^[a-zA-Z0-9_-]+$ ]]
 }
 
-hash_arg() {
-	# Hash an argument using sha256sum (for demonstration)
-	echo -n "$1" | sha256sum | awk '{print $1}'
-}
-
 menu() {
 	while true; do
 		ascii_art
@@ -79,12 +74,9 @@ menu() {
 		if [ -x "$SCRIPT" ]; then
 			echo "Enter arguments for $choice (or press Enter for none):"
 			read -r args
-			# Optionally hash/salt sensitive arguments (example: hash first arg)
 			if [ -n "$args" ]; then
-				set -- $args
-				hashed_first_arg=$(hash_arg "$1")
 				# shellcheck disable=SC2086
-				"$SCRIPT" "$hashed_first_arg" ${@:2} || { log_error "Script '$choice' exited with error code $?"; echo "[ERROR] Script '$choice' exited with error code $?"; }
+				"$SCRIPT" $args || { log_error "Script '$choice' exited with error code $?"; echo "[ERROR] Script '$choice' exited with error code $?"; }
 			else
 				"$SCRIPT" || { log_error "Script '$choice' exited with error code $?"; echo "[ERROR] Script '$choice' exited with error code $?"; }
 			fi
@@ -113,13 +105,14 @@ main() {
 		log_error "Invalid script name input: $1"
 		exit 3
 	fi
+	SCRIPT_NAME="$1"
 	SCRIPT="$SCRIPTS_DIR/$1.sh"
 	shift
 	if [ -x "$SCRIPT" ]; then
-		"$SCRIPT" "$@" || { log_error "Script '$1' exited with error code $?"; echo "[ERROR] Script '$1' exited with error code $?"; }
+		"$SCRIPT" "$@" || { log_error "Script '$SCRIPT_NAME' exited with error code $?"; echo "[ERROR] Script '$SCRIPT_NAME' exited with error code $?"; }
 	else
-		echo "Script '$1' not found or not executable."
-		log_error "Script '$1' not found or not executable."
+		echo "Script '$SCRIPT_NAME' not found or not executable."
+		log_error "Script '$SCRIPT_NAME' not found or not executable."
 		echo "Falling back to menu."
 		menu
 	fi

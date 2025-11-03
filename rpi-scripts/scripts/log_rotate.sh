@@ -12,7 +12,7 @@ LOG_DIR="/var/log"
 for logfile in "$LOG_DIR"/*.log; do
 	[ -e "$logfile" ] || continue
 	rotated_file="$logfile.$(date +%Y%m%d_%H%M%S)"
-	mv "$logfile" "$rotated_file"
-	gzip "$rotated_file"
+	sudo mv "$logfile" "$rotated_file"
+	sudo gzip "$rotated_file"
 	echo "Rotated and compressed $logfile"
 done

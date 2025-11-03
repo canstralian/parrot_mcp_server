@@ -13,6 +13,11 @@ DATE=$(date +%Y%m%d_%H%M%S)
 BACKUP_FILE="$BACKUP_DIR/home_backup_$DATE.tar.gz"
 
 mkdir -p "$BACKUP_DIR"
-sudo tar -czf "$BACKUP_FILE" /home
+# Exclude the backup directory itself to prevent infinite recursion
+if [[ "$BACKUP_DIR" == /home* ]]; then
+	sudo tar -czf "$BACKUP_FILE" --exclude="$BACKUP_DIR" /home
+else
+	sudo tar -czf "$BACKUP_FILE" /home
+fi
 
 echo "Backup created at $BACKUP_FILE"

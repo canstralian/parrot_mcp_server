@@ -9,6 +9,11 @@
 set -euo pipefail
 
 LOG_FILE="/var/log/system_update.log"
+# Use writable log location if we don't have permission to write to /var/log
+if [ ! -w "/var/log" ]; then
+	LOG_FILE="/tmp/system_update.log"
+	echo "Warning: Cannot write to /var/log, using $LOG_FILE instead"
+fi
 exec &> >(tee -a "$LOG_FILE")
 
 echo "Starting system update at $(date)"
