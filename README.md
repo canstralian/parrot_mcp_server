@@ -28,6 +28,7 @@ It’s built in **Shell** for portability and clarity, with simple scripts to co
 - **Lightweight shell design** – runs anywhere Bash runs (including tiny SBCs).  
 - **Modular structure** – extend with your own tools or agents.  
 - **Zero dependencies** – no Python virtualenvs or Node modules needed.  
+- **API integrations** – webhooks, REST clients, JSON-RPC, and more.  
 - **Perfect for experimentation** – hack, fork, break, and rebuild with joy.
 
 ---
@@ -77,6 +78,20 @@ If you have a Raspberry Pi or similar SBC:
 
 Want to run tests headless on CI/CD?
 Integrate with GitHub Actions or any Bash-compatible runner — the scripts are designed to work cleanly in isolated environments.
+
+---
+
+## 🔌 API Integrations
+
+Parrot MCP Server supports multiple API integration patterns:
+
+- **Webhooks** – receive events from external services (GitHub, CI/CD, monitoring)
+- **REST API client** – make HTTP requests to external APIs
+- **JSON-RPC 2.0** – standard MCP protocol message handling
+- **Slack/Discord notifications** – send alerts and reports
+- **AI/LLM integration** – connect to OpenAI, Claude, Gemini
+
+See [API_INTEGRATIONS.md](./docs/API_INTEGRATIONS.md) and [API_EXAMPLES.md](./docs/API_EXAMPLES.md) for detailed documentation and examples.
 
 ---
 
