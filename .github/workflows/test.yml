@@ -18,4 +18,4 @@ jobs:
 
       - name: Run basic sanity tests
         run: |
-          bash ./rpi-scripts/test_mcp_local.sh || echo "Tests completed with nonfatal warnings"
+          bash ./rpi-scripts/test_mcp_local.sh
