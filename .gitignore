@@ -1,0 +1,25 @@
+# Environment variables and secrets
+.env
+*.env
+!.env.example
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+/tmp/
+*.tmp
+*.swp
+*~
+
+# API response cache
+/tmp/api_response_*.json
+/tmp/webhook_*.json
+
+# PID files
+*.pid
+
+# System files
+.DS_Store
+Thumbs.db

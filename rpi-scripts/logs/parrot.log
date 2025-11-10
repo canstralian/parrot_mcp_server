@@ -2,3 +2,19 @@
 [2025-10-28 17:41:00] [INFO] [msgid:1761637260932334187] MCP message received: ping
 [2025-10-28 17:41:00] [ERROR] [msgid:1761637260932334187] Malformed MCP message received
 [2025-10-28 17:41:02] [INFO] [msgid:1761637262936081381] MCP server stopped (pid 27608)
+[2025-11-10 16:34:35] [INFO] [msgid:1762792475339194309] MCP server started (stub)
+[2025-11-10 16:34:35] [INFO] [msgid:1762792475339194309] MCP message received: ping
+[2025-11-10 16:34:35] [ERROR] [msgid:1762792475339194309] Malformed MCP message received
+[2025-11-10 16:34:37] [INFO] [msgid:1762792477344742351] MCP server stopped (pid 3549)
+[2025-11-10 16:34:50] [INFO] [msgid:1762792490272399806] Processing webhook: type=mcp_message, action=unknown
+[2025-11-10 16:34:50] [INFO] [msgid:1762792490272399806] MCP message received via webhook
+[2025-11-10 16:34:50] [INFO] [msgid:1762792490272399806] MCP method: ping
+[2025-11-10 16:34:50] [INFO] [msgid:1762792490272399806] Webhook processing completed
+[2025-11-10 16:35:07] [INFO] [msgid:1762792507150832894] JSON-RPC request: method=ping, id=1
+[2025-11-10 16:35:07] [INFO] [msgid:1762792507150832894] Ping received
+[2025-11-10 16:35:07] [INFO] [msgid:1762792507150832894] JSON-RPC request processed successfully
+[2025-11-10 16:35:16] [INFO] [msgid:1762792516137453655] JSON-RPC request: method=tools/call, id=2
+[2025-11-10 16:35:16] [INFO] [msgid:1762792516137453655] Calling tool: check_disk
+[2025-11-10 16:35:16] [INFO] [msgid:1762792516137453655] JSON-RPC request processed successfully
+[2025-11-10 16:35:25] [INFO] [msgid:1762792525479589814] JSON-RPC request: method=unknown, id=3
+[2025-11-10 16:35:25] [ERROR] [msgid:1762792525479589814] Unknown method: unknown
