@@ -1,7 +1,7 @@
-# Trading Bot Swarm Copilot & Codex Configuration Guide
+# Parrot MCP Server Copilot & Codex Configuration Guide
 
 ## Purpose and Scope
-This guide establishes a unified configuration for GitHub Copilot and Codex within the Trading Bot Swarm ecosystem. The objective is to treat Copilot as a disciplined pair programmer that accelerates delivery without compromising security, reliability, or maintainability. These standards govern day-to-day coding practices, automation hooks, and review criteria across all Trading Bot Swarm repositories.
+This guide establishes a unified configuration for GitHub Copilot and Codex within the Parrot MCP Server repository. The objective is to treat Copilot as a disciplined pair programmer that accelerates delivery of a portable, Bash-based Model Context Protocol (MCP) server without compromising security, reliability, or maintainability. These standards govern day-to-day coding practices, automation hooks, and review criteria for the Parrot MCP Server project.
 
 ## Behavioral Principles for AI Pair Programmers
 - **Role clarity:** Copilot supplies suggestions that must always be reviewed, justified, and attributed to project standards. Human maintainers remain accountable for every merged change.
