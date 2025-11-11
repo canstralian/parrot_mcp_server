@@ -26,6 +26,38 @@ It includes system maintenance, automation, and developer-friendly features for 
 ./cli.sh hello
 ```
 
+## SARIF Security Analysis
+
+The library now includes a comprehensive SARIF (Static Analysis Results Interchange Format) ABI Contract implementation for security scanning of shell scripts.
+
+### Quick Start
+
+```sh
+# Scan a directory for security issues
+./cli.sh sarif scan ./scripts output.sarif
+
+# Scan a single file
+./cli.sh sarif file myScript.sh findings.sarif
+
+# Validate SARIF output
+./cli.sh sarif validate output.sarif
+
+# List available security rules
+./cli.sh sarif rules list
+```
+
+### Features
+
+- **Rule Identifier Stability**: Stable rule IDs with semantic versioning
+- **Deterministic Output**: Reproducible results across runs
+- **Provenance Metadata**: Complete chain of custody for audit trails
+- **Comprehensive Validation**: SARIF 2.1.0 schema compliance checking
+- **Golden Output Tests**: Regression testing for deterministic behavior
+
+For detailed documentation, see:
+- [SARIF ABI Contract Documentation](docs/SARIF_ABI_CONTRACT.md)
+- [Usage Examples](docs/SARIF_USAGE_EXAMPLES.md)
+
 ## Automated Maintenance Scheduling
 
 To automate all recommended maintenance tasks, run:

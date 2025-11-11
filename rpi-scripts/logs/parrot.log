@@ -9,3 +9,7 @@
 [2025-11-11 12:42:04] [INFO] [msgid:1762864924456700710] MCP message received: ping
 [2025-11-11 12:42:04] [ERROR] [msgid:1762864924456700710] Malformed MCP message received
 [2025-11-11 12:42:06] [INFO] [msgid:1762864926462508136] MCP server stopped (pid 4798)
+[2025-11-11 12:45:58] [INFO] [msgid:1762865158655175032] MCP server started (stub)
+[2025-11-11 12:45:58] [INFO] [msgid:1762865158655175032] MCP message received: ping
+[2025-11-11 12:45:58] [ERROR] [msgid:1762865158655175032] Malformed MCP message received
+[2025-11-11 12:46:00] [INFO] [msgid:1762865160661228009] MCP server stopped (pid 5688)
