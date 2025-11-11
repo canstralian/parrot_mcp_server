@@ -57,8 +57,8 @@ class Settings(BaseSettings):
     enable_hf_models: bool = Field(True, description="Enable Hugging Face models")
     hf_model_cache_dir: str = Field("/app/models", description="Cache directory for model weights")
     max_generation_tokens: int = Field(2048, description="Maximum generation token count")
-    temperature: float = Field(0.7, description="Default sampling temperature")
-    top_p: float = Field(0.95, description="Nucleus sampling probability")
+    temperature: float = Field(0.7, ge=0.0, le=2.0, description="Default sampling temperature")
+    top_p: float = Field(0.95, ge=0.0, le=1.0, description="Nucleus sampling probability")
 
     # ─────────────────────────────────────────────
     # GitHub / CI Context
