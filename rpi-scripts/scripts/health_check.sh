@@ -6,8 +6,48 @@
 
 set -euo pipefail
 
-LOG_FILE="./logs/health_check.log"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+parrot_realpath() {
+    local target="$1"
+
+    if command -v realpath >/dev/null 2>&1; then
+        realpath -m "$target" 2>/dev/null
+        return
+    fi
+
+    if command -v python3 >/dev/null 2>&1; then
+        python3 - "$target" <<'PY' 2>/dev/null
+import os
+import sys
+if len(sys.argv) != 2:
+    raise SystemExit(1)
+print(os.path.realpath(sys.argv[1]))
+PY
+        return
+    fi
+
+    if command -v python >/dev/null 2>&1; then
+        python - "$target" <<'PY' 2>/dev/null
+import os
+import sys
+if len(sys.argv) != 2:
+    raise SystemExit(1)
+print(os.path.realpath(sys.argv[1]))
+PY
+        return
+    fi
+
+    return 1
+}
+
+PARROT_BASE_DIR="${PARROT_BASE_DIR:-$(parrot_realpath "$SCRIPT_DIR/.." || echo "$SCRIPT_DIR/..")}"
+PARROT_LOG_DIR="${PARROT_LOG_DIR:-$PARROT_BASE_DIR/logs}"
+PARROT_WORKFLOW_LOG="${PARROT_WORKFLOW_LOG:-$PARROT_LOG_DIR/daily_workflow.log}"
+LOG_FILE="${LOG_FILE:-$PARROT_LOG_DIR/health_check.log}"
 ALERT_EMAIL="${ALERT_EMAIL:-}"
+
+mkdir -p "$(dirname "$LOG_FILE")"
 
 log() {
     echo "$(date '+%Y-%m-%d %H:%M:%S') [HEALTH_CHECK] $*" | tee -a "$LOG_FILE"
@@ -20,10 +60,60 @@ alert() {
     fi
 }
 
+parrot_path_within_base() {
+    local candidate="$1"
+    local base="$2"
+
+    case "$candidate" in
+        "")
+            return 1
+            ;;
+    esac
+
+    local resolved_base
+    resolved_base=$(parrot_realpath "$base") || return 1
+
+    case "$candidate" in
+        "$resolved_base"|"$resolved_base"/*)
+            return 0
+            ;;
+    esac
+
+    return 1
+}
+
+parrot_resolve_path() {
+    local candidate="$1"
+
+    if [[ -z "$candidate" ]]; then
+        return 1
+    fi
+
+    if [[ "$candidate" = /* ]]; then
+        parrot_realpath "$candidate"
+    else
+        parrot_realpath "$PARROT_BASE_DIR/$candidate"
+    fi
+}
+
+parrot_get_valid_path() {
+    local candidate="$1"
+    local resolved
+
+    resolved=$(parrot_resolve_path "$candidate") || return 1
+
+    if ! parrot_path_within_base "$resolved" "$PARROT_BASE_DIR"; then
+        return 1
+    fi
+
+    printf '%s\n' "$resolved"
+}
+
 # Check disk usage
 check_disk() {
     local threshold=90
     local usage
+
     usage=$(df / | tail -1 | awk '{print $5}' | sed 's/%//')
     if [ "$usage" -gt "$threshold" ]; then
         alert "Disk usage is ${usage}%, above ${threshold}% threshold"
@@ -34,15 +124,22 @@ check_disk() {
 
 # Check recent workflow logs
 check_workflows() {
-    local workflow_log="./logs/daily_workflow.log"
-    if [ -f "$workflow_log" ]; then
+    local workflow_log="$PARROT_WORKFLOW_LOG"
+    local resolved_workflow_log
+
+    if ! resolved_workflow_log=$(parrot_get_valid_path "$workflow_log"); then
+        alert "Invalid workflow log path: $workflow_log"
+        return 1
+    fi
+
+    if [ -f "$resolved_workflow_log" ]; then
         local last_run
-        last_run=$(tail -1 "$workflow_log" | cut -d' ' -f1-2)
+        last_run=$(tail -1 "$resolved_workflow_log" | cut -d' ' -f1-2)
         local last_timestamp
         last_timestamp=$(date -d "$last_run" +%s 2>/dev/null || echo 0)
         local now
         now=$(date +%s)
-        local hours_since=$(( (now - last_timestamp) / 3600 ))
+        local hours_since=$(((now - last_timestamp) / 3600))
 
         if [ "$hours_since" -gt 25 ]; then  # Allow 1 hour grace
             alert "Daily workflow hasn't run in ${hours_since} hours"
@@ -50,7 +147,7 @@ check_workflows() {
             log "Daily workflow last ran: $last_run"
         fi
     else
-        alert "Workflow log file not found: $workflow_log"
+        alert "Workflow log file not found: $resolved_workflow_log"
     fi
 }
 
@@ -84,3 +181,4 @@ check_load
 check_mcp_server
 
 log "Health check completed"
+
