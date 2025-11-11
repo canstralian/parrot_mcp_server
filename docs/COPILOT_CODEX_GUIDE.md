@@ -153,7 +153,7 @@ jobs:
 - **Performance regressions**: use shell profiling and tracing tools (e.g., `time`, `strace`, `bash -x`) and compare with baseline traces.
 
 ## Maintenance Schedule
-- Review this guide quarterly during the architecture guild meeting.
+- Review this guide quarterly as part of regular repository maintenance.
 - Update after major tooling upgrades (new Python version, CI runner changes, or security policy revisions).
 - Track revisions via semantic versioning embedded in the document front matter (future enhancement).
 
