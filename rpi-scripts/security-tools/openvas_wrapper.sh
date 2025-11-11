@@ -266,7 +266,7 @@ openvas_wait_for_completion() {
 
     echo "Waiting for scan to complete (max ${max_wait}s)..." >&2
 
-    while [ $elapsed -lt $max_wait ]; do
+    while [ "$elapsed" -lt "$max_wait" ]; do
         local status
         status=$(openvas_get_task_status "$task_uuid")
 
