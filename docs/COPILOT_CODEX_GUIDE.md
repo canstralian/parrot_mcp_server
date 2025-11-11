@@ -174,4 +174,4 @@ Schedule weekly scans and allow manual triggers for incident response. Integrate
 - **On-Demand**: Update this guide when MCP specification updates are released, when new MCP protocol features are added, or when governance policies change.
 
 ## Conclusion
-By standardizing AI-assisted development, the Trading Bot Swarm maintains excellence in reliability, performance, and safety. Consistent configuration ensures Copilot and Codex reinforce guardrails instead of bypassing them, empowering contributors to ship secure, observable, and trustworthy automation.
+By standardizing AI-assisted development, the Parrot MCP Server project maintains excellence in MCP protocol implementation, POSIX compliance, and reliable Bash-based server operations. Consistent configuration ensures Copilot and Codex reinforce protocol guardrails and best practices, empowering contributors to ship secure, maintainable, and trustworthy automation for model context protocol services.
