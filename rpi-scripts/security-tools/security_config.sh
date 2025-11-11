@@ -89,6 +89,8 @@ NMAP_MAX_INTENSITY="${NMAP_MAX_INTENSITY:-3}"
 NMAP_ALLOWED_SCAN_TYPES="${NMAP_ALLOWED_SCAN_TYPES:-sS,sT,sU,sV,sC,sn,O}"
 
 # Disallowed Nmap options (dangerous or too aggressive)
+# Note: This list is for reference/future use in option validation
+# shellcheck disable=SC2034
 NMAP_DISALLOWED_OPTIONS=(
     "--script=dos"
     "--script=exploit"

@@ -153,6 +153,7 @@ nmap_build_command() {
     if [ "$scan_type" != "ping" ] && [ "$scan_type" != "sn" ]; then
         local port_flag
         port_flag=$(nmap_validate_ports "$ports") || return 1
+        # shellcheck disable=SC2206
         cmd+=($port_flag)  # Don't quote to allow multiple args
     fi
 
