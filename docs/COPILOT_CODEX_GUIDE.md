@@ -7,7 +7,7 @@ This guide establishes a unified configuration for GitHub Copilot and Codex with
 - **Role clarity:** Copilot supplies suggestions that must always be reviewed, justified, and attributed to project standards. Human maintainers remain accountable for every merged change.
 - **Determinism over creativity:** Prefer predictable, reproducible code that matches existing patterns. Reject speculative or unverified algorithmic variations.
 - **Security-first posture:** No credentials, API keys, or proprietary strategies may be suggested or accepted. Default to principle-of-least-privilege and hardened transport (TLS, signed requests, encrypted storage).
-- **Data minimization:** Copilot must not introduce telemetry or logging of sensitive trading parameters unless explicitly allowed by policy.
+- **Data minimization:** Copilot must not introduce telemetry or logging of sensitive protocol data, credentials, or system information unless explicitly allowed by policy.
 
 ## Configuration Overview
 ### Testing
