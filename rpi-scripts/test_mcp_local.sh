@@ -32,7 +32,7 @@ else
 	echo "[FAIL] Valid MCP message not found in logs."
 fi
 
-if grep -q 'error' "${SCRIPT_DIR}/logs/parrot.log" 2>/dev/null; then
+if grep -q 'error' ./logs/parrot.log 2>/dev/null; then
 	echo "[PASS] Malformed MCP message error logged."
 else
 	echo "[FAIL] Malformed MCP message error not found in logs."
