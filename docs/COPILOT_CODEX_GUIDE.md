@@ -150,7 +150,7 @@ jobs:
 - **Codex rejects merge despite passing tests**: ensure lint/static analysis logs are clean; check for skipped scans.
 - **Flaky shell tests**: use `timeout` to guard long-running scripts and provide deterministic input files or environment variables for reproducible results.
 - **Security scans flag secrets**: rotate credentials, revoke leaked tokens, and document remediation steps.
-- **Performance regressions**: use profiling hooks (`py-spy`, `cProfile`) and compare with baseline traces.
+- **Performance regressions**: use shell profiling and tracing tools (e.g., `time`, `strace`, `bash -x`) and compare with baseline traces.
 
 ## Maintenance Schedule
 - Review this guide quarterly during the architecture guild meeting.
