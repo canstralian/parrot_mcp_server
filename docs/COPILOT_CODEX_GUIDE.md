@@ -7,7 +7,7 @@ This guide standardizes how GitHub Copilot and Codex are configured within the T
 To align tooling behavior across teams and services, adopt the following baseline configuration:
 
 - **Testing Discipline**: All code changes must ship with automated tests. Prefer fast, deterministic unit tests and high-signal integration tests. Coverage thresholds should be enforced in CI to prevent regressions.
-- **Linting & Static Analysis**: Enable language-appropriate linters (e.g., Ruff/Flake8 for Python, ESLint for TypeScript) and static analyzers (e.g., mypy, pyright, Bandit) in both local development and CI.
+- **Linting & Static Analysis**: Enable language-appropriate linters (e.g., ShellCheck for Bash) and formatters (e.g., shfmt for Bash) in both local development and CI. Use static analyzers where available for your language.
 - **Code Style**: Enforce formatting with tools like Black, isort, Prettier, or shfmt, depending on the language. Configure editors to format on save and align Copilot/Codex completions with project style.
 - **Async Patterns**: Prefer structured concurrency (`asyncio.TaskGroup`, `anyio`, or language equivalents). Copilot suggestions should default to awaitable-safe patterns, graceful cancellation, and explicit timeouts.
 - **Security Defaults**: Mandate secure defaults (least privilege IAM roles, secrets from vaults, sanitized logging). AI-generated code must avoid hard-coded credentials, insecure randomness, and unsanitized subprocesses.
