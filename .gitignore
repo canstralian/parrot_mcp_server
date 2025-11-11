@@ -1,0 +1,15 @@
+# Log files
+*.log
+logs/
+rpi-scripts/logs/
+
+# PID files
+*.pid
+
+# Temporary files
+/tmp/
+*.tmp
+
+# OS-specific files
+.DS_Store
+Thumbs.db

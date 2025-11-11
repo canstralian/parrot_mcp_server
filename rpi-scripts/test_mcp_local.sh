@@ -5,10 +5,26 @@
 
 set -euo pipefail
 
-SERVER=./start_mcp_server.sh
-STOP=./stop_mcp_server.sh
+# Determine script directory to find other scripts
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+SERVER="${SCRIPT_DIR}/start_mcp_server.sh"
+STOP="${SCRIPT_DIR}/stop_mcp_server.sh"
+
+# Check that required scripts exist
+echo "[TEST] Checking for required scripts..."
+if [ ! -f "$SERVER" ]; then
+	echo "[ERROR] start_mcp_server.sh not found at: $SERVER"
+	exit 1
+fi
+if [ ! -f "$STOP" ]; then
+	echo "[ERROR] stop_mcp_server.sh not found at: $STOP"
+	exit 1
+fi
+echo "[TEST] Required scripts found."
 
 # Start the server
+echo "[TEST] Starting MCP server..."
 $SERVER &
 SERVER_PID=$!
 sleep 2
@@ -36,5 +52,7 @@ else
 fi
 
 # Stop the server
+echo "[TEST] Stopping MCP server..."
 $STOP
 kill $SERVER_PID 2>/dev/null || true
+echo "[TEST] Test completed."
