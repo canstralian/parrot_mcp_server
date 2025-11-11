@@ -1,0 +1,27 @@
+# Log files
+*.log
+logs/*.log
+logs/*.pid
+
+# Runtime artifacts
+*.pid
+mcp_server.pid
+
+# Test artifacts
+/tmp/mcp_*.json
+
+# System and IDE files
+.DS_Store
+.vscode/settings.json
+.idea/
+
+# Build artifacts
+*.o
+*.so
+*.a
+
+# Temporary files
+*~
+*.swp
+*.swo
+.*.swp

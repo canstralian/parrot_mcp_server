@@ -1,9 +1,17 @@
 #!/usr/bin/env bash
 # Start the Parrot MCP Server (minimal stub)
 # Logs a startup message and simulates a running server with improved error handling
-mkdir -p ./logs
-LOG=./logs/parrot.log
+
+# Resolve script directory for proper path handling
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Set up paths relative to script directory
+LOG_DIR="${SCRIPT_DIR}/logs"
+mkdir -p "$LOG_DIR"
+LOG="${LOG_DIR}/parrot.log"
+PID_FILE="${LOG_DIR}/mcp_server.pid"
 MSGID=$(date +%s%N)
+
 {
 	echo "[$(date '+%Y-%m-%d %H:%M:%S')] [INFO] [msgid:$MSGID] MCP server started (stub)"
 	# Simulate handling a valid MCP message
@@ -23,4 +31,4 @@ MSGID=$(date +%s%N)
 	# Keep process alive for test harness
 	sleep 5
 } >>"$LOG" 2>&1 &
-echo $! >./logs/mcp_server.pid
+echo $! >"$PID_FILE"

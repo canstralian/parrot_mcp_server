@@ -2,3 +2,8 @@
 .config/
 # Or, to be more specific:
 .config/chromium/
+
+# Ignore log files and runtime artifacts
+logs/*.log
+logs/*.pid
+*.pid
