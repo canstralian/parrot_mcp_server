@@ -189,7 +189,7 @@ nmap_execute() {
     local target="$1"
     local scan_type="$2"
     local ports="$3"
-    local output_basename="$4"
+    local output_basename="$(basename -- "$4")"
     local user="$5"
 
     # Generate scan ID
