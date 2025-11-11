@@ -192,7 +192,7 @@ jobs:
 - Integrate SARIF uploads to GitHub Security tab to centralize findings.
 
 ## Contributor Workflow Guidelines
-1. **Proposal:** Open an issue describing the change, associated trading impact, and testing plan.
+1. **Proposal:** Open an issue describing the change, its effect on MCP protocol compliance, script functionality, system integration, and the testing plan.
 2. **Branching:** Create a feature branch with conventional naming.
 3. **Implementation:** Use Copilot suggestions as a baseline, then refactor to meet standards.
 4. **Validation:** Run all linting, unit tests, integration tests, and backtests locally before opening a pull request.
