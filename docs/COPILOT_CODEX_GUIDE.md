@@ -69,21 +69,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - name: Cache dependencies
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements*.txt') }}
-      - name: Install tooling
-        run: pip install -r requirements-dev.txt
-      - name: Lint
-        run: make lint
-      - name: Test
-        run: make test
+      - name: Install ShellCheck and shfmt
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck shfmt
+      - name: Lint (ShellCheck)
+        run: shellcheck cli.sh scripts/*.sh rpi-scripts/*.sh
+      - name: Format check (shfmt)
+        run: shfmt -d cli.sh scripts/*.sh rpi-scripts/*.sh
+      - name: Run Bash tests
+        run: ./rpi-scripts/test_mcp_local.sh
 ```
 The workflow ignores Markdown-only changes, reinforcing the rule that tests are required solely for code modifications.
 
