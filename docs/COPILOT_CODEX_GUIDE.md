@@ -128,7 +128,8 @@ jobs:
           black --check .
 
       - name: Run unit tests
-        run: pytest --maxfail=1 --disable-warnings -q
+      - name: Run unit tests
+        run: pytest --disable-warnings -q
 
       - name: Run strategy backtests
         run: python -m trading_bot_swarm.backtest.runner --config configs/backtests/default.yaml
