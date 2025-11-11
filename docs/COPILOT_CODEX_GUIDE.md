@@ -21,9 +21,9 @@ This guide establishes a unified configuration for GitHub Copilot and Codex with
 - Encourage Copilot suggestions that respect docstrings, typing hints, and single-responsibility functions.
 
 ### Async Patterns
-- Prefer `asyncio` for network-bound operations and ensure Copilot references existing helper utilities (e.g., `trading_bot_swarm.async_utils`).
-- Require explicit timeout handling, cancellation propagation, and backpressure (semaphores, bounded queues) in generated async code.
-- All async entry points must be surfaced through central runners to maintain structured concurrency.
+- Use Bash background jobs (`&`), `wait`, and process management (`jobs`, `kill`) for asynchronous or parallel operations.
+- Require explicit timeout handling (e.g., with `timeout` or background monitoring), and ensure that background jobs are tracked and cleaned up to avoid orphaned processes.
+- All asynchronous logic should be surfaced through central runner scripts to maintain clear process boundaries and structured job control.
 
 ### Security Defaults
 - Enforce parameter validation, signature verification, and safe deserialization.
