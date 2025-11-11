@@ -171,7 +171,7 @@ Schedule weekly scans and allow manual triggers for incident response. Integrate
 - **Quarterly**: Review Copilot/Codex custom instructions, security baselines, and workflow dependencies.
 - **Monthly**: Verify CI runners, cache keys, and secret rotations.
 - **Post-Release**: Audit semantic-release outputs, version tags, and changelog accuracy.
-- **On-Demand**: Update this guide when new services join the Trading Bot Swarm or when governance policies change.
+- **On-Demand**: Update this guide when MCP specification updates are released, when new MCP protocol features are added, or when governance policies change.
 
 ## Conclusion
 By standardizing AI-assisted development, the Trading Bot Swarm maintains excellence in reliability, performance, and safety. Consistent configuration ensures Copilot and Codex reinforce guardrails instead of bypassing them, empowering contributors to ship secure, observable, and trustworthy automation.
