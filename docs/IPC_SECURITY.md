@@ -610,15 +610,16 @@ validate_message() {
 ### 6. Implement Rate Limiting
 
 ```bash
-# Simple rate limiting
+# Simple rate limiting using nanoseconds
 RATE_LIMIT=10  # messages per second
 LAST_MESSAGE_TIME=0
 
 check_rate_limit() {
-    local now=$(date +%s)
+    local now=$(date +%s%N)
     local elapsed=$((now - LAST_MESSAGE_TIME))
+    local min_interval=$((1000000000 / RATE_LIMIT))  # nanoseconds between messages
 
-    if [ "$elapsed" -lt "$((1000 / RATE_LIMIT))" ]; then
+    if [ "$elapsed" -lt "$min_interval" ]; then
         return 1  # Rate limit exceeded
     fi
 

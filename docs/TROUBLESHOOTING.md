@@ -316,10 +316,10 @@ sudo chown $USER logs/*.log
 **Diagnosis**:
 ```bash
 # Check if email is configured
-echo "$PARROT_ALERT_EMAIL"
+echo "${PARROT_ALERT_EMAIL:-}"
 
 # Test mail command
-echo "Test" | mail -s "Test" "$PARROT_ALERT_EMAIL"
+echo "Test" | mail -s "Test" "${PARROT_ALERT_EMAIL:-}"
 
 # Check mail logs
 tail -f /var/log/mail.log
@@ -440,8 +440,8 @@ watch -n 1 'ls -la /tmp/mcp_in.json'
 # Validate JSON format
 echo '{"method":"ping","params":{}}' | jq .
 
-# Check file permissions
-chmod 666 /tmp/mcp_in.json
+# Check file permissions - use shared group instead of world-writable
+chmod 660 /tmp/mcp_in.json
 ```
 
 ### Issue: Malformed JSON messages

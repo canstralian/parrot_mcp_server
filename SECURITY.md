@@ -169,8 +169,8 @@ When transitioning to a network-enabled server:
    # Run ShellCheck on all scripts
    find rpi-scripts -name "*.sh" -exec shellcheck {} \;
 
-   # Check for common vulnerabilities
-   grep -r "eval\|exec\|\$(" rpi-scripts/
+   # Check for common vulnerabilities (word boundaries prevent false positives)
+   grep -rE '\beval\b|\bexec\b|\$\(|`' rpi-scripts/
    ```
 
 3. **Monitor File Integrity**

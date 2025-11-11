@@ -186,7 +186,7 @@ parrot_validate_path() {
     local path="$1"
 
     # Reject null bytes
-    if [[ "$path" =~ $'\0' ]]; then
+    if [[ "$path" == *$'\0'* ]]; then
         return 1
     fi
 
@@ -270,11 +270,17 @@ parrot_send_notification() {
 
 # Retry a command with exponential backoff
 parrot_retry() {
-    local max_attempts="${1:-$PARROT_RETRY_COUNT}"
-    shift
-    local cmd=("$@")
+    local max_attempts="$PARROT_RETRY_COUNT"
     local attempt=1
     local delay="$PARROT_RETRY_DELAY"
+
+    # Check if first argument is a number
+    if [ $# -gt 0 ] && [[ "$1" =~ ^[0-9]+$ ]]; then
+        max_attempts="$1"
+        shift
+    fi
+
+    local cmd=("$@")
 
     while [ "$attempt" -le "$max_attempts" ]; do
         parrot_debug "Attempt $attempt/$max_attempts: ${cmd[*]}"
@@ -307,7 +313,7 @@ parrot_check_perms() {
     fi
 
     local actual_perms
-    actual_perms=$(stat -c "%a" "$file" 2>/dev/null || stat -f "%A" "$file" 2>/dev/null)
+    actual_perms=$(stat -c "%a" "$file" 2>/dev/null || stat -f "%Lp" "$file" 2>/dev/null)
 
     if [ "$actual_perms" != "$expected_perms" ]; then
         parrot_warn "Incorrect permissions on $file: $actual_perms (expected: $expected_perms)"

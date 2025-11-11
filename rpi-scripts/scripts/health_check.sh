@@ -155,8 +155,10 @@ check_load() {
 check_mcp_server() {
     if pgrep -f "start_mcp_server.sh" >/dev/null 2>&1; then
         log "MCP server is running"
+        return 0
     else
         alert "MCP server is not running"
+        return 1
     fi
 }
 

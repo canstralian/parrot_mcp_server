@@ -72,10 +72,10 @@ fi
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `PARROT_BASE_DIR` | Auto-detected | Base directory for installation |
-| `PARROT_SCRIPT_DIR` | `${BASE}/rpi-scripts` | Script directory |
+| `PARROT_SCRIPT_DIR` | `${PARROT_BASE_DIR}/rpi-scripts` | Script directory |
 | `PARROT_LOG_DIR` | `./logs` | Log file directory |
 | `PARROT_IPC_DIR` | `/tmp` | IPC directory (**insecure**) |
-| `PARROT_PID_FILE` | `${LOG_DIR}/mcp_server.pid` | Server PID file |
+| `PARROT_PID_FILE` | `${PARROT_LOG_DIR}/mcp_server.pid` | Server PID file |
 
 **Security Note**: The default `PARROT_IPC_DIR=/tmp` is **insecure** for production use. See [SECURITY.md](../SECURITY.md) for secure alternatives.
 
@@ -83,10 +83,10 @@ fi
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `PARROT_SERVER_LOG` | `${LOG_DIR}/parrot.log` | Main server log |
-| `PARROT_CLI_LOG` | `${LOG_DIR}/cli_error.log` | CLI error log |
-| `PARROT_HEALTH_LOG` | `${LOG_DIR}/health_check.log` | Health check log |
-| `PARROT_WORKFLOW_LOG` | `${LOG_DIR}/daily_workflow.log` | Workflow log |
+| `PARROT_SERVER_LOG` | `${PARROT_LOG_DIR}/parrot.log` | Main server log |
+| `PARROT_CLI_LOG` | `${PARROT_LOG_DIR}/cli_error.log` | CLI error log |
+| `PARROT_HEALTH_LOG` | `${PARROT_LOG_DIR}/health_check.log` | Health check log |
+| `PARROT_WORKFLOW_LOG` | `${PARROT_LOG_DIR}/daily_workflow.log` | Workflow log |
 | `PARROT_LOG_LEVEL` | `INFO` | Log level: DEBUG, INFO, WARN, ERROR |
 | `PARROT_LOG_MAX_SIZE` | `10M` | Max log size before rotation |
 | `PARROT_LOG_MAX_AGE` | `30` | Days to keep rotated logs |
@@ -366,7 +366,7 @@ PARROT_CURRENT_LOG="$PARROT_LOG_DIR/my_script.log"
 
 parrot_info "Starting script"
 
-if [ -n "$PARROT_ALERT_EMAIL" ]; then
+if [ -n "${PARROT_ALERT_EMAIL:-}" ]; then
     parrot_send_notification "Alert" "Error occurred"
 fi
 ```
@@ -509,11 +509,11 @@ PARROT_STRICT_PERMS="false" ./my_script.sh
 **Solution**:
 1. Check email configuration:
    ```bash
-   echo "$PARROT_ALERT_EMAIL"
+   echo "${PARROT_ALERT_EMAIL:-}"
    ```
 2. Test mail command:
    ```bash
-   echo "test" | mail -s "Test" "$PARROT_ALERT_EMAIL"
+   echo "test" | mail -s "Test" "${PARROT_ALERT_EMAIL:-}"
    ```
 3. Check logs:
    ```bash
