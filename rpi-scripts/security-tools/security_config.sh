@@ -326,8 +326,10 @@ security_check_rate_limit() {
     local count
     count=$(grep -c "^${user}:${operation}:" "$SECURITY_RATE_LIMIT_DB" 2>/dev/null || echo 0)
 
-    # Clean old entries
-    sed -i "/^${user}:${operation}:[0-9]*$/d" "$SECURITY_RATE_LIMIT_DB" 2>/dev/null || true
+    # Clean old entries: remove only entries for this user/operation older than $hour_ago
+    awk -F: -v user="$user" -v op="$operation" -v cutoff="$hour_ago" \
+        '!( $1 == user && $2 == op && $3 < cutoff )' "$SECURITY_RATE_LIMIT_DB" > "${SECURITY_RATE_LIMIT_DB}.tmp" 2>/dev/null || true
+    mv "${SECURITY_RATE_LIMIT_DB}.tmp" "$SECURITY_RATE_LIMIT_DB"
 
     # Re-count after cleanup
     count=$(awk -F: -v user="$user" -v op="$operation" -v cutoff="$hour_ago" \
