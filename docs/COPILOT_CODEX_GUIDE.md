@@ -31,7 +31,7 @@ This guide establishes a unified configuration for GitHub Copilot and Codex with
 - For infra code, demand zero-trust defaults (service meshes, role-based access control) and automatic secret rotation hooks.
 
 ### Logging and Observability
-- Standardize on structured logging (`json` logs with correlation IDs) using the `trading_bot_swarm.logging` module.
+- Standardize on structured logging using the Bash functions `parrot_log()`, `parrot_info()`, and `parrot_error()` defined in `rpi-scripts/common_config.sh`. All logs are written to `./logs/parrot.log`.
 - Encourage emission of metrics and traces via OpenTelemetry exporters configured in `observability.yaml`.
 - Prevent Copilot from generating noisy or personally identifiable logs; adhere to redact-before-log utilities.
 
