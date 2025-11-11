@@ -26,7 +26,7 @@ echo '{"type":"mcp_message",' >/tmp/mcp_bad.json
 cat /tmp/mcp_bad.json >/dev/null
 
 # Check logs for expected output
-if grep -q 'ping' "${SCRIPT_DIR}/logs/parrot.log" 2>/dev/null; then
+if grep -q 'ping' ./logs/parrot.log 2>/dev/null; then
 	echo "[PASS] Valid MCP message processed."
 else
 	echo "[FAIL] Valid MCP message not found in logs."
