@@ -42,7 +42,7 @@ codex:
   behavior:
     - "Verify Copilot output for security, race conditions, and determinism."
     - "Require evidence of lint/test execution before approving changes."
-    - "Escalate any missing risk controls or policy violations."
+    - "Escalate any missing MCP protocol validation or security vulnerabilities in shell scripts."
     - "Ensure any new shell utility or external tool requirements are clearly documented in the README and code comments."
   responses:
     on_missing_tests: "Block merge and request coverage report."
