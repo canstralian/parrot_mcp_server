@@ -8,7 +8,7 @@
 ## Configuration Overview
 1. **Testing Philosophy**
    - Run unit, integration, and simulation tests relevant to the modified modules.
-   - Prioritize determinism; prefer hermetic test fixtures for market replay scenarios.
+   - Prioritize determinism; prefer hermetic test fixtures for protocol message flows.
    - Never skip failing tests; diagnose flakiness before merging.
 2. **Linting & Static Analysis**
    - Enforce `shellcheck` and `shfmt` for all Bash scripts in `rpi-scripts/` and `scripts/`.
