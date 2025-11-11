@@ -11,9 +11,8 @@
    - Prioritize determinism; prefer hermetic test fixtures for market replay scenarios.
    - Never skip failing tests; diagnose flakiness before merging.
 2. **Linting & Static Analysis**
-   - Enforce `ruff` (Python), `black`, and `mypy` for synchronous and async modules.
-   - For TypeScript/JavaScript utilities, run `eslint --max-warnings=0`.
-   - Prevent Copilot/Codex from suggesting code that suppresses linters (e.g., `# noqa` or `eslint-disable`) unless explicitly justified in the PR description.
+   - Enforce `shellcheck` and `shfmt` for all Bash scripts in `rpi-scripts/` and `scripts/`.
+   - Prevent Copilot/Codex from suggesting code that suppresses linters (e.g., `# shellcheck disable=SC...`) unless explicitly justified in the PR description.
 3. **Code Style**
    - Prefer functional purity where possible; isolate side effects in adapters.
    - Async paths must use `asyncio` primitives with explicit timeouts; propagate cancellation.
