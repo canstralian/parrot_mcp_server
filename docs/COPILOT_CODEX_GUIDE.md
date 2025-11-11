@@ -148,7 +148,7 @@ jobs:
 ## Troubleshooting & Optimization Tips
 - **Copilot suggestions are off-topic**: regenerate prompts with tighter context; reference the YAML custom instructions.
 - **Codex rejects merge despite passing tests**: ensure lint/static analysis logs are clean; check for skipped scans.
-- **Flaky async tests**: inject `asyncio.TimeoutError` guards and enable deterministic seeds for market data.
+- **Flaky shell tests**: use `timeout` to guard long-running scripts and provide deterministic input files or environment variables for reproducible results.
 - **Security scans flag secrets**: rotate credentials, revoke leaked tokens, and document remediation steps.
 - **Performance regressions**: use profiling hooks (`py-spy`, `cProfile`) and compare with baseline traces.
 
