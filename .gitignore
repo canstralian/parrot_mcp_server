@@ -1,0 +1,35 @@
+# Runtime directory for secure IPC
+runtime/
+
+# Log files
+*.log
+logs/*.log
+
+# PID files
+*.pid
+
+# Temporary files
+*.tmp
+*.bak
+*~
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Environment files
+.env
+.env.local
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db

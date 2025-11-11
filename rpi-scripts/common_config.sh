@@ -24,7 +24,12 @@ fi
 
 # Paths and Directories
 PARROT_LOG_DIR="${PARROT_LOG_DIR:-${PARROT_BASE_DIR}/logs}"
-PARROT_IPC_DIR="${PARROT_IPC_DIR:-/tmp}"
+# Use /run/user/$(id -u) if available, otherwise fall back to project runtime directory
+if [ -n "${XDG_RUNTIME_DIR:-}" ] && [ -d "${XDG_RUNTIME_DIR}" ]; then
+    PARROT_IPC_DIR="${PARROT_IPC_DIR:-${XDG_RUNTIME_DIR}/parrot_mcp}"
+else
+    PARROT_IPC_DIR="${PARROT_IPC_DIR:-${PARROT_BASE_DIR}/runtime}"
+fi
 PARROT_PID_FILE="${PARROT_PID_FILE:-${PARROT_LOG_DIR}/mcp_server.pid}"
 
 # Logging Configuration
@@ -37,8 +42,9 @@ PARROT_LOG_MAX_AGE="${PARROT_LOG_MAX_AGE:-30}"
 PARROT_LOG_ROTATION_COUNT="${PARROT_LOG_ROTATION_COUNT:-5}"
 PARROT_LOG_LEVEL="${PARROT_LOG_LEVEL:-INFO}"
 
-# MCP Server Configuration
-PARROT_MCP_INPUT="${PARROT_MCP_INPUT:-${PARROT_IPC_DIR}/mcp_in.json}"
+# MCP Server Configuration - Using named pipes for secure IPC
+PARROT_MCP_INPUT_PIPE="${PARROT_MCP_INPUT_PIPE:-${PARROT_IPC_DIR}/mcp_in.pipe}"
+PARROT_MCP_OUTPUT_PIPE="${PARROT_MCP_OUTPUT_PIPE:-${PARROT_IPC_DIR}/mcp_out.pipe}"
 PARROT_MCP_BAD="${PARROT_MCP_BAD:-${PARROT_IPC_DIR}/mcp_bad.json}"
 PARROT_MCP_PORT="${PARROT_MCP_PORT:-3000}"
 PARROT_MCP_HOST="${PARROT_MCP_HOST:-127.0.0.1}"
@@ -220,6 +226,28 @@ parrot_validate_script_name() {
     return 0
 }
 
+# Validate IPv4 address
+parrot_validate_ipv4() {
+    local ip="$1"
+    local octet="([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])"
+    if [[ ! "$ip" =~ ^${octet}\.${octet}\.${octet}\.${octet}$ ]]; then
+        return 1
+    fi
+    return 0
+}
+
+# Validate port number (1-65535)
+parrot_validate_port() {
+    local port="$1"
+    if ! parrot_validate_number "$port"; then
+        return 1
+    fi
+    if [ "$port" -lt 1 ] || [ "$port" -gt 65535 ]; then
+        return 1
+    fi
+    return 0
+}
+
 # Sanitize input by removing dangerous characters.
 # Removes null bytes and carriage returns, and strips all non-printable characters
 # except for newlines and tabs. Tabs are preserved to allow for legitimate tabular data.
@@ -367,6 +395,73 @@ parrot_validate_json() {
     fi
 
     return 0
+}
+
+# Initialize IPC directory with secure permissions
+parrot_init_ipc_dir() {
+    if [ ! -d "$PARROT_IPC_DIR" ]; then
+        # Set umask to restrict permissions before creating directory
+        local old_umask
+        old_umask=$(umask)
+        umask 0077
+        mkdir -p "$PARROT_IPC_DIR" || {
+            umask "$old_umask"
+            parrot_error "Failed to create IPC directory: $PARROT_IPC_DIR"
+            return 1
+        }
+        umask "$old_umask"
+        parrot_debug "Created IPC directory: $PARROT_IPC_DIR with mode 700"
+    fi
+
+    # Ensure directory has correct permissions
+    if [ "$PARROT_STRICT_PERMS" = "true" ]; then
+        chmod 700 "$PARROT_IPC_DIR" 2>/dev/null || true
+    fi
+
+    return 0
+}
+
+# Create a secure named pipe with restricted permissions
+parrot_create_pipe() {
+    local pipe_path="$1"
+
+    # Ensure IPC directory exists
+    parrot_init_ipc_dir || return 1
+
+    # Remove existing pipe if present
+    if [ -p "$pipe_path" ]; then
+        rm -f "$pipe_path"
+    elif [ -e "$pipe_path" ]; then
+        parrot_error "Path exists but is not a pipe: $pipe_path"
+        return 1
+    fi
+
+    # Set umask to create pipe with restricted permissions (0600)
+    local old_umask
+    old_umask=$(umask)
+    umask 0077
+
+    # Create the named pipe
+    if ! mkfifo "$pipe_path"; then
+        umask "$old_umask"
+        parrot_error "Failed to create named pipe: $pipe_path"
+        return 1
+    fi
+
+    umask "$old_umask"
+    parrot_debug "Created named pipe: $pipe_path with mode 600"
+    return 0
+}
+
+# Clean up named pipes
+parrot_cleanup_pipes() {
+    local pipes=("$@")
+    for pipe in "${pipes[@]}"; do
+        if [ -p "$pipe" ]; then
+            rm -f "$pipe"
+            parrot_debug "Removed named pipe: $pipe"
+        fi
+    done
 }
 
 # ============================================================================
