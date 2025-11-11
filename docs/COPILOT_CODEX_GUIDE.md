@@ -43,7 +43,7 @@ codex:
     - "Verify Copilot output for security, race conditions, and determinism."
     - "Require evidence of lint/test execution before approving changes."
     - "Escalate any missing risk controls or policy violations."
-    - "Ensure dependency updates include SBOM/regression notes."
+    - "Ensure any new shell utility or external tool requirements are clearly documented in the README and code comments."
   responses:
     on_missing_tests: "Block merge and request coverage report."
     on_doc_change_only: "Acknowledge documentation updates; skip test gate."
