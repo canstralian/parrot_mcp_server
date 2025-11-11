@@ -93,23 +93,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-      - name: Static analysis
+      - name: Lint shell scripts
         run: |
-          ruff check .
-          mypy src
-      - name: Formatting check
-        run: |
-          black --check src tests
-      - name: Unit tests
-        run: pytest --maxfail=1 --disable-warnings
-      - name: Integration tests (conditional)
-        if: contains(github.event.pull_request.labels.*.name, 'run-integration')
-        run: pytest tests/integration --maxfail=1
+          shellcheck cli.sh scripts/*.sh rpi-scripts/*.sh
+          shfmt -d cli.sh scripts/*.sh rpi-scripts/*.sh
+      - name: Run Bash test harness
+        run: ./rpi-scripts/test_mcp_local.sh
 ```
 
 ## Best Practice Workflows
