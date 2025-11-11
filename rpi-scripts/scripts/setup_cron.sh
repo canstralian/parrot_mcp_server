@@ -2,13 +2,16 @@
 # setup_cron.sh - Automate cron job scheduling for system maintenance
 # Author: Canstralian
 # Created: 2025-10-28
-# Last Modified: 2025-10-28
+# Last Modified: 2025-11-11
 # Description: Installs recommended cron jobs for optimal RPi performance.
 # Usage: ./cli.sh setup_cron
 
 set -euo pipefail
 
-CRON_FILE="/tmp/rpi_maintenance_cron"
+# Use mktemp for secure temporary file creation
+CRON_FILE=$(mktemp -t rpi_maintenance_cron.XXXXXX)
+trap 'rm -f "$CRON_FILE"' EXIT
+
 SCRIPT_DIR="$(dirname "$0")/.."
 
 cat >"$CRON_FILE" <<EOF
@@ -22,4 +25,3 @@ EOF
 
 crontab "$CRON_FILE"
 echo "Cron jobs installed. Use 'crontab -l' to verify."
-rm "$CRON_FILE"

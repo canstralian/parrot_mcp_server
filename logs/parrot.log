@@ -2,3 +2,9 @@
 [2025-10-28 16:46:01] MCP message received: ping
 [2025-10-28 16:46:01] error: Malformed MCP message received
 [2025-10-28 16:46:03] MCP server stopped
+[2025-11-11 10:54:47] [INFO] [msgid:1762858487457461893] MCP server started (stub) - listening on pipes
+[2025-11-11 10:54:47] [INFO] [msgid:1762858487931660686] MCP message received: ping
+[2025-11-11 10:54:47] [INFO] [msgid:1762858487941800838] Valid MCP message received
+[2025-11-11 10:54:49] [INFO] [msgid:1762858489961025969] Shutting down MCP server, cleaning up pipes...
+[2025-11-11 10:54:49] [INFO] [msgid:1762858489961561024] MCP server stopped (pid 3560)
+[2025-11-11 10:54:49] [INFO] [msgid:1762858489973313648] Shutting down MCP server, cleaning up pipes...
