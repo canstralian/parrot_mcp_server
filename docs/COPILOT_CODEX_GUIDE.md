@@ -117,7 +117,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Dependency audit
-        run: pip-audit
+        run: npm audit --audit-level=high
 
   codeql:
     uses: github/codeql-action/codeql@v2
