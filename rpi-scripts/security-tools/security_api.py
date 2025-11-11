@@ -85,11 +85,11 @@ def require_auth(f):
 
         api_key = auth_header[7:]  # Remove 'Bearer ' prefix
 
-        # Get username from request body or query params
-        username = request.json.get('user') if request.json else request.args.get('user')
-        if not username:
-            audit_log("ERROR", "Missing username in request", "unknown", request.remote_addr)
-            return jsonify({"error": "Missing username"}), 400
+        # Get username from request body only (do not allow query param fallback)
+        if not request.is_json or not request.json or 'user' not in request.json:
+            audit_log("ERROR", "Missing username in request body", "unknown", request.remote_addr)
+            return jsonify({"error": "Missing username in request body"}), 400
+        username = request.json.get('user')
 
         # Validate API key
         if not validate_api_key(api_key, username):
