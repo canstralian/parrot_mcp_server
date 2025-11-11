@@ -5,6 +5,10 @@ on:
     branches: [ develop ]
   workflow_dispatch:
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   deploy-staging:
     name: Deploy to Staging Environment
@@ -12,6 +16,9 @@ jobs:
     environment:
       name: staging
       url: https://staging.parrot-mcp.example.com
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

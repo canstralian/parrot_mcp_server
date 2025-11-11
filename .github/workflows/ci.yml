@@ -6,10 +6,15 @@ on:
   pull_request:
     branches: [ main, develop ]
 
+permissions:
+  contents: read
+
 jobs:
   lint:
     name: Lint Shell Scripts
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -35,6 +40,8 @@ jobs:
     name: Run Tests
     runs-on: ubuntu-latest
     needs: lint
+    permissions:
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -61,6 +68,9 @@ jobs:
     name: Security Scanning
     runs-on: ubuntu-latest
     needs: lint
+    permissions:
+      contents: read
+      security-events: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -89,6 +99,8 @@ jobs:
     name: Build Docker Image
     runs-on: ubuntu-latest
     needs: [test, security]
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -129,6 +141,8 @@ jobs:
     name: Integration Tests
     runs-on: ubuntu-latest
     needs: build
+    permissions:
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -168,6 +182,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [lint, test, security, build, integration]
     if: always()
+    permissions: {}
     steps:
       - name: Summary
         run: |
