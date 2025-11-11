@@ -9,7 +9,6 @@ Unauthorized use is ILLEGAL.
 """
 
 import os
-import sys
 import json
 import subprocess
 import hashlib
