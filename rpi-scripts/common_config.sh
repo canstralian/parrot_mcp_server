@@ -180,16 +180,36 @@ parrot_validate_percentage() {
 }
 
 parrot_validate_path() {
+    # Validate that $1 is a safe, relative path within $PARROT_BASE_DIR.
+    # - Rejects absolute paths, path traversal, and null bytes.
+    # - Only allows paths that resolve within $PARROT_BASE_DIR.
     local path="$1"
-    # Check for path traversal attempts
-    if [[ "$path" =~ \.\. ]]; then
-        return 1
-    fi
-    # Check for null bytes
+
+    # Reject null bytes
     if [[ "$path" =~ $'\0' ]]; then
         return 1
     fi
-    return 0
+
+    # Reject absolute paths
+    if [[ "$path" = /* ]]; then
+        return 1
+    fi
+
+    # Reject path traversal attempts
+    if [[ "$path" == *".."* ]]; then
+        return 1
+    fi
+
+    # Resolve the path and ensure it is within $PARROT_BASE_DIR
+    local resolved
+    resolved="$(realpath -m "${PARROT_BASE_DIR}/${path}" 2>/dev/null)"
+    if [ -z "$resolved" ]; then
+        return 1
+    fi
+    case "$resolved" in
+        "$PARROT_BASE_DIR"/*) return 0 ;;
+        *) return 1 ;;
+    esac
 }
 
 parrot_validate_script_name() {
