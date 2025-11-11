@@ -220,11 +220,13 @@ parrot_validate_script_name() {
     return 0
 }
 
-# Sanitize input by removing dangerous characters
+# Sanitize input by removing dangerous characters.
+# Removes null bytes and carriage returns, and strips all non-printable characters
+# except for newlines and tabs. Tabs are preserved to allow for legitimate tabular data.
+# This ensures input is safe for logging and protocol exchange, per MCP compliance.
 parrot_sanitize_input() {
     local input="$1"
-    # Remove null bytes, carriage returns, and other control characters
-    echo "$input" | tr -d '\000\r' | tr -cd '[:print:]\n'
+    echo "$input" | tr -d '\000\r' | tr -cd '[:print:]\n\t'
 }
 
 # Check if running as root
