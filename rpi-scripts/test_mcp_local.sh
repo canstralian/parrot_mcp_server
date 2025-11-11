@@ -5,8 +5,11 @@
 
 set -euo pipefail
 
-SERVER=./start_mcp_server.sh
-STOP=./stop_mcp_server.sh
+# Get the directory where this script is located
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+SERVER="${SCRIPT_DIR}/start_mcp_server.sh"
+STOP="${SCRIPT_DIR}/stop_mcp_server.sh"
 
 # Start the server
 $SERVER &
@@ -23,13 +26,13 @@ echo '{"type":"mcp_message",' >/tmp/mcp_bad.json
 cat /tmp/mcp_bad.json >/dev/null
 
 # Check logs for expected output
-if grep -q 'ping' ./logs/parrot.log; then
+if grep -q 'ping' "${SCRIPT_DIR}/logs/parrot.log" 2>/dev/null; then
 	echo "[PASS] Valid MCP message processed."
 else
 	echo "[FAIL] Valid MCP message not found in logs."
 fi
 
-if grep -q 'error' ./logs/parrot.log; then
+if grep -q 'error' "${SCRIPT_DIR}/logs/parrot.log" 2>/dev/null; then
 	echo "[PASS] Malformed MCP message error logged."
 else
 	echo "[FAIL] Malformed MCP message error not found in logs."
