@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mcp-config
+  labels:
+    app: mcp-server
+data:
+  debug_mode: "0"
+  log_level: "info"
+  server_port: "8080"
+  # Add additional configuration parameters as needed
