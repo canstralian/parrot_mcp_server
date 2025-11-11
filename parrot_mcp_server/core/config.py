@@ -19,7 +19,7 @@ class Settings(BaseSettings):
     # Server Configuration
     # ─────────────────────────────────────────────
     app_name: str = Field("Parrot_MCP_Server", description="Name of the application")
-    app_env: str = Field("development", description="Environment: development | staging | production")
+    app_env: Literal["development", "staging", "production"] = Field("development", description="Environment: development | staging | production")
     app_debug: bool = Field(True, description="Enable debug mode")
     host: str = Field("0.0.0.0", description="Host address to bind server")
     port: int = Field(8000, description="Port for the API server")
