@@ -27,7 +27,7 @@ Craft consistent custom instructions so Copilot and Codex behave predictably acr
 ### Conceptual YAML for Tooling Profiles
 ```yaml
 copilot:
-  persona: "Senior reliability engineer for Trading Bot Swarm"
+  persona: "MCP protocol engineer for Parrot MCP Server"
   behavior:
     - "Follow repository CONTRIBUTING.md, SECURITY.md, and lint rules."
     - "Default to safe async patterns (TaskGroup/anyio) with timeout guards."
