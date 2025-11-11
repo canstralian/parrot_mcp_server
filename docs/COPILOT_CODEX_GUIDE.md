@@ -93,7 +93,7 @@ jobs:
           ruff format --check .
           pytest --collect-only
       - name: Test
-        run: pytest --maxfail=1 --disable-warnings -q
+        run: pytest --cov=. --cov-report=html --maxfail=1 --disable-warnings -q
       - name: Upload coverage
         uses: actions/upload-artifact@v4
         with:
