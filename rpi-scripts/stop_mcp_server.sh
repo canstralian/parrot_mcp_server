@@ -23,13 +23,20 @@
 #   0 - Success
 #   1 - Failure (e.g., PID file missing or process could not be killed)
 # -----------------------------------------------------------------------------
-# Stop the Parrot MCP Server (minimal stub)
-LOG=./logs/parrot.log
+
+# Resolve script directory for proper path handling
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Set up paths relative to script directory
+LOG_DIR="${SCRIPT_DIR}/logs"
+LOG="${LOG_DIR}/parrot.log"
+PID_FILE="${LOG_DIR}/mcp_server.pid"
 MSGID=$(date +%s%N)
-if [ -f ./logs/mcp_server.pid ]; then
-	PID=$(cat ./logs/mcp_server.pid)
+
+if [ -f "$PID_FILE" ]; then
+	PID=$(cat "$PID_FILE")
 	if kill "$PID" 2>/dev/null; then
-		rm -f ./logs/mcp_server.pid
+		rm -f "$PID_FILE"
 		echo "[$(date '+%Y-%m-%d %H:%M:%S')] [INFO] [msgid:$MSGID] MCP server stopped (pid $PID)" >>"$LOG"
 	else
 		echo "[$(date '+%Y-%m-%d %H:%M:%S')] [ERROR] [msgid:$MSGID] Failed to kill MCP server process (pid $PID)" >>"$LOG"
