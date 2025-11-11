@@ -48,7 +48,7 @@ class Settings(BaseSettings):
     db_port: int = Field(5432, description="Database port")
     db_name: str = Field("parrot_mcp", description="Database name")
     db_pool_size: int = Field(10, description="Database connection pool size")
-    db_ssl_mode: str = Field("prefer", description="Postgres SSL mode (disable|prefer|required)")
+    db_ssl_mode: Literal["disable", "allow", "prefer", "require", "verify-ca", "verify-full"] = Field("prefer", description="Postgres SSL mode")
 
     # ─────────────────────────────────────────────
     # AI / Model Integration
