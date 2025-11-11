@@ -102,31 +102,6 @@ jobs:
 ```
 
 ## Best Practice Workflows
-### Semantic Release & Version Tagging
-```yaml
-name: release
-on:
-  push:
-    branches: [main]
-
-jobs:
-  semantic-release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-      - name: Install dependencies
-        run: npm ci
-      - name: Semantic release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx semantic-release
-```
 
 ### Security & Dependency Scanning
 ```yaml
