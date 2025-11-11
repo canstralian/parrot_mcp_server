@@ -1,0 +1,220 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15-alpine
+    container_name: parrot_postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME:-parrot_mcp}
+      POSTGRES_USER: ${DB_USER:-parrot}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-parrot_secure_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-parrot}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - parrot_network
+    restart: unless-stopped
+
+  # Redis for Celery broker and result backend
+  redis:
+    image: redis:7-alpine
+    container_name: parrot_redis
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redis_secure_password}
+    volumes:
+      - redis_data:/data
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - parrot_network
+    restart: unless-stopped
+
+  # Flask API Server
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: parrot_api
+    environment:
+      APP_ENV: ${APP_ENV:-production}
+      APP_DEBUG: ${APP_DEBUG:-false}
+      SECRET_KEY: ${SECRET_KEY:-change-this-in-production}
+      HOST: 0.0.0.0
+      PORT: 8000
+
+      # Database
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-parrot_mcp}
+      DB_USER: ${DB_USER:-parrot}
+      DB_PASSWORD: ${DB_PASSWORD:-parrot_secure_password}
+      DATABASE_URL: postgresql://${DB_USER:-parrot}:${DB_PASSWORD:-parrot_secure_password}@db:5432/${DB_NAME:-parrot_mcp}
+
+      # Redis/Celery
+      REDIS_URL: redis://:${REDIS_PASSWORD:-redis_secure_password}@redis:6379/0
+      CELERY_BROKER_URL: redis://:${REDIS_PASSWORD:-redis_secure_password}@redis:6379/0
+      CELERY_RESULT_BACKEND: redis://:${REDIS_PASSWORD:-redis_secure_password}@redis:6379/0
+
+      # Security
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-jwt-secret-change-in-production}
+
+      # Nmap
+      NMAP_PATH: /usr/bin/nmap
+      NMAP_TIMEOUT: ${NMAP_TIMEOUT:-300}
+      MAX_CONCURRENT_TASKS: ${MAX_CONCURRENT_TASKS:-10}
+
+      # Logging
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      LOG_FORMAT: ${LOG_FORMAT:-json}
+
+      # Rate Limiting
+      ENABLE_RATE_LIMIT: ${ENABLE_RATE_LIMIT:-true}
+      RATE_LIMIT: ${RATE_LIMIT:-100 per hour}
+
+      # CORS
+      CORS_ENABLED: ${CORS_ENABLED:-false}
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+    volumes:
+      - ./logs:/app/logs
+      - ./reports:/app/reports
+    ports:
+      - "${PORT:-8000}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - parrot_network
+    restart: unless-stopped
+
+  # Celery Worker for async scan execution
+  celery_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: parrot_celery_worker
+    command: celery -A mcp_server.worker.celery_app worker --loglevel=info --concurrency=${CELERY_CONCURRENCY:-4}
+    environment:
+      APP_ENV: ${APP_ENV:-production}
+
+      # Database
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-parrot_mcp}
+      DB_USER: ${DB_USER:-parrot}
+      DB_PASSWORD: ${DB_PASSWORD:-parrot_secure_password}
+      DATABASE_URL: postgresql://${DB_USER:-parrot}:${DB_PASSWORD:-parrot_secure_password}@db:5432/${DB_NAME:-parrot_mcp}
+
+      # Redis/Celery
+      REDIS_URL: redis://:${REDIS_PASSWORD:-redis_secure_password}@redis:6379/0
+      CELERY_BROKER_URL: redis://:${REDIS_PASSWORD:-redis_secure_password}@redis:6379/0
+      CELERY_RESULT_BACKEND: redis://:${REDIS_PASSWORD:-redis_secure_password}@redis:6379/0
+
+      # Nmap
+      NMAP_PATH: /usr/bin/nmap
+      NMAP_TIMEOUT: ${NMAP_TIMEOUT:-300}
+
+      # Logging
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    volumes:
+      - ./logs:/app/logs
+      - ./reports:/app/reports
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - parrot_network
+    restart: unless-stopped
+    # Security: Run with limited capabilities
+    cap_add:
+      - NET_RAW  # Required for Nmap
+      - NET_ADMIN
+    security_opt:
+      - no-new-privileges:true
+
+  # Celery Beat for periodic tasks
+  celery_beat:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: parrot_celery_beat
+    command: celery -A mcp_server.worker.celery_app beat --loglevel=info
+    environment:
+      APP_ENV: ${APP_ENV:-production}
+
+      # Database
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: ${DB_NAME:-parrot_mcp}
+      DB_USER: ${DB_USER:-parrot}
+      DB_PASSWORD: ${DB_PASSWORD:-parrot_secure_password}
+      DATABASE_URL: postgresql://${DB_USER:-parrot}:${DB_PASSWORD:-parrot_secure_password}@db:5432/${DB_NAME:-parrot_mcp}
+
+      # Redis/Celery
+      REDIS_URL: redis://:${REDIS_PASSWORD:-redis_secure_password}@redis:6379/0
+      CELERY_BROKER_URL: redis://:${REDIS_PASSWORD:-redis_secure_password}@redis:6379/0
+      CELERY_RESULT_BACKEND: redis://:${REDIS_PASSWORD:-redis_secure_password}@redis:6379/0
+
+      # Logging
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    volumes:
+      - ./logs:/app/logs
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - parrot_network
+    restart: unless-stopped
+
+  # Flower - Celery monitoring (optional, for development)
+  flower:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: parrot_flower
+    command: celery -A mcp_server.worker.celery_app flower --port=5555
+    environment:
+      CELERY_BROKER_URL: redis://:${REDIS_PASSWORD:-redis_secure_password}@redis:6379/0
+      CELERY_RESULT_BACKEND: redis://:${REDIS_PASSWORD:-redis_secure_password}@redis:6379/0
+    ports:
+      - "${FLOWER_PORT:-5555}:5555"
+    depends_on:
+      - redis
+      - celery_worker
+    networks:
+      - parrot_network
+    restart: unless-stopped
+    profiles:
+      - dev  # Only start with --profile dev
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  parrot_network:
+    driver: bridge
