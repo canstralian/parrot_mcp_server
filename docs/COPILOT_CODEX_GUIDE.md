@@ -115,24 +115,18 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Lint
+      - name: Lint shell scripts with ShellCheck
         run: |
-          ruff check .
-          black --check .
+          shellcheck cli.sh scripts/*.sh rpi-scripts/*.sh
 
-      - name: Run unit tests
-      - name: Run unit tests
-        run: pytest --disable-warnings -q
+      - name: Check shell script formatting with shfmt
+        run: |
+          shfmt -d cli.sh scripts/*.sh rpi-scripts/*.sh
 
-      - name: Run strategy backtests
-        run: python -m trading_bot_swarm.backtest.runner --config configs/backtests/default.yaml
+      - name: Run MCP server Bash test harness
+        run: |
+          chmod +x rpi-scripts/test_mcp_local.sh
+          ./rpi-scripts/test_mcp_local.sh
 ```
 
 ## Semantic Release and Version Tagging
