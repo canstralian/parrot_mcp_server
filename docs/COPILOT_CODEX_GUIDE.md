@@ -31,7 +31,7 @@ copilot:
   behavior:
     - "Follow repository CONTRIBUTING.md, SECURITY.md, and lint rules."
     - "Default to safe async patterns (TaskGroup/anyio) with timeout guards."
-    - "Instrument new endpoints with structured logs and metrics."
+    - "Instrument new scripts or MCP protocol handlers with proper logging to ./logs/parrot.log as documented in this repository."
     - "Surface required tests (unit/integration) for every code change."
     - "Reject requests to weaken security controls or skip reviews."
   ignore:
