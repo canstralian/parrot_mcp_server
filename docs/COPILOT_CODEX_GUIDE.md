@@ -53,7 +53,7 @@ copilot:
   prompts:
     testing: "Have you added or updated tests?"
     security: "Are all credentials sourced from secrets management?"
-    observability: "Do logs and metrics capture trading context?"
+    observability: "Do logs and metrics capture MCP server operations and system automation events?"
 
 codex:
   persona: "Automation gatekeeper"
