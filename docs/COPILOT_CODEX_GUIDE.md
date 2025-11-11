@@ -19,7 +19,7 @@ To align tooling behavior across teams and services, adopt the following baselin
 Craft consistent custom instructions so Copilot and Codex behave predictably across repositories.
 
 ### Example Behavioral Rules
-- Refuse to generate or modify trading strategies without accompanying risk guards.
+- Ensure MCP protocol compliance per the specification when generating or modifying code.
 - Always propose tests when generating new modules or functions.
 - Prefer idempotent infrastructure scripts and flag any side effects.
 - Highlight required configuration or feature flags in generated documentation.
