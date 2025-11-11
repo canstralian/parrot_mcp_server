@@ -162,7 +162,7 @@ Schedule weekly scans and allow manual triggers for incident response. Integrate
 ## Troubleshooting & Optimization
 - **Copilot Suggests Insecure Code**: Regenerate with stricter prompts referencing SECURITY.md. Report repeated issues to maintainers.
 - **CI Flakes**: Retry once; if persistent, bisect using deterministic seeds and capture logs for analysis.
-- **Slow Local Tooling**: Cache virtual environments, use incremental linters (e.g., `ruff --fix`), and parallelize tests with `pytest -n auto` where applicable.
+- **Slow Local Tooling**: Cache virtual environments, use incremental linters (e.g., `ruff --fix`), and parallelize Bash tests with `bats --jobs N` or by running test scripts in parallel with `xargs -P` or GNU `parallel` where applicable.
 - **False Positive Security Alerts**: Document the rationale, apply suppression tags with expiration dates, and monitor upstream fixes.
 
 ## Maintenance Schedule
