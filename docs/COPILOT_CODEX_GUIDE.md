@@ -130,16 +130,19 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run dependency review
         uses: actions/dependency-review-action@v4
-      - name: Run Snyk scan
-        uses: snyk/actions/node@master
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@v2
         with:
-          command: test
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          scandir: |
+            rpi-scripts
+            scripts
+            .
+          format: sarif
+          output: results.sarif
       - name: Upload SARIF
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: snyk.sarif
+          sarif_file: results.sarif
 ```
 Schedule weekly scans and allow manual triggers for incident response. Integrate SARIF uploads so GitHub Security can annotate pull requests.
 
