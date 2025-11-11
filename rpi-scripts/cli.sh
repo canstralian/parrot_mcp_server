@@ -135,14 +135,14 @@ menu() {
 				set -- $args
 				hashed_first_arg=$(hash_arg "$1")
 				"$SCRIPT" "$hashed_first_arg" "${@:2}" || script_exit=$?
-				if [ -n "${script_exit:-}" ] && [ "$script_exit" -ne 0 ]; then
+				if [ "${script_exit:-0}" -ne 0 ]; then
 					log_error "Script '$choice' exited with error code $script_exit (menu mode)"
 					echo "[ERROR] Script '$choice' exited with error code $script_exit"
 					unset script_exit
 				fi
 			else
 				"$SCRIPT" || script_exit=$?
-				if [ -n "${script_exit:-}" ] && [ "$script_exit" -ne 0 ]; then
+				if [ "${script_exit:-0}" -ne 0 ]; then
 					log_error "Script '$choice' exited with error code $script_exit (menu mode)"
 					echo "[ERROR] Script '$choice' exited with error code $script_exit"
 					unset script_exit
