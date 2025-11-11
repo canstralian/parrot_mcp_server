@@ -134,16 +134,16 @@ jobs:
 
 ## Contributor Guidelines
 1. **Proposal Stage**
-   - Open a GitHub issue describing the trading strategy or infrastructure change.
+   - Open a GitHub issue describing the system automation feature, MCP protocol update, or infrastructure change.
    - Provide risk assessment, telemetry impact, and validation plan.
 2. **Review Criteria**
    - Completeness: implementation + tests + documentation updates where necessary.
    - Safety: adherence to security defaults, dependency hygiene, and logging policy.
-   - Performance: demonstrate latency/throughput impact for trading-critical paths.
+   - Performance: demonstrate latency/throughput impact for automation-critical paths.
 3. **Validation Process**
    - Run `quality-gate` workflow locally or via GitHub Actions before requesting review.
-   - Attach evidence of backtests/simulations for strategy alterations.
-   - Obtain approvals from domain owners (strategy, infra, security) prior to merge.
+   - Attach evidence of tests/simulations for protocol or feature changes.
+   - Obtain approvals from domain owners (automation, infra, security) prior to merge.
 
 ## Troubleshooting & Optimization Tips
 - **Copilot suggestions are off-topic**: regenerate prompts with tighter context; reference the YAML custom instructions.
