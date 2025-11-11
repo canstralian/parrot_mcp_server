@@ -6,10 +6,10 @@
 set -euo pipefail
 
 # Get the directory where this script is located
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$(dirname "${BASH_SOURCE[0]}")"
 
-SERVER="${SCRIPT_DIR}/start_mcp_server.sh"
-STOP="${SCRIPT_DIR}/stop_mcp_server.sh"
+SERVER="./start_mcp_server.sh"
+STOP="./stop_mcp_server.sh"
 
 # Start the server
 $SERVER &
