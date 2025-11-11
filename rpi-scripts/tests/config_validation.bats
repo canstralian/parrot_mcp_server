@@ -173,8 +173,9 @@ teardown() {
 }
 
 @test "parrot_validate_path: rejects path with null byte" {
-    # shellcheck disable=SC2028
-    run parrot_validate_path "/tmp/test$(echo -e '\0')file"
+    # Construct a path with a null byte in the middle
+    testpath=$(printf '/tmp/test\0file')
+    run parrot_validate_path "$testpath"
     [ "$status" -eq 1 ]
 }
 
