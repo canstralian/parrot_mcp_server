@@ -127,7 +127,7 @@ jobs:
     name: Rollback (Manual Trigger Only)
     runs-on: ubuntu-latest
     needs: deploy-production
-    if: failure()
+    if: ${{ always() && needs.deploy-production.result == 'failure' }}
     environment:
       name: production
     permissions: {}
