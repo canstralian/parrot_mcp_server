@@ -183,12 +183,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install tooling
-        run: pip install bandit pip-audit
+      - name: Install ShellCheck
+        run: sudo apt-get update && sudo apt-get install -y shellcheck
       - name: Static analysis
-        run: bandit -r trading_bot_swarm
-      - name: Dependency audit
-        run: pip-audit
+        run: shellcheck rpi-scripts/*.sh scripts/*.sh cli.sh
 ```
 - Fail the build for high or critical CVEs; auto-create issues with remediation notes.
 - Integrate SARIF uploads to GitHub Security tab to centralize findings.
