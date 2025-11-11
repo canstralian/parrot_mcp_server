@@ -109,3 +109,22 @@
 [2025-11-11 12:38:12] [INFO] [msgid:1762864692323742608] Security tools initialized successfully
 [2025-11-11 12:38:12] [INFO] [msgid:1762864692490368254] Security tools initialized successfully
 [2025-11-11 12:38:42] [INFO] [msgid:1762864722815092230] Security tools initialized successfully
+[2025-11-11 12:45:04] [INFO] [msgid:1762865104881581060] Security tools initialized successfully
+[2025-11-11 12:45:04] [INFO] [msgid:1762865104916871130] Security tools initialized successfully
+[2025-11-11 12:45:04] [ERROR] [msgid:1762865104922766699] SECURITY: OpenVAS password file not found: /tmp/nonexistent_openvas_password_9554
+[2025-11-11 12:45:05] [INFO] [msgid:1762865105081078092] Security tools initialized successfully
+[2025-11-11 12:45:05] [INFO] [msgid:1762865105119000128] Security tools initialized successfully
+[2025-11-11 12:45:05] [ERROR] [msgid:1762865105127379617] SECURITY: OpenVAS password file is empty: /tmp/test_openvas_password_empty_9649
+[2025-11-11 12:45:05] [INFO] [msgid:1762865105286904697] Security tools initialized successfully
+[2025-11-11 12:45:05] [INFO] [msgid:1762865105323571785] Security tools initialized successfully
+[2025-11-11 12:45:05] [ERROR] [msgid:1762865105333404971] SECURITY: OpenVAS password contains only whitespace
+[2025-11-11 12:45:05] [INFO] [msgid:1762865105492126615] Security tools initialized successfully
+[2025-11-11 12:45:05] [INFO] [msgid:1762865105528990217] Security tools initialized successfully
+[2025-11-11 12:45:05] [INFO] [msgid:1762865105552084742] Security tools initialized successfully
+[2025-11-11 12:45:05] [WARN] [msgid:1762865105559265668] SECURITY: OpenVAS password file has insecure permissions: 644 (should be 600 or 400)
+[2025-11-11 12:45:05] [INFO] [msgid:1762865105720483707] Security tools initialized successfully
+[2025-11-11 12:45:05] [INFO] [msgid:1762865105757551161] Security tools initialized successfully
+[2025-11-11 12:45:05] [INFO] [msgid:1762865105922178063] Security tools initialized successfully
+[2025-11-11 12:45:05] [INFO] [msgid:1762865105959010931] Security tools initialized successfully
+[2025-11-11 12:45:06] [INFO] [msgid:1762865106122336474] Security tools initialized successfully
+[2025-11-11 12:45:06] [INFO] [msgid:1762865106158901594] Security tools initialized successfully
