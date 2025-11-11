@@ -11,7 +11,7 @@ This guide establishes a unified configuration for GitHub Copilot and Codex with
 
 ## Configuration Overview
 ### Testing
-- Require unit, integration, and strategy backtests for any logic touching order execution, pricing, or risk models.
+- Require shell script unit tests (e.g., with `bats`), integration tests for MCP protocol compliance, and validation using the `rpi-scripts/test_mcp_local.sh` test harness for any protocol-relevant logic.
 - Provide Copilot context via repo-level `.copilot-instructions` that emphasize test-driven scaffolding.
 - Enforce coverage thresholds through CI (≥90% for critical services, ≥75% for auxiliary packages).
 
