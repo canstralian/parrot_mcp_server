@@ -158,4 +158,4 @@ jobs:
 - Track revisions via semantic versioning embedded in the document front matter (future enhancement).
 
 ## Closing Note
-Standardizing excellence across Copilot, Codex, and human contributors strengthens the reliability, performance, and safety of the Trading Bot Swarm. Revisit these practices regularly to keep automation trustworthy and resilient.
+Standardizing excellence across Copilot, Codex, and human contributors strengthens the reliability, performance, and safety of the Parrot MCP Server. Revisit these practices regularly to keep automation trustworthy and resilient.
