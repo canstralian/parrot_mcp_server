@@ -188,8 +188,8 @@ orch_agent_heartbeat() {
 		jq '.last_heartbeat = "'"$timestamp"'"' "$agent_file" > "${agent_file}.tmp"
 		mv "${agent_file}.tmp" "$agent_file"
 	else
-		# Simple approach without jq - update timestamp in place
-		sed -i 's/"last_heartbeat": "[^"]*"/"last_heartbeat": "'"$timestamp"'"/' "$agent_file"
+		# Simple approach without jq - update timestamp in place (portable, no -i)
+		sed 's/"last_heartbeat": "[^"]*"/"last_heartbeat": "'"$timestamp"'"/' "$agent_file" > "${agent_file}.tmp" && mv "${agent_file}.tmp" "$agent_file"
 	fi
 	
 	return 0
