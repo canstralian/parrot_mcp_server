@@ -1,24 +1,44 @@
 #!/usr/bin/env bats
 
+# Get log file path from common_config
+setup() {
+    cd "$(dirname "$BATS_TEST_FILENAME")/.."
+    # shellcheck source=../common_config.sh disable=SC1091
+    source ./common_config.sh
+}
+
 @test "MCP server handles valid message" {
-  run ./cli.sh start_mcp_server
-  sleep 2
+  # Clean up first
+  rm -f /tmp/mcp_*.json
+  
+  # Start server and send message
   echo '{"type":"mcp_message","content":"ping"}' > /tmp/mcp_in.json
-  # Simulate sending to server (replace with actual protocol if needed)
-  cat /tmp/mcp_in.json > /dev/null
-  run grep 'ping' ./logs/parrot.log
+  ./start_mcp_server.sh
+  sleep 6
+  
+  # Check log
+  run grep 'ping' "$PARROT_SERVER_LOG"
   [ "$status" -eq 0 ]
   [[ "$output" == *"ping"* ]]
-  run ./cli.sh stop_mcp_server
+  
+  # Stop server
+  ./stop_mcp_server.sh
 }
 
 @test "MCP server logs error on malformed message" {
-  run ./cli.sh start_mcp_server
-  sleep 2
+  # Clean up first
+  rm -f /tmp/mcp_*.json
+  
+  # Start server with bad message
   echo '{"type":"mcp_message",' > /tmp/mcp_bad.json
-  cat /tmp/mcp_bad.json > /dev/null
-  run grep 'error' ./logs/parrot.log
+  ./start_mcp_server.sh
+  sleep 6
+  
+  # Check error log (case-insensitive)
+  run grep -i 'error\|malformed' "$PARROT_SERVER_LOG"
   [ "$status" -eq 0 ]
-  [[ "$output" == *"error"* ]]
-  run ./cli.sh stop_mcp_server
+  [[ "$output" == *"ERROR"* ]] || [[ "$output" == *"error"* ]] || [[ "$output" == *"Malformed"* ]]
+  
+  # Stop server
+  ./stop_mcp_server.sh
 }

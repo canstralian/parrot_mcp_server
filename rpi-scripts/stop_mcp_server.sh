@@ -1,42 +1,39 @@
 #!/usr/bin/env bash
-# -----------------------------------------------------------------------------
-# stop_mcp_server.sh
-#
-# Description:
-#   This script stops the Parrot MCP Server by terminating the process whose PID
-#   is stored in ./logs/mcp_server.pid. It logs all actions and errors to
-#   ./logs/parrot.log with a timestamp and unique message ID.
-#
-# Usage:
-#   ./stop_mcp_server.sh
-#
-# Behavior:
-#   - Checks for the existence of the PID file.
-#   - If found, attempts to kill the process and removes the PID file.
-#   - Logs success or failure to the log file.
-#   - If the PID file is missing, logs a warning and exits with an error.
-#
-# Log Format:
-#   [YYYY-MM-DD HH:MM:SS] [LEVEL] [msgid:UNIQUE_ID] Message
-#
-# Exit Codes:
-#   0 - Success
-#   1 - Failure (e.g., PID file missing or process could not be killed)
-# -----------------------------------------------------------------------------
-# Stop the Parrot MCP Server (minimal stub)
-LOG=./logs/parrot.log
-MSGID=$(date +%s%N)
-if [ -f ./logs/mcp_server.pid ]; then
-	PID=$(cat ./logs/mcp_server.pid)
+# Stop the Parrot MCP Server
+# Stops the server process using PID file
+
+set -euo pipefail
+
+# Get script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Load configuration
+# shellcheck source=common_config.sh disable=SC1091
+source "${SCRIPT_DIR}/common_config.sh"
+
+# Set log file
+export PARROT_CURRENT_LOG="$PARROT_SERVER_LOG"
+
+if [ -f "$PARROT_PID_FILE" ]; then
+	PID=$(cat "$PARROT_PID_FILE")
+	
+	# Check if process is still running
+	if ! ps -p "$PID" > /dev/null 2>&1; then
+		parrot_warn "MCP server process (pid $PID) is not running"
+		rm -f "$PARROT_PID_FILE"
+		exit 0
+	fi
+	
 	if kill "$PID" 2>/dev/null; then
-		rm -f ./logs/mcp_server.pid
-		echo "[$(date '+%Y-%m-%d %H:%M:%S')] [INFO] [msgid:$MSGID] MCP server stopped (pid $PID)" >>"$LOG"
+		rm -f "$PARROT_PID_FILE"
+		parrot_info "MCP server stopped (pid $PID)"
 	else
-		echo "[$(date '+%Y-%m-%d %H:%M:%S')] [ERROR] [msgid:$MSGID] Failed to kill MCP server process (pid $PID)" >>"$LOG"
+		parrot_error "Failed to kill MCP server process (pid $PID)"
 		exit 1
 	fi
 else
-	echo "[$(date '+%Y-%m-%d %H:%M:%S')] [WARN] [msgid:$MSGID] No MCP server PID file found on stop" >>"$LOG"
+	parrot_warn "No MCP server PID file found"
 	echo "No MCP server PID file found."
-	exit 1
+	# Don't exit with error if server isn't running (not a real error)
+	exit 0
 fi
