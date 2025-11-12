@@ -69,6 +69,15 @@ orch_release_lock() {
 	local lock_file="${ORCH_LOCK_DIR}/${lock_name}.lock"
 	
 	if [ -d "$lock_file" ]; then
+		# Verify ownership before releasing the lock
+		if [ -f "${lock_file}/pid" ]; then
+			local lock_owner
+			lock_owner=$(cat "${lock_file}/pid" 2>/dev/null || echo "")
+			if [ "$lock_owner" != "$$" ]; then
+				orch_log "WARN" "Attempting to release lock '$lock_name' owned by PID $lock_owner (current PID: $$)"
+				return 1
+			fi
+		fi
 		rm -rf "$lock_file"
 	fi
 }
