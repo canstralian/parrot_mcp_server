@@ -108,7 +108,7 @@ if [ -d "$PARROT_IPC_DIR" ]; then
     test_pass "IPC directory exists: $PARROT_IPC_DIR"
 
     # Check permissions (should be 700)
-    PERMS=$(stat -c '%a' "$PARROT_IPC_DIR" 2>/dev/null || stat -f '%A' "$PARROT_IPC_DIR" 2>/dev/null || echo "000")
+    PERMS=$(stat -c '%a' "$PARROT_IPC_DIR" 2>/dev/null || stat -f '%Lp' "$PARROT_IPC_DIR" 2>/dev/null || echo "000")
 
     if [ "$PERMS" = "700" ]; then
         test_pass "IPC directory has secure permissions (700)"
