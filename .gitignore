@@ -1,0 +1,33 @@
+# Log files
+*.log
+*.log.*
+*.log.gz
+logs/audit.log
+logs/metrics.log
+logs/parrot.json.log
+logs/*.pid
+
+# Temporary files
+*.tmp
+*.temp
+/tmp/
+
+# Build artifacts
+*.o
+*.so
+*.a
+
+# Environment configuration
+config.env
+.env
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db

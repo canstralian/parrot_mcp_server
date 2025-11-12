@@ -32,10 +32,14 @@ PARROT_SERVER_LOG="${PARROT_SERVER_LOG:-${PARROT_LOG_DIR}/parrot.log}"
 PARROT_CLI_LOG="${PARROT_CLI_LOG:-${PARROT_LOG_DIR}/cli_error.log}"
 PARROT_HEALTH_LOG="${PARROT_HEALTH_LOG:-${PARROT_LOG_DIR}/health_check.log}"
 PARROT_WORKFLOW_LOG="${PARROT_WORKFLOW_LOG:-${PARROT_LOG_DIR}/daily_workflow.log}"
+PARROT_AUDIT_LOG="${PARROT_AUDIT_LOG:-${PARROT_LOG_DIR}/audit.log}"
+PARROT_METRICS_LOG="${PARROT_METRICS_LOG:-${PARROT_LOG_DIR}/metrics.log}"
+PARROT_JSON_LOG="${PARROT_JSON_LOG:-${PARROT_LOG_DIR}/parrot.json.log}"
 PARROT_LOG_MAX_SIZE="${PARROT_LOG_MAX_SIZE:-10M}"
 PARROT_LOG_MAX_AGE="${PARROT_LOG_MAX_AGE:-30}"
 PARROT_LOG_ROTATION_COUNT="${PARROT_LOG_ROTATION_COUNT:-5}"
 PARROT_LOG_LEVEL="${PARROT_LOG_LEVEL:-INFO}"
+PARROT_LOG_FORMAT="${PARROT_LOG_FORMAT:-text}"  # text or json
 
 # MCP Server Configuration
 PARROT_MCP_INPUT="${PARROT_MCP_INPUT:-${PARROT_IPC_DIR}/mcp_in.json}"
@@ -120,13 +124,16 @@ parrot_log() {
     case "$PARROT_LOG_LEVEL" in
         DEBUG) should_log=true ;;
         INFO)
-            [[ "$level" =~ ^(INFO|WARN|ERROR)$ ]] && should_log=true
+            [[ "$level" =~ ^(INFO|WARN|ERROR|CRITICAL)$ ]] && should_log=true
             ;;
         WARN)
-            [[ "$level" =~ ^(WARN|ERROR)$ ]] && should_log=true
+            [[ "$level" =~ ^(WARN|ERROR|CRITICAL)$ ]] && should_log=true
             ;;
         ERROR)
-            [[ "$level" = "ERROR" ]] && should_log=true
+            [[ "$level" =~ ^(ERROR|CRITICAL)$ ]] && should_log=true
+            ;;
+        CRITICAL)
+            [[ "$level" = "CRITICAL" ]] && should_log=true
             ;;
     esac
 
@@ -134,9 +141,9 @@ parrot_log() {
         echo "[$(date '+%Y-%m-%d %H:%M:%S')] [$level] [msgid:$msgid] $message" >> "$log_file"
     fi
 
-    # Also output to stderr for ERROR level
-    if [ "$level" = "ERROR" ]; then
-        echo "ERROR: $message" >&2
+    # Also output to stderr for ERROR and CRITICAL levels
+    if [[ "$level" =~ ^(ERROR|CRITICAL)$ ]]; then
+        echo "$level: $message" >&2
     fi
 
     # Output to stdout in debug mode
@@ -150,6 +157,144 @@ parrot_debug() { parrot_log "DEBUG" "$@"; }
 parrot_info() { parrot_log "INFO" "$@"; }
 parrot_warn() { parrot_log "WARN" "$@"; }
 parrot_error() { parrot_log "ERROR" "$@"; }
+parrot_critical() { parrot_log "CRITICAL" "$@"; }
+
+# JSON structured logging function
+# Usage: parrot_log_json LEVEL "message" [key1=value1 key2=value2 ...]
+parrot_log_json() {
+    local level="$1"
+    shift
+    local message="$1"
+    shift
+    local log_file="${PARROT_JSON_LOG}"
+    local msgid timestamp hostname username
+
+    # Generate unique message ID and timestamp
+    msgid="$(date +%s%N)"
+    timestamp="$(date -u '+%Y-%m-%dT%H:%M:%S.%3NZ')"
+    hostname="$(hostname 2>/dev/null || echo 'unknown')"
+    username="${USER:-unknown}"
+
+    # Ensure log directory exists
+    parrot_init_log_dir
+
+    # Start building JSON object
+    local json_parts=()
+    local escaped_message="${message//\"/\\\"}"
+    json_parts+=("\"timestamp\":\"$timestamp\"")
+    json_parts+=("\"level\":\"$level\"")
+    json_parts+=("\"message\":\"$escaped_message\"")
+    json_parts+=("\"msgid\":\"$msgid\"")
+    json_parts+=("\"hostname\":\"$hostname\"")
+    json_parts+=("\"user\":\"$username\"")
+    json_parts+=("\"pid\":$$")
+
+    # Parse additional key=value pairs
+    while [ $# -gt 0 ]; do
+        local kv="$1"
+        if [[ "$kv" =~ ^([a-zA-Z_][a-zA-Z0-9_]*)=(.*)$ ]]; then
+            local key="${BASH_REMATCH[1]}"
+            local value="${BASH_REMATCH[2]}"
+            # Sanitize value and escape quotes
+            local escaped_value="${value//\"/\\\"}"
+            json_parts+=("\"$key\":\"$escaped_value\"")
+        fi
+        shift
+    done
+
+    # Join all parts and write JSON line
+    local json_line
+    json_line="{$(
+        IFS=','
+        echo "${json_parts[*]}"
+    )}"
+    echo "$json_line" >>"$log_file"
+
+    # Also log to regular log if not in json-only mode
+    if [ "$PARROT_LOG_FORMAT" != "json" ]; then
+        parrot_log "$level" "$message"
+    fi
+}
+
+# Sanitize sensitive data from log messages
+# Usage: parrot_sanitize_log_value "value"
+parrot_sanitize_log_value() {
+    local value="$1"
+    
+    # Patterns to sanitize (passwords, tokens, keys, secrets)
+    # Replace with [REDACTED]
+    value=$(echo "$value" | sed -E \
+        -e 's/(password|passwd|pwd|secret|token|key|api_key|apikey|auth)=[^ ]*/\1=[REDACTED]/gi' \
+        -e 's/(Bearer|Basic) [A-Za-z0-9+\/=_-]+/\1 [REDACTED]/gi' \
+        -e 's/(["\x27])([A-Za-z0-9+\/=_-]{20,})\1/\1[REDACTED]\1/g')
+    
+    echo "$value"
+}
+
+# Performance metrics: Start timing an operation
+# Usage: parrot_metrics_start "operation_name"
+# Returns: timestamp in nanoseconds
+parrot_metrics_start() {
+    date +%s%N
+}
+
+# Performance metrics: End timing and log
+# Usage: parrot_metrics_end START_TIME "operation_name" [status] [additional_context...]
+parrot_metrics_end() {
+    local start_time="$1"
+    local operation="$2"
+    local status="${3:-success}"
+    shift 3
+
+    local end_time duration_ns duration_ms
+    end_time=$(date +%s%N)
+    duration_ns=$((end_time - start_time))
+    duration_ms=$((duration_ns / 1000000))
+
+    # Log to metrics file in Prometheus format
+    local metric_line
+    metric_line="parrot_operation_duration_milliseconds{operation=\"$operation\",status=\"$status\"} $duration_ms $(date +%s)"
+    echo "$metric_line" >>"$PARROT_METRICS_LOG"
+
+    # Also log structured event
+    parrot_log_json "INFO" "Operation completed" \
+        "operation=$operation" \
+        "duration_ms=$duration_ms" \
+        "status=$status" \
+        "$@"
+
+    echo "$duration_ms"
+}
+
+# Audit trail logging
+# Usage: parrot_audit_log "action" "target" "result" [additional_context...]
+parrot_audit_log() {
+    local action="$1"
+    local target="$2"
+    local result="$3"
+    shift 3
+
+    local timestamp username hostname
+    timestamp="$(date -u '+%Y-%m-%dT%H:%M:%S.%3NZ')"
+    username="${USER:-unknown}"
+    hostname="$(hostname 2>/dev/null || echo 'unknown')"
+
+    # Sanitize target for logging
+    local safe_target
+    safe_target="$(parrot_sanitize_log_value "$target")"
+
+    # Write to audit log
+    parrot_log_json "INFO" "Audit event" \
+        "audit_action=$action" \
+        "audit_target=$safe_target" \
+        "audit_result=$result" \
+        "audit_user=$username" \
+        "audit_hostname=$hostname" \
+        "$@"
+
+    # Also write to dedicated audit log
+    echo "$timestamp|$username@$hostname|$action|$safe_target|$result" >>"$PARROT_AUDIT_LOG"
+}
 
 # Input validation functions
 parrot_validate_email() {
