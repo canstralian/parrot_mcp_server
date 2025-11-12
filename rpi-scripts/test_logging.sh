@@ -266,6 +266,7 @@ EOF
     chmod +x "$test_script"
     
     # Run wrapper multiple times
+    # shellcheck disable=SC2034
     for i in {1..3}; do
         "${BASE_DIR}/scripts/wrap_tool_exec.sh" test_tool_multi test_user /test/target "$test_script" >/dev/null
     done
