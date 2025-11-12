@@ -24,8 +24,14 @@ fi
 
 # Paths and Directories
 PARROT_LOG_DIR="${PARROT_LOG_DIR:-${PARROT_BASE_DIR}/logs}"
-PARROT_IPC_DIR="${PARROT_IPC_DIR:-/tmp}"
-PARROT_PID_FILE="${PARROT_PID_FILE:-${PARROT_LOG_DIR}/mcp_server.pid}"
+# Use XDG_RUNTIME_DIR if available, otherwise fall back to a secure local directory
+# This fixes the CRITICAL security vulnerability of using /tmp for IPC
+if [ -n "${XDG_RUNTIME_DIR:-}" ] && [ -d "${XDG_RUNTIME_DIR}" ]; then
+    PARROT_IPC_DIR="${PARROT_IPC_DIR:-${XDG_RUNTIME_DIR}/parrot-mcp}"
+else
+    PARROT_IPC_DIR="${PARROT_IPC_DIR:-${PARROT_BASE_DIR}/run}"
+fi
+PARROT_PID_FILE="${PARROT_PID_FILE:-${PARROT_IPC_DIR}/mcp_server.pid}"
 
 # Logging Configuration
 PARROT_SERVER_LOG="${PARROT_SERVER_LOG:-${PARROT_LOG_DIR}/parrot.log}"
@@ -97,6 +103,40 @@ parrot_init_log_dir() {
 
     if [ "$PARROT_STRICT_PERMS" = "true" ]; then
         chmod 700 "$PARROT_LOG_DIR" 2>/dev/null || true
+    fi
+}
+
+# Initialize IPC directory with secure permissions
+# This addresses the CRITICAL security vulnerability (CVE-like severity)
+# of using world-readable /tmp for IPC communication
+parrot_init_ipc_dir() {
+    if [ ! -d "$PARROT_IPC_DIR" ]; then
+        mkdir -p "$PARROT_IPC_DIR" || {
+            echo "ERROR: Failed to create IPC directory: $PARROT_IPC_DIR" >&2
+            return 1
+        }
+    fi
+
+    # Always enforce strict permissions on IPC directory (700)
+    # This prevents:
+    # - Unauthorized access to MCP messages
+    # - Race conditions and symlink attacks
+    # - Information disclosure
+    chmod 700 "$PARROT_IPC_DIR" || {
+        echo "ERROR: Failed to set secure permissions on IPC directory: $PARROT_IPC_DIR" >&2
+        return 1
+    }
+
+    # Verify ownership (should be current user)
+    if [ "$PARROT_STRICT_PERMS" = "true" ]; then
+        local current_user
+        current_user="$(id -u)"
+        local dir_owner
+        dir_owner="$(stat -c '%u' "$PARROT_IPC_DIR" 2>/dev/null || stat -f '%u' "$PARROT_IPC_DIR" 2>/dev/null)"
+
+        if [ "$dir_owner" != "$current_user" ]; then
+            echo "WARNING: IPC directory not owned by current user (owner: $dir_owner, current: $current_user)" >&2
+        fi
     fi
 }
 

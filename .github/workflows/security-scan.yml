@@ -1,0 +1,271 @@
+name: Security Scanning
+
+on:
+  push:
+    branches: [ main, develop, 'claude/**' ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run security scans daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write
+  issues: write
+
+jobs:
+  shellcheck-security:
+    name: ShellCheck Security Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install ShellCheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+
+      - name: Run ShellCheck (Strict Mode)
+        run: |
+          echo "Running ShellCheck in strict security mode..."
+          find . -name "*.sh" -type f -not -path "*/node_modules/*" | while read -r file; do
+            echo "Checking: $file"
+            shellcheck \
+              --severity=warning \
+              --enable=all \
+              --shell=bash \
+              --format=gcc \
+              "$file" || exit 1
+          done
+
+      - name: Check for security anti-patterns
+        run: |
+          echo "Scanning for security anti-patterns..."
+
+          # Check for /tmp usage
+          if find rpi-scripts -name "*.sh" -exec grep -l '/tmp/' {} \; | grep -v "test" | grep -v "#.*insecure"; then
+            echo "ERROR: Found insecure /tmp usage"
+            exit 1
+          fi
+
+          # Check for eval usage
+          if find rpi-scripts -name "*.sh" -exec grep -l '\beval\s' {} \; | grep -v "#"; then
+            echo "WARNING: Found eval usage (review for security)"
+          fi
+
+          echo "Security pattern scan completed"
+
+  dependency-audit:
+    name: Dependency Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for known vulnerable dependencies
+        run: |
+          echo "Checking for known vulnerable patterns..."
+
+          # Check if any old/vulnerable versions are referenced
+          # This is a bash-based project, but check for any dependency references
+
+          if [ -f "package.json" ]; then
+            echo "Found package.json, running npm audit..."
+            npm audit --audit-level=moderate || echo "WARNING: npm audit found issues"
+          fi
+
+          # Check for outdated tools mentioned in documentation
+          echo "Checking documentation for version recommendations..."
+
+          echo "Dependency audit completed"
+
+  secret-scanning:
+    name: Secret Detection
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Scan for hardcoded secrets
+        run: |
+          echo "Scanning for hardcoded secrets and credentials..."
+
+          # Check for common secret patterns
+          SECRET_PATTERNS=(
+            'password\s*=\s*["'"'"'][^"'"'"']{8,}'
+            'api_key\s*=\s*["'"'"'][^"'"'"']{16,}'
+            'secret\s*=\s*["'"'"'][^"'"'"']{8,}'
+            'token\s*=\s*["'"'"'][^"'"'"']{16,}'
+            'AWS_SECRET_ACCESS_KEY'
+            'PRIVATE KEY-----'
+          )
+
+          FOUND_SECRETS=false
+
+          for pattern in "${SECRET_PATTERNS[@]}"; do
+            if grep -rE "$pattern" . \
+              --exclude-dir=.git \
+              --exclude-dir=node_modules \
+              --exclude-dir=logs \
+              --exclude="*.md" \
+              --exclude="security-scan.yml" | grep -v "PARROT_" | grep -v "#"; then
+              echo "ALERT: Possible hardcoded secret found matching pattern: $pattern"
+              FOUND_SECRETS=true
+            fi
+          done
+
+          if [ "$FOUND_SECRETS" = "true" ]; then
+            echo ""
+            echo "ERROR: Hardcoded secrets detected!"
+            echo "Review the matches above and remove any real credentials"
+            exit 1
+          fi
+
+          echo "✓ No hardcoded secrets detected"
+
+  permission-audit:
+    name: File Permission Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verify file permissions
+        run: |
+          echo "Auditing file permissions..."
+
+          # Check that all .sh files are executable
+          MISSING_EXEC=false
+          find . -name "*.sh" -type f -not -path "*/node_modules/*" | while read -r file; do
+            if [ ! -x "$file" ]; then
+              echo "WARNING: $file is not executable"
+              MISSING_EXEC=true
+            fi
+          done
+
+          # Check for overly permissive files
+          if find . -type f -perm /o+w -not -path "*/node_modules/*" -not -path "*/.git/*"; then
+            echo "WARNING: Found world-writable files (security risk)"
+          fi
+
+          echo "✓ Permission audit completed"
+
+  sast-analysis:
+    name: Static Application Security Testing
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run custom SAST checks
+        run: |
+          echo "Running Static Application Security Testing..."
+
+          # Check for unsafe command execution patterns
+          echo "Checking for command injection vulnerabilities..."
+
+          if grep -rE '\$\([^)]*\$\{?[A-Z_]+' rpi-scripts/ --include="*.sh" | grep -v "#" | grep -v "PARROT_"; then
+            echo "WARNING: Potential command injection vector detected"
+          fi
+
+          # Check for unsafe file operations
+          echo "Checking for unsafe file operations..."
+
+          if grep -rE 'rm\s+-rf\s+\$' rpi-scripts/ --include="*.sh" | grep -v "#"; then
+            echo "WARNING: Unsafe rm -rf with variable expansion detected"
+          fi
+
+          # Check for missing input validation
+          echo "Checking scripts use validation functions..."
+
+          SCRIPTS_WITHOUT_VALIDATION=$(find rpi-scripts/scripts -name "*.sh" | while read -r script; do
+            if ! grep -q "parrot_validate_\|parrot_sanitize_" "$script"; then
+              echo "$script"
+            fi
+          done)
+
+          if [ -n "$SCRIPTS_WITHOUT_VALIDATION" ]; then
+            echo "INFO: The following scripts may need input validation:"
+            echo "$SCRIPTS_WITHOUT_VALIDATION"
+          fi
+
+          echo "✓ SAST analysis completed"
+
+  compliance-check:
+    name: Security Compliance Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verify security documentation
+        run: |
+          echo "Checking security compliance..."
+
+          # Verify SECURITY.md exists and is up to date
+          if [ ! -f "SECURITY.md" ]; then
+            echo "ERROR: SECURITY.md not found"
+            exit 1
+          fi
+
+          # Check that IPC security is documented
+          if ! grep -q "IPC" SECURITY.md; then
+            echo "WARNING: IPC security not documented in SECURITY.md"
+          fi
+
+          # Verify all scripts have security headers
+          MISSING_HEADERS=$(find rpi-scripts -name "*.sh" -type f | while read -r script; do
+            if ! head -20 "$script" | grep -qE "(Description:|Security:|Usage:)"; then
+              echo "$script"
+            fi
+          done)
+
+          if [ -n "$MISSING_HEADERS" ]; then
+            echo "WARNING: Scripts missing documentation headers:"
+            echo "$MISSING_HEADERS"
+          fi
+
+          echo "✓ Compliance check completed"
+
+  vulnerability-summary:
+    name: Security Summary
+    runs-on: ubuntu-latest
+    needs: [shellcheck-security, dependency-audit, secret-scanning, permission-audit, sast-analysis, compliance-check]
+    if: always()
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate security summary
+        run: |
+          echo "# Security Scan Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Scan Date**: $(date -u +%Y-%m-%d\ %H:%M:%S\ UTC)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## Scan Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- ShellCheck Security: ${{ needs.shellcheck-security.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Dependency Audit: ${{ needs.dependency-audit.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Secret Scanning: ${{ needs.secret-scanning.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Permission Audit: ${{ needs.permission-audit.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- SAST Analysis: ${{ needs.sast-analysis.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Compliance Check: ${{ needs.compliance-check.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ needs.shellcheck-security.result }}" = "success" ] && \
+             [ "${{ needs.dependency-audit.result }}" = "success" ] && \
+             [ "${{ needs.secret-scanning.result }}" = "success" ]; then
+            echo "✅ **All critical security checks passed!**" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **Some security checks failed - review above**" >> $GITHUB_STEP_SUMMARY
+          fi
