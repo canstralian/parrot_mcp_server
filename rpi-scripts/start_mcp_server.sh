@@ -22,10 +22,19 @@ fi
     # Simulate handling a valid MCP message
     if [ -f "$PARROT_MCP_INPUT" ]; then
         if parrot_validate_json "$PARROT_MCP_INPUT"; then
-            if grep -q '"content":"ping"' "$PARROT_MCP_INPUT" 2>/dev/null; then
-                parrot_info "MCP message received: ping"
+            if parrot_command_exists "jq"; then
+                if jq -e '.content == "ping"' "$PARROT_MCP_INPUT" >/dev/null 2>&1; then
+                    parrot_info "MCP message received: ping"
+                else
+                    parrot_warn "MCP message file present but no ping content"
+                fi
             else
-                parrot_warn "MCP message file present but no ping content"
+                # Fallback for when jq is not installed
+                if grep -q '"content":"ping"' "$PARROT_MCP_INPUT" 2>/dev/null; then
+                    parrot_info "MCP message received: ping"
+                else
+                    parrot_warn "MCP message file present but no ping content"
+                fi
             fi
         else
             parrot_error "Invalid JSON in MCP input file"
