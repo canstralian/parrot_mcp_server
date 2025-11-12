@@ -2,3 +2,12 @@
 [2025-10-28 16:46:01] MCP message received: ping
 [2025-10-28 16:46:01] error: Malformed MCP message received
 [2025-10-28 16:46:03] MCP server stopped
+[2025-11-12 06:11:17] [ERROR] [msgid:1762927877336063648] Invalid JSON syntax in: /tmp/tmp.Gbr4EWzTyk/invalid.json
+[2025-11-12 06:11:17] [ERROR] [msgid:1762927877441911356] JSON file does not exist: /tmp/tmp.sDYtY61Mk6/nonexistent.json
+[2025-11-12 06:11:17] [ERROR] [msgid:1762927877554308214] JSON file exceeds maximum size: 2097152 > 1048576
+[2025-11-12 06:11:46] [ERROR] [msgid:1762927906795298210] Invalid JSON syntax in: /tmp/tmp.t1JlgwSaoF/invalid.json
+[2025-11-12 06:11:46] [ERROR] [msgid:1762927906899312792] JSON file does not exist: /tmp/tmp.svWylzf0xL/nonexistent.json
+[2025-11-12 06:11:47] [ERROR] [msgid:1762927907006441342] JSON file exceeds maximum size: 2097152 > 1048576
+[2025-11-12 06:12:10] [ERROR] [msgid:1762927930378260541] Invalid JSON syntax in: /tmp/tmp.avdYhr9QR2/invalid.json
+[2025-11-12 06:12:10] [ERROR] [msgid:1762927930479116087] JSON file does not exist: /tmp/tmp.LgJoEWZKuD/nonexistent.json
+[2025-11-12 06:12:10] [ERROR] [msgid:1762927930585911853] JSON file exceeds maximum size: 2097152 > 1048576
