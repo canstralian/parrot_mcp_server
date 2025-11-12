@@ -1,0 +1,13 @@
+# Logs and metrics test artifacts
+logs/test_*.log
+logs/test_script_*.sh
+metrics/test/
+
+# Temporary files
+*.tmp
+*.swp
+*~
+
+# OS specific
+.DS_Store
+Thumbs.db
