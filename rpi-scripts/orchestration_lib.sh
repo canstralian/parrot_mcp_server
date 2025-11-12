@@ -98,6 +98,12 @@ orch_register_agent() {
 		orch_log "ERROR" "Agent ID and type are required"
 		return 1
 	fi
+
+	# Validate agent_id - allow only alphanumeric, underscore, hyphen
+	if ! [[ "$agent_id" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+		orch_log "ERROR" "Invalid agent ID: must contain only alphanumeric characters, underscore, or hyphen"
+		return 1
+	fi
 	
 	local agent_file="${ORCH_AGENTS_DIR}/${agent_id}.json"
 	
