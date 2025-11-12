@@ -1,0 +1,14 @@
+# Logs and metrics (runtime artifacts)
+logs/parrot.log
+logs/test_*.log
+logs/test_script_*.sh
+metrics/
+
+# Temporary files
+*.tmp
+*.swp
+*~
+
+# OS specific
+.DS_Store
+Thumbs.db
