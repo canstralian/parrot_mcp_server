@@ -2,3 +2,13 @@
 .config/
 # Or, to be more specific:
 .config/chromium/
+
+# Ignore log files
+logs/*.log
+logs/*.pid
+
+# Ignore circuit breaker state files
+/tmp/parrot_circuit_breaker/
+
+# Ignore temporary MCP files
+/tmp/mcp_*.json

@@ -1,0 +1,38 @@
+# Log files
+logs/*.log
+logs/*.pid
+*.log
+
+# Temporary files
+/tmp/
+*.tmp
+*.swp
+*~
+
+# Circuit breaker state
+/tmp/parrot_circuit_breaker/
+
+# MCP temporary files
+mcp_*.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.sublime-*
+
+# Build artifacts
+*.o
+*.so
+*.a
+dist/
+build/
+
+# Environment files (keep examples)
+.env
+!.env.example
+config.env
+!config.env.example
