@@ -1,0 +1,16 @@
+# Orchestration Data Directory
+
+This directory stores runtime data for the multi-agent orchestration system.
+
+## Subdirectories
+
+- `agents/` - Agent registry (JSON files for each registered agent)
+- `tasks/` - Task queue (JSON files for pending/assigned tasks)
+- `results/` - Task results (JSON files with execution results)
+- `state/` - Workflow state and controller logs
+- `.locks/` - Lock files for atomic operations
+
+## Note
+
+These directories contain runtime data and are excluded from git via .gitignore.
+This file exists only to preserve the directory structure in the repository.

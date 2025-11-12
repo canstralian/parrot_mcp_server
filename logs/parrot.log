@@ -2,3 +2,6 @@
 [2025-10-28 16:46:01] MCP message received: ping
 [2025-10-28 16:46:01] error: Malformed MCP message received
 [2025-10-28 16:46:03] MCP server stopped
+[2025-11-12 06:03:10] [INFO] [msgid:1762927390423941277] Agent registered: test_agent_1 (type: recon)
+[2025-11-12 06:03:39] [INFO] [msgid:1762927419826664822] Task submitted: task_1762927419815334913_3535 (type: port_scan, priority: 8)
+[2025-11-12 06:03:39] [INFO] [msgid:1762927419852705003] Task assigned: task_1762927419815334913_3535 -> test_agent_1
