@@ -2,3 +2,14 @@
 .config/
 # Or, to be more specific:
 .config/chromium/
+
+# Forensics artifacts (results and cache should not be committed)
+forensics/results/
+forensics/cache/
+forensics/*.dump
+forensics/*.mem
+forensics/*.dd
+forensics/*.img
+
+# Forensics logs
+logs/forensics.log

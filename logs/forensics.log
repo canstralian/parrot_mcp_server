@@ -1,0 +1,20 @@
+[2025-11-12 06:10:19] [INFO] [msgid:1762927819887875478] Checking forensics dependencies...
+[2025-11-12 06:10:19] [INFO] [msgid:1762927819892033080] Checking Volatility 3 installation...
+[2025-11-12 06:10:19] [ERROR] [msgid:1762927819896052925] Required command 'vol' not found
+[2025-11-12 06:10:19] [WARN] [msgid:1762927819900197601] Install hint: pip3 install volatility3
+[2025-11-12 06:10:20] [ERROR] [msgid:1762927820028327205] Required Python package 'volatility3' not found
+[2025-11-12 06:10:20] [WARN] [msgid:1762927820032558860] Install hint: pip3 install volatility3
+[2025-11-12 06:10:20] [ERROR] [msgid:1762927820036577110] Volatility 3 not found. Please install it first.
+[2025-11-12 06:10:20] [WARN] [msgid:1762927820040542262] Install with: pip3 install volatility3
+[2025-11-12 06:10:28] [INFO] [msgid:1762927828969845863] Checking forensics dependencies...
+[2025-11-12 06:10:28] [INFO] [msgid:1762927828973943339] Checking SleuthKit installation...
+[2025-11-12 06:10:28] [ERROR] [msgid:1762927828978162808] Required command 'fls' not found
+[2025-11-12 06:10:28] [WARN] [msgid:1762927828982433653] Install hint: apt-get install sleuthkit
+[2025-11-12 06:10:28] [ERROR] [msgid:1762927828986768409] Required command 'icat' not found
+[2025-11-12 06:10:28] [WARN] [msgid:1762927828990716558] Install hint: apt-get install sleuthkit
+[2025-11-12 06:10:28] [ERROR] [msgid:1762927828994799541] Required command 'mmls' not found
+[2025-11-12 06:10:29] [WARN] [msgid:1762927828998844733] Install hint: apt-get install sleuthkit
+[2025-11-12 06:10:29] [ERROR] [msgid:1762927829002941541] Required command 'fsstat' not found
+[2025-11-12 06:10:29] [WARN] [msgid:1762927829007109964] Install hint: apt-get install sleuthkit
+[2025-11-12 06:10:29] [ERROR] [msgid:1762927829011077520] SleuthKit not fully available. Please install it first.
+[2025-11-12 06:10:29] [WARN] [msgid:1762927829015481098] Install with: sudo apt-get install sleuthkit
