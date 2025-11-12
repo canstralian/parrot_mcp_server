@@ -1,0 +1,143 @@
+================================================================================
+PARROT MCP SERVER - SECURITY TOOLS
+LEGAL NOTICE AND TERMS OF USE
+================================================================================
+
+⚠️  WARNING: AUTHORIZED USE ONLY ⚠️
+
+The security testing tools integrated into this system are POWERFUL and
+POTENTIALLY DANGEROUS if misused. By using these tools, you acknowledge and
+agree to the following terms:
+
+================================================================================
+1. AUTHORIZED USE ONLY
+================================================================================
+
+You may ONLY use these tools for:
+
+✅ Systems you OWN
+✅ Systems where you have EXPLICIT WRITTEN PERMISSION to conduct security testing
+✅ Controlled test environments (labs, CTF competitions, training environments)
+✅ Your own personal devices and networks
+✅ Authorized penetration testing engagements with signed contracts
+✅ Bug bounty programs where you comply with their rules
+✅ Educational and research purposes in isolated environments
+
+You MAY NOT use these tools for:
+
+❌ Unauthorized access to computer systems
+❌ Scanning or testing networks you do not own or control
+❌ Any activity that violates local, state, national, or international law
+❌ Malicious purposes including theft, fraud, extortion, or sabotage
+❌ Attacking critical infrastructure
+❌ Denial of service attacks
+❌ Any activity without proper authorization
+
+================================================================================
+2. LEGAL COMPLIANCE
+================================================================================
+
+Unauthorized computer access is ILLEGAL under:
+
+• Computer Fraud and Abuse Act (CFAA) in the United States (18 U.S.C. § 1030)
+• Computer Misuse Act in the United Kingdom
+• Similar laws in virtually every jurisdiction worldwide
+
+Penalties may include:
+• Criminal prosecution
+• Significant fines (up to hundreds of thousands of dollars)
+• Prison sentences (up to 10+ years depending on severity)
+• Civil liability for damages
+• Permanent criminal record
+
+================================================================================
+3. ETHICAL RESPONSIBILITY
+================================================================================
+
+As a security professional or enthusiast, you have an ethical responsibility to:
+
+• Obtain proper authorization before any security testing
+• Respect privacy and confidentiality
+• Report vulnerabilities responsibly
+• Minimize harm and disruption
+• Follow industry best practices and codes of conduct
+• Maintain the trust placed in you
+
+================================================================================
+4. LIABILITY DISCLAIMER
+================================================================================
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+The authors and contributors of Parrot MCP Server:
+
+• Are NOT responsible for misuse of these tools
+• Do NOT endorse or encourage illegal activity
+• Provide these tools for EDUCATIONAL and AUTHORIZED TESTING purposes only
+• Assume NO LIABILITY for damages resulting from use or misuse
+
+YOU ALONE are responsible for ensuring your use complies with all applicable
+laws and regulations.
+
+================================================================================
+5. DOCUMENTATION REQUIREMENTS
+================================================================================
+
+When conducting authorized security testing, you MUST:
+
+• Maintain detailed documentation of your authorization
+• Keep records of what was tested, when, and by whom
+• Obtain written permission before testing (emails, contracts, signed forms)
+• Define scope and boundaries clearly
+• Follow responsible disclosure practices
+• Report findings to appropriate parties
+
+================================================================================
+6. ACKNOWLEDGMENT
+================================================================================
+
+By using these security tools, you acknowledge that you have:
+
+✓ Read and understood this legal notice
+✓ Obtained proper authorization for your intended use
+✓ Agreed to use these tools responsibly and legally
+✓ Accepted full responsibility for your actions
+✓ Understood the potential legal and ethical consequences of misuse
+
+================================================================================
+7. CONTACT INFORMATION
+================================================================================
+
+If you discover a security vulnerability through authorized testing:
+
+• Report it responsibly to the affected organization
+• Follow their disclosure policy if one exists
+• Allow reasonable time for patching before public disclosure
+• Do not exploit the vulnerability beyond proof-of-concept
+
+For questions about this project:
+• GitHub: https://github.com/canstralian/parrot_mcp_server
+• Issues: https://github.com/canstralian/parrot_mcp_server/issues
+
+================================================================================
+CONFIRMATION
+================================================================================
+
+By proceeding to use these security tools, you confirm that you have read,
+understood, and agreed to all terms in this legal notice.
+
+Date: _______________
+
+Signature: _______________
+
+Printed Name: _______________
+
+Organization (if applicable): _______________
+
+Authorization Reference/Contract Number: _______________
+
+================================================================================
+Last Updated: 2025-11-11
+================================================================================
