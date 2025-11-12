@@ -6,38 +6,108 @@
 set -euo pipefail
 
 # Get the directory where this script is located
-cd "$(dirname "${BASH_SOURCE[0]}")"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
 
-SERVER="./start_mcp_server.sh"
-STOP="./stop_mcp_server.sh"
+# Load common configuration
+# shellcheck source=./common_config.sh
+source "${SCRIPT_DIR}/common_config.sh"
 
-# Start the server
-$SERVER &
-SERVER_PID=$!
-sleep 2
+SERVER="${SCRIPT_DIR}/start_mcp_server.sh"
+STOP="${SCRIPT_DIR}/stop_mcp_server.sh"
 
-echo "[TEST] Sending valid MCP message..."
-echo '{"type":"mcp_message","content":"ping"}' >/tmp/mcp_in.json
-# Simulate sending to server (replace with actual protocol if needed)
-cat /tmp/mcp_in.json >/dev/null
+# Cleanup function
+cleanup() {
+    parrot_debug "Cleaning up test artifacts..."
+    "$STOP" 2>/dev/null || true
+    rm -f "$PARROT_MCP_INPUT" "$PARROT_MCP_BAD" 2>/dev/null || true
+}
 
-echo "[TEST] Sending malformed MCP message..."
-echo '{"type":"mcp_message",' >/tmp/mcp_bad.json
-cat /tmp/mcp_bad.json >/dev/null
+# Set up trap for cleanup on exit
+trap cleanup EXIT
 
-# Check logs for expected output
-if grep -q 'ping' ./logs/parrot.log 2>/dev/null; then
-	echo "[PASS] Valid MCP message processed."
+# Initialize test counters
+TESTS_RUN=0
+TESTS_PASSED=0
+
+run_test() {
+    local test_name="$1"
+    shift
+    TESTS_RUN=$((TESTS_RUN + 1))
+
+    echo "[TEST $TESTS_RUN] $test_name"
+    if "$@"; then
+        echo "[PASS] $test_name"
+        TESTS_PASSED=$((TESTS_PASSED + 1))
+        return 0
+    else
+        echo "[FAIL] $test_name"
+        return 1
+    fi
+}
+
+test_valid_message() {
+    # Start the server
+    "$SERVER" || {
+        parrot_error "Failed to start MCP server"
+        return 1
+    }
+    sleep 2
+
+    # Send valid MCP message
+    echo '{"type":"mcp_message","content":"ping"}' > "$PARROT_MCP_INPUT"
+
+    # Wait for processing
+    sleep 1
+
+    # Check logs for expected output
+    if grep -q 'ping' "$PARROT_SERVER_LOG" 2>/dev/null; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+test_malformed_message() {
+    # Ensure server is running
+    if ! pgrep -f "start_mcp_server.sh" >/dev/null; then
+        "$SERVER" || {
+            parrot_error "Failed to start MCP server"
+            return 1
+        }
+        sleep 2
+    fi
+
+    # Send malformed MCP message
+    echo '{"type":"mcp_message",' > "$PARROT_MCP_BAD"
+
+    # Wait for processing
+    sleep 1
+
+    # Check logs for error (case-insensitive)
+    if grep -i 'error' "$PARROT_SERVER_LOG" 2>/dev/null; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# Main test execution
+parrot_info "Starting MCP protocol compliance tests"
+
+run_test "Valid MCP message processing" test_valid_message
+run_test "Malformed MCP message error logging" test_malformed_message
+
+# Print summary
+echo ""
+echo "=========================================="
+echo "Test Results: $TESTS_PASSED/$TESTS_RUN passed"
+echo "=========================================="
+
+if [ "$TESTS_PASSED" -eq "$TESTS_RUN" ]; then
+    parrot_info "All tests passed!"
+    exit 0
 else
-	echo "[FAIL] Valid MCP message not found in logs."
+    parrot_error "Some tests failed: $((TESTS_RUN - TESTS_PASSED)) failed"
+    exit 1
 fi
-
-if grep -q 'error' ./logs/parrot.log 2>/dev/null; then
-	echo "[PASS] Malformed MCP message error logged."
-else
-	echo "[FAIL] Malformed MCP message error not found in logs."
-fi
-
-# Stop the server
-$STOP
-kill $SERVER_PID 2>/dev/null || true

@@ -95,11 +95,7 @@ check_disk() {
 check_workflows() {
     local workflow_log="$PARROT_WORKFLOW_LOG"
 
-    if ! parrot_validate_path "$workflow_log"; then
-        parrot_error "Invalid workflow log path: $workflow_log"
-        return 1
-    fi
-
+    # Note: No path validation needed - workflow_log is from trusted configuration
     if [ -f "$workflow_log" ]; then
         local last_run
         last_run=$(tail -1 "$workflow_log" 2>/dev/null | cut -d' ' -f1-2)

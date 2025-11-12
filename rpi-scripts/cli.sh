@@ -129,20 +129,23 @@ menu() {
 		if [ -x "$SCRIPT" ]; then
 			echo "Enter arguments for $choice (or press Enter for none):"
 			read -r args
-			# Optionally hash/salt sensitive arguments (example: hash first arg)
+			# Execute script with proper argument handling
 			if [ -n "$args" ]; then
-				# shellcheck disable=SC2086
-				set -- $args
-				hashed_first_arg=$(hash_arg "$1")
-				"$SCRIPT" "$hashed_first_arg" "${@:2}" || {
-					log_error "Script '$choice' exited with error code $? (menu mode)"
-					echo "[ERROR] Script '$choice' exited with error code $?"
-				}
+				# Use read -a to properly split arguments into array
+				IFS=' ' read -r -a arg_array <<< "$args"
+				"$SCRIPT" "${arg_array[@]}"
+				exit_code=$?
+				if [ "$exit_code" -ne 0 ]; then
+					log_error "Script '$choice' exited with error code $exit_code (menu mode)"
+					echo "[ERROR] Script '$choice' exited with error code $exit_code"
+				fi
 			else
-				"$SCRIPT" || {
-					log_error "Script '$choice' exited with error code $? (menu mode)"
-					echo "[ERROR] Script '$choice' exited with error code $?"
-				}
+				"$SCRIPT"
+				exit_code=$?
+				if [ "$exit_code" -ne 0 ]; then
+					log_error "Script '$choice' exited with error code $exit_code (menu mode)"
+					echo "[ERROR] Script '$choice' exited with error code $exit_code"
+				fi
 			fi
 		else
 			echo "[ERROR] Script '$choice' not found or not executable."
