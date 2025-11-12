@@ -1,0 +1,15 @@
+{
+  "task_id": "task_1762927419815334913_3535",
+  "task_type": "port_scan",
+  "payload": {
+    "target": "192.168.1.1"
+  },
+  "required_capability": "recon",
+  "priority": 8,
+  "status": "assigned",
+  "submitted_at": "2025-11-12T06:03:39Z",
+  "assigned_agent": "test_agent_1",
+  "attempts": 0,
+  "max_attempts": 3,
+  "assigned_at": "2025-11-12T06:03:39Z"
+}

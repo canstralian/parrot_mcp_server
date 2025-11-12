@@ -1,0 +1,11 @@
+{
+  "agent_id": "test_agent_1",
+  "agent_type": "recon",
+  "capabilities": ["port_scan"],
+  "status": "active",
+  "registered_at": "2025-11-12T06:03:10Z",
+  "last_heartbeat": "2025-11-12T06:03:10Z",
+  "pid": 3535,
+  "tasks_completed": 0,
+  "tasks_failed": 0
+}
