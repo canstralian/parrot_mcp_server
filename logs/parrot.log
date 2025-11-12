@@ -1,4 +1,24 @@
-[2025-10-28 16:46:01] MCP server started (stub)
-[2025-10-28 16:46:01] MCP message received: ping
-[2025-10-28 16:46:01] error: Malformed MCP message received
-[2025-10-28 16:46:03] MCP server stopped
+[2025-11-12 06:04:23] [INFO] [msgid:1762927463769216943] MCP server starting
+[2025-11-12 06:04:23] [INFO] [msgid:1762927463769384022] MCP server started with PID: 8490
+[2025-11-12 06:04:23] [INFO] [msgid:1762927463778953189] MCP server started
+[2025-11-12 06:04:23] [INFO] [msgid:1762927463794951916] Audit event
+[2025-11-12 06:04:23] [INFO] [msgid:1762927463802042707] MCP message received: ping
+[2025-11-12 06:04:23] [INFO] [msgid:1762927463811635067] MCP message processed
+[2025-11-12 06:04:23] [INFO] [msgid:1762927463824014235] Operation completed
+14
+[2025-11-12 06:04:23] [ERROR] [msgid:1762927463827859234] Malformed MCP message received
+ERROR: Malformed MCP message received
+[2025-11-12 06:04:23] [ERROR] [msgid:1762927463837492311] Malformed MCP message
+ERROR: Malformed MCP message
+[2025-11-12 06:04:23] [INFO] [msgid:1762927463852999631] Audit event
+[2025-11-12 06:04:23] [INFO] [msgid:1762927463865258212] Operation completed
+88
+[2025-11-12 06:04:26] [INFO] [msgid:1762927466778713600] MCP server stopped (pid 8490)
+[2025-11-12 06:04:26] [INFO] [msgid:1762927466788215933] MCP server stopped
+[2025-11-12 06:04:26] [INFO] [msgid:1762927466803386997] Audit event
+[2025-11-12 06:04:45] [INFO] [msgid:1762927485085413547] Audit event
+[2025-11-12 06:04:45] [INFO] [msgid:1762927485174519794] Audit event
+[2025-11-12 06:04:45] [INFO] [msgid:1762927485235388420] Dashboard generated: /tmp/dashboard.html
+[2025-11-12 06:04:45] [INFO] [msgid:1762927485250626345] Audit event
+[2025-11-12 06:04:53] [INFO] [msgid:1762927493572755116] Audit event
+[2025-11-12 06:04:53] [INFO] [msgid:1762927493614394762] Audit event

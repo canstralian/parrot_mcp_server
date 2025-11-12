@@ -67,7 +67,8 @@ done
 parrot_info "Starting log rotation (size: ${MAX_SIZE_MB}MB, age: ${MAX_AGE_DAYS}d, count: $MAX_COUNT)"
 
 # Convert MB to bytes for comparison
-MAX_SIZE_BYTES=$((MAX_SIZE_MB * 1024 * 1024))
+# Use awk for floating point support
+MAX_SIZE_BYTES=$(awk "BEGIN {printf \"%.0f\", $MAX_SIZE_MB * 1024 * 1024}")
 
 # Function to rotate a single log file
 rotate_log_file() {

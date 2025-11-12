@@ -25,14 +25,23 @@ echo "[TEST] Sending malformed MCP message..."
 echo '{"type":"mcp_message",' >/tmp/mcp_bad.json
 cat /tmp/mcp_bad.json >/dev/null
 
-# Check logs for expected output
-if grep -q 'ping' ./logs/parrot.log 2>/dev/null; then
+# Wait for logs to be written
+sleep 1
+
+# Check logs for expected output (logs are in parent directory)
+LOG_FILE="../logs/parrot.log"
+if [ ! -f "$LOG_FILE" ]; then
+	# Fall back to local logs directory
+	LOG_FILE="./logs/parrot.log"
+fi
+
+if grep -q 'ping' "$LOG_FILE" 2>/dev/null; then
 	echo "[PASS] Valid MCP message processed."
 else
 	echo "[FAIL] Valid MCP message not found in logs."
 fi
 
-if grep -q 'error' ./logs/parrot.log 2>/dev/null; then
+if grep -i -q 'error.*malformed' "$LOG_FILE" 2>/dev/null; then
 	echo "[PASS] Malformed MCP message error logged."
 else
 	echo "[FAIL] Malformed MCP message error not found in logs."
