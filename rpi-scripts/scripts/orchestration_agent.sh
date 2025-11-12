@@ -285,7 +285,10 @@ done
 # Run agent
 if [ "$DAEMON_MODE" = true ]; then
 	orch_log "INFO" "Starting agent as daemon: $AGENT_ID"
-	nohup "$0" --type "$AGENT_TYPE" --id "$AGENT_ID" --interval "$POLL_INTERVAL" >> "${ORCH_STATE_DIR}/agent_${AGENT_ID}.log" 2>&1 &
+	(
+		DAEMON_MODE=false  # Prevent recursion
+		run_agent
+	) >> "${ORCH_STATE_DIR}/agent_${AGENT_ID}.log" 2>&1 &
 	echo "Agent started as daemon (PID: $!)"
 else
 	run_agent
