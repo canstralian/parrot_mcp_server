@@ -180,9 +180,10 @@ parrot_validate_percentage() {
 }
 
 parrot_validate_path() {
-    # Validate that $1 is a safe, relative path within $PARROT_BASE_DIR.
-    # - Rejects absolute paths, path traversal, and null bytes.
-    # - Only allows paths that resolve within $PARROT_BASE_DIR.
+    # Validate that $1 is a safe path.
+    # - For relative paths: Must be within $PARROT_BASE_DIR
+    # - For absolute paths: Must be within $PARROT_BASE_DIR or system directories (/tmp, /var, /home, /opt)
+    # - Rejects path traversal and null bytes
     local path="$1"
 
     # Reject null bytes
@@ -190,26 +191,49 @@ parrot_validate_path() {
         return 1
     fi
 
-    # Reject absolute paths
+    # Reject obvious path traversal patterns
+    if [[ "$path" == *"../"* ]] || [[ "$path" == *"/../"* ]]; then
+        return 1
+    fi
+
+    # Handle absolute vs relative paths
     if [[ "$path" = /* ]]; then
-        return 1
+        # Absolute path - check if it's in allowed directories
+        # Allow paths in: PARROT_BASE_DIR, /tmp, /var, /home, /opt
+        local allowed_prefixes=(
+            "$PARROT_BASE_DIR"
+            "/tmp"
+            "/var"
+            "/home"
+            "/opt"
+        )
+
+        local allowed=false
+        for prefix in "${allowed_prefixes[@]}"; do
+            if [[ "$path" == "$prefix"* ]]; then
+                allowed=true
+                break
+            fi
+        done
+
+        if [ "$allowed" = "false" ]; then
+            return 1
+        fi
+    else
+        # Relative path - resolve and ensure within PARROT_BASE_DIR
+        local resolved
+        resolved="$(realpath -m "${PARROT_BASE_DIR}/${path}" 2>/dev/null)"
+        if [ -z "$resolved" ]; then
+            return 1
+        fi
+        case "$resolved" in
+            "$PARROT_BASE_DIR"/*) ;;
+            "$PARROT_BASE_DIR") ;;
+            *) return 1 ;;
+        esac
     fi
 
-    # Reject path traversal attempts
-    if [[ "$path" == *".."* ]]; then
-        return 1
-    fi
-
-    # Resolve the path and ensure it is within $PARROT_BASE_DIR
-    local resolved
-    resolved="$(realpath -m "${PARROT_BASE_DIR}/${path}" 2>/dev/null)"
-    if [ -z "$resolved" ]; then
-        return 1
-    fi
-    case "$resolved" in
-        "$PARROT_BASE_DIR"/*) return 0 ;;
-        *) return 1 ;;
-    esac
+    return 0
 }
 
 parrot_validate_script_name() {

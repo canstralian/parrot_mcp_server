@@ -1,24 +1,51 @@
 #!/usr/bin/env bats
 
 @test "MCP server handles valid message" {
-  run ./cli.sh start_mcp_server
+  # Clean up from previous tests
+  rm -f /tmp/mcp_in.json /tmp/mcp_bad.json
+  ./rpi-scripts/stop_mcp_server.sh 2>/dev/null || true
+
+  # Start server
+  run ./rpi-scripts/start_mcp_server.sh
   sleep 2
+
+  # Send valid message
   echo '{"type":"mcp_message","content":"ping"}' > /tmp/mcp_in.json
-  # Simulate sending to server (replace with actual protocol if needed)
-  cat /tmp/mcp_in.json > /dev/null
+
+  # Wait for processing
+  sleep 1
+
+  # Check logs for ping message
   run grep 'ping' ./logs/parrot.log
   [ "$status" -eq 0 ]
   [[ "$output" == *"ping"* ]]
-  run ./cli.sh stop_mcp_server
+
+  # Clean up
+  ./rpi-scripts/stop_mcp_server.sh
+  rm -f /tmp/mcp_in.json
 }
 
 @test "MCP server logs error on malformed message" {
-  run ./cli.sh start_mcp_server
+  # Clean up from previous tests
+  rm -f /tmp/mcp_in.json /tmp/mcp_bad.json
+  ./rpi-scripts/stop_mcp_server.sh 2>/dev/null || true
+
+  # Start server
+  run ./rpi-scripts/start_mcp_server.sh
   sleep 2
+
+  # Send malformed message
   echo '{"type":"mcp_message",' > /tmp/mcp_bad.json
-  cat /tmp/mcp_bad.json > /dev/null
-  run grep 'error' ./logs/parrot.log
+
+  # Wait for processing
+  sleep 1
+
+  # Check logs for error (case-insensitive)
+  run grep -i 'error' ./logs/parrot.log
   [ "$status" -eq 0 ]
-  [[ "$output" == *"error"* ]]
-  run ./cli.sh stop_mcp_server
+  [[ "$output" =~ [Ee][Rr][Rr][Oo][Rr] ]]
+
+  # Clean up
+  ./rpi-scripts/stop_mcp_server.sh
+  rm -f /tmp/mcp_bad.json
 }

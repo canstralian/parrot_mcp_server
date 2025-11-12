@@ -1,26 +1,52 @@
 #!/usr/bin/env bash
 # Start the Parrot MCP Server (minimal stub)
 # Logs a startup message and simulates a running server with improved error handling
-mkdir -p ./logs
-LOG=./logs/parrot.log
-MSGID=$(date +%s%N)
+
+set -euo pipefail
+
+# Load centralized configuration
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck source=./common_config.sh
+source "${SCRIPT_DIR}/common_config.sh"
+
+# Check if server is already running
+if [ -f "$PARROT_PID_FILE" ] && kill -0 "$(cat "$PARROT_PID_FILE" 2>/dev/null)" 2>/dev/null; then
+    parrot_error "MCP server is already running (PID: $(cat "$PARROT_PID_FILE"))"
+    exit 1
+fi
+
+# Start the server process
 {
-	echo "[$(date '+%Y-%m-%d %H:%M:%S')] [INFO] [msgid:$MSGID] MCP server started (stub)"
-	# Simulate handling a valid MCP message
-	if [ -f /tmp/mcp_in.json ]; then
-		if grep -q '"content":"ping"' /tmp/mcp_in.json; then
-			echo "[$(date '+%Y-%m-%d %H:%M:%S')] [INFO] [msgid:$MSGID] MCP message received: ping"
-		else
-			echo "[$(date '+%Y-%m-%d %H:%M:%S')] [WARN] [msgid:$MSGID] MCP message file present but no ping content"
-		fi
-	else
-		echo "[$(date '+%Y-%m-%d %H:%M:%S')] [WARN] [msgid:$MSGID] No valid MCP message file found"
-	fi
-	# Simulate handling a malformed MCP message
-	if [ -f /tmp/mcp_bad.json ]; then
-		echo "[$(date '+%Y-%m-%d %H:%M:%S')] [ERROR] [msgid:$MSGID] Malformed MCP message received"
-	fi
-	# Keep process alive for test harness
-	sleep 5
-} >>"$LOG" 2>&1 &
-echo $! >./logs/mcp_server.pid
+    parrot_info "MCP server starting..."
+
+    # Simulate handling a valid MCP message
+    if [ -f "$PARROT_MCP_INPUT" ]; then
+        if parrot_validate_json "$PARROT_MCP_INPUT"; then
+            if grep -q '"content":"ping"' "$PARROT_MCP_INPUT" 2>/dev/null; then
+                parrot_info "MCP message received: ping"
+            else
+                parrot_warn "MCP message file present but no ping content"
+            fi
+        else
+            parrot_error "Invalid JSON in MCP input file"
+        fi
+    else
+        parrot_debug "No MCP input file found at: $PARROT_MCP_INPUT"
+    fi
+
+    # Simulate handling a malformed MCP message
+    if [ -f "$PARROT_MCP_BAD" ]; then
+        parrot_error "Malformed MCP message received"
+    fi
+
+    parrot_info "MCP server started successfully"
+
+    # Keep process alive for test harness
+    sleep 5
+} &
+
+# Save PID
+SERVER_PID=$!
+echo "$SERVER_PID" > "$PARROT_PID_FILE"
+
+parrot_info "MCP server started with PID: $SERVER_PID"
