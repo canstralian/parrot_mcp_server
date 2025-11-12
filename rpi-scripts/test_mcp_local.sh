@@ -166,7 +166,7 @@ print_test_header "TEST 4: Malformed MCP Message Handling"
 
 # Clean and restart
 cleanup_test
-"$SERVER" >/dev/null 2>&1 &
+"$SERVER" >/dev/null 2>&1
 sleep 1
 
 # Create malformed message
