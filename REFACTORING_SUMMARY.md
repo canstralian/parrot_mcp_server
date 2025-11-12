@@ -64,7 +64,7 @@ Comprehensive debugging, testing, and refactoring performed on the Parrot MCP Se
 **Changes:**
 - Integrated with common_config.sh for centralized configuration
 - Replaced hardcoded values with configuration variables
-- Implemented exponential backoff for retries
+- Implemented linear backoff with increasing delays for retries
 - Added check for PARROT_AUTO_UPDATE before running updates
 - Enhanced error handling and notification system
 - Added backup directory validation
