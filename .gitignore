@@ -1,0 +1,40 @@
+# Logs
+*.log
+logs/
+*.log.*
+
+# PID files
+*.pid
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+*~
+
+# Environment files
+.env
+config.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-*
+
+# Backup files
+*.bak
+*.backup
+
+# Test artifacts
+/tmp/mcp_*.json
+
+# Node modules (if any)
+node_modules/
+
+# Build artifacts
+dist/
+build/
