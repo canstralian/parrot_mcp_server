@@ -2,6 +2,3 @@
 [2025-10-28 16:46:01] MCP message received: ping
 [2025-10-28 16:46:01] error: Malformed MCP message received
 [2025-10-28 16:46:03] MCP server stopped
-{"timestamp":"2025-11-12T06:16:13.354Z","level":"INFO","hostname":"runnervmw9dnm","message":"SSE streaming test 1","test":"streaming"}
-{"timestamp":"2025-11-12T06:16:14.362Z","level":"INFO","hostname":"runnervmw9dnm","message":"SSE streaming test 2","test":"streaming"}
-{"timestamp":"2025-11-12T06:16:15.370Z","level":"WARN","hostname":"runnervmw9dnm","message":"SSE streaming test 3","test":"streaming"}

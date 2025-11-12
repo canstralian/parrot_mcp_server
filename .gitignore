@@ -1,7 +1,8 @@
-# Logs and metrics test artifacts
+# Logs and metrics (runtime artifacts)
+logs/parrot.log
 logs/test_*.log
 logs/test_script_*.sh
-metrics/test/
+metrics/
 
 # Temporary files
 *.tmp
