@@ -22,3 +22,52 @@ ERROR: Malformed MCP message
 [2025-11-12 06:04:45] [INFO] [msgid:1762927485250626345] Audit event
 [2025-11-12 06:04:53] [INFO] [msgid:1762927493572755116] Audit event
 [2025-11-12 06:04:53] [INFO] [msgid:1762927493614394762] Audit event
+[2025-11-12 06:06:42] [INFO] [msgid:1762927602445627465] Test operation 1
+[2025-11-12 06:06:42] [INFO] [msgid:1762927602469034749] Operation completed
+[2025-11-12 06:06:42] [INFO] [msgid:1762927602480210920] Test operation 2
+[2025-11-12 06:06:42] [INFO] [msgid:1762927602503734950] Operation completed
+[2025-11-12 06:06:42] [INFO] [msgid:1762927602515062635] Test operation 3
+[2025-11-12 06:06:42] [INFO] [msgid:1762927602538689455] Operation completed
+[2025-11-12 06:06:42] [INFO] [msgid:1762927602549754369] Test operation 4
+[2025-11-12 06:06:42] [INFO] [msgid:1762927602573463584] Operation completed
+[2025-11-12 06:06:42] [INFO] [msgid:1762927602584778773] Test operation 5
+[2025-11-12 06:06:42] [INFO] [msgid:1762927602608334964] Operation completed
+[2025-11-12 06:06:42] [INFO] [msgid:1762927602619403955] Test operation 6
+[2025-11-12 06:06:42] [INFO] [msgid:1762927602643111498] Operation completed
+[2025-11-12 06:06:42] [INFO] [msgid:1762927602654348699] Test operation 7
+[2025-11-12 06:06:42] [INFO] [msgid:1762927602678102731] Operation completed
+[2025-11-12 06:06:42] [INFO] [msgid:1762927602689225291] Test operation 8
+[2025-11-12 06:06:42] [INFO] [msgid:1762927602712937613] Operation completed
+[2025-11-12 06:06:42] [INFO] [msgid:1762927602724206408] Test operation 9
+[2025-11-12 06:06:42] [INFO] [msgid:1762927602748125018] Operation completed
+[2025-11-12 06:06:42] [INFO] [msgid:1762927602759368043] Test operation 10
+[2025-11-12 06:06:42] [INFO] [msgid:1762927602782985207] Operation completed
+[2025-11-12 06:06:42] [ERROR] [msgid:1762927602792994521] Test error 1
+[2025-11-12 06:06:42] [ERROR] [msgid:1762927602802702163] Test error 2
+[2025-11-12 06:06:42] [INFO] [msgid:1762927602818302568] Audit event
+[2025-11-12 06:06:42] [INFO] [msgid:1762927602833934400] Audit event
+[2025-11-12 06:06:42] [INFO] [msgid:1762927602921417159] Audit event
+[2025-11-12 06:06:42] [INFO] [msgid:1762927602971580940] Dashboard generated: /tmp/demo_dashboard.html
+[2025-11-12 06:06:42] [INFO] [msgid:1762927602986567472] Audit event
+[2025-11-12 06:06:53] [INFO] [msgid:1762927613652187614] Audit event
+[2025-11-12 06:07:08] [ERROR] [msgid:1762927628916694751] Invalid JSON syntax in: /tmp/tmp.qVRv29WSH3/invalid.json
+[2025-11-12 06:07:09] [ERROR] [msgid:1762927629022589321] JSON file does not exist: /tmp/tmp.StsHov1Jx6/nonexistent.json
+[2025-11-12 06:07:09] [ERROR] [msgid:1762927629135101172] JSON file exceeds maximum size: 2097152 > 1048576
+[2025-11-12 06:07:31] [INFO] [msgid:1762927651379320430] MCP server started with PID: 13665
+[2025-11-12 06:07:31] [INFO] [msgid:1762927651379344065] MCP server starting
+[2025-11-12 06:07:31] [INFO] [msgid:1762927651388945868] MCP server started
+[2025-11-12 06:07:31] [INFO] [msgid:1762927651403962601] Audit event
+[2025-11-12 06:07:31] [INFO] [msgid:1762927651410377242] MCP message received: ping
+[2025-11-12 06:07:31] [INFO] [msgid:1762927651419921942] MCP message processed
+[2025-11-12 06:07:31] [INFO] [msgid:1762927651432334992] Operation completed
+14
+[2025-11-12 06:07:31] [ERROR] [msgid:1762927651436122554] Malformed MCP message received
+ERROR: Malformed MCP message received
+[2025-11-12 06:07:31] [ERROR] [msgid:1762927651445770998] Malformed MCP message
+ERROR: Malformed MCP message
+[2025-11-12 06:07:31] [INFO] [msgid:1762927651461805052] Audit event
+[2025-11-12 06:07:31] [INFO] [msgid:1762927651474375834] Operation completed
+87
+[2025-11-12 06:07:34] [INFO] [msgid:1762927654388698803] MCP server stopped (pid 13665)
+[2025-11-12 06:07:34] [INFO] [msgid:1762927654398088624] MCP server stopped
+[2025-11-12 06:07:34] [INFO] [msgid:1762927654412988405] Audit event
