@@ -167,7 +167,7 @@ print_test_header "TEST 4: Malformed MCP Message Handling"
 # Clean and restart
 cleanup_test
 "$SERVER" >/dev/null 2>&1
-sleep 1
+sleep 3
 
 # Create malformed message
 echo '{"type":"mcp_message",' > "$PARROT_MCP_BAD"
