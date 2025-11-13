@@ -27,7 +27,7 @@ It’s built in **Shell** for portability and clarity, with simple scripts to co
 - **MCP-compliant core** – speaks the official Model Context Protocol fluently.  
 - **Lightweight shell design** – runs anywhere Bash runs (including tiny SBCs).  
 - **Modular structure** – extend with your own tools or agents.  
-- **Zero dependencies** – no Python virtualenvs or Node modules needed.  
+- **Minimal Python footprint** – configuration is managed via shell scripts and environment variables.
 - **Perfect for experimentation** – hack, fork, break, and rebuild with joy.
 
 ---
@@ -40,6 +40,8 @@ Clone and run locally:
 git clone https://github.com/canstralian/parrot_mcp_server.git
 cd parrot_mcp_server
 chmod +x ./rpi-scripts/*.sh
+# Ensure Python and pip are installed to handle configuration dependencies.
+pip install -r requirements.txt
 ```
 
 ---
