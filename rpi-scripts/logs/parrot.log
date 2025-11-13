@@ -1,4 +1,25 @@
-[2025-10-28 17:41:00] [INFO] [msgid:1761637260932334187] MCP server started (stub)
-[2025-10-28 17:41:00] [INFO] [msgid:1761637260932334187] MCP message received: ping
-[2025-10-28 17:41:00] [ERROR] [msgid:1761637260932334187] Malformed MCP message received
-[2025-10-28 17:41:02] [INFO] [msgid:1761637262936081381] MCP server stopped (pid 27608)
+[2025-11-12 06:13:30] [INFO] [msgid:1762928010327037693] MCP server started (stub)
+[2025-11-12 06:13:30] [WARN] [msgid:1762928010327037693] No valid MCP message file found
+[2025-11-12 06:13:32] [INFO] [msgid:1762928012333657051] MCP server stopped (pid 14172)
+[2025-11-12 06:13:32] [INFO] [msgid:1762928012370588026] MCP server started (stub)
+[2025-11-12 06:13:32] [WARN] [msgid:1762928012370588026] No valid MCP message file found
+[2025-11-12 06:13:33] [INFO] [msgid:1762928013380603466] MCP server started (stub)
+[2025-11-12 06:13:33] [WARN] [msgid:1762928013380603466] No valid MCP message file found
+[2025-11-12 06:13:34] [INFO] [msgid:1762928014387498734] MCP server stopped (pid 14207)
+[2025-11-12 06:13:34] [INFO] [msgid:1762928014424111767] MCP server started (stub)
+[2025-11-12 06:13:34] [WARN] [msgid:1762928014424111767] No valid MCP message file found
+[2025-11-12 06:13:37] [ERROR] [msgid:1762928017436612193] Failed to kill MCP server process (pid 14232)
+[2025-11-12 06:13:37] [ERROR] [msgid:1762928017445434995] Failed to kill MCP server process (pid 14232)
+[2025-11-12 06:13:38] [ERROR] [msgid:1762928018480069299] Failed to kill MCP server process (pid 14232)
+[2025-11-12 06:13:39] [INFO] [msgid:1762928019491903326] MCP server started (stub)
+[2025-11-12 06:13:39] [WARN] [msgid:1762928019491903326] No valid MCP message file found
+[2025-11-12 06:13:41] [INFO] [msgid:1762928021498561788] MCP server stopped (pid 14271)
+[2025-11-12 06:13:42] [INFO] [msgid:1762928022538145827] MCP server started (stub)
+[2025-11-12 06:13:42] [WARN] [msgid:1762928022538145827] No valid MCP message file found
+[2025-11-12 06:13:44] [INFO] [msgid:1762928024544770511] MCP server stopped (pid 14298)
+[2025-11-12 06:13:45] [INFO] [msgid:1762928025590595577] MCP server started (stub)
+[2025-11-12 06:13:45] [WARN] [msgid:1762928025590595577] No valid MCP message file found
+[2025-11-12 06:13:47] [INFO] [msgid:1762928027598337250] MCP server stopped (pid 14328)
+[2025-11-12 06:13:47] [INFO] [msgid:1762928027640772422] MCP server started (stub)
+[2025-11-12 06:13:47] [WARN] [msgid:1762928027640772422] No valid MCP message file found
+[2025-11-12 06:13:49] [INFO] [msgid:1762928029646995712] MCP server stopped (pid 14358)
