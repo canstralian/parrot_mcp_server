@@ -2,3 +2,4 @@
 [2025-10-28 17:41:00] [INFO] [msgid:1761637260932334187] MCP message received: ping
 [2025-10-28 17:41:00] [ERROR] [msgid:1761637260932334187] Malformed MCP message received
 [2025-10-28 17:41:02] [INFO] [msgid:1761637262936081381] MCP server stopped (pid 27608)
+[2025-11-13 22:16:01] [WARN] [msgid:1763072161186236589] No MCP server PID file found on stop
