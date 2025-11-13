@@ -40,7 +40,8 @@ Clone and run locally:
 git clone https://github.com/canstralian/parrot_mcp_server.git
 cd parrot_mcp_server
 chmod +x ./rpi-scripts/*.sh
-pip install -r requirements.txt  # installs Pydantic configuration dependencies
+# Ensure Python and pip are installed to handle configuration dependencies.
+pip install -r requirements.txt
 ```
 
 ---
