@@ -27,7 +27,7 @@ It’s built in **Shell** for portability and clarity, with simple scripts to co
 - **MCP-compliant core** – speaks the official Model Context Protocol fluently.  
 - **Lightweight shell design** – runs anywhere Bash runs (including tiny SBCs).  
 - **Modular structure** – extend with your own tools or agents.  
-- **Minimal Python footprint** – configuration is managed with modern Pydantic settings.
+- **Minimal Python footprint** – configuration is managed via shell scripts and environment variables.
 - **Perfect for experimentation** – hack, fork, break, and rebuild with joy.
 
 ---
