@@ -189,7 +189,7 @@ fi
 # Check 2.3: Error Handling
 echo "Checking error handling patterns..."
 NO_ERROR_HANDLING=0
-for script in $(find rpi-scripts/scripts -name "*.sh" -type f); do
+for script in $(find rpi-scripts -name "*.sh" -type f); do
     if ! grep -q "set -euo pipefail" "$script"; then
         NO_ERROR_HANDLING=$((NO_ERROR_HANDLING + 1))
     fi
