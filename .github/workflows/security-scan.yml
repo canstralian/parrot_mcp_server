@@ -47,7 +47,7 @@ jobs:
           echo "Scanning for security anti-patterns..."
 
           # Check for /tmp usage
-          if find rpi-scripts -name "*.sh" -exec grep -l '/tmp/' {} \; | grep -v "test" | grep -v "#.*insecure"; then
+          if find rpi-scripts -name "*.sh" -exec grep '/tmp/' {} \; | grep -v '^\s*#' | grep -v "test" | grep -v "insecure"; then
             echo "ERROR: Found insecure /tmp usage"
             exit 1
           fi
