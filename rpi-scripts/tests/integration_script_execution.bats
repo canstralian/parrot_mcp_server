@@ -45,8 +45,8 @@ teardown() {
 
 @test "integration: cli.sh executes without arguments (shows menu)" {
     # Run CLI without arguments
-    run timeout 1 bash -c "echo 'q' | ./cli.sh" || true
-    
+    run timeout 1 bash -c "echo 'q' | ./cli.sh"
+    # Note: We do not assert on exit status, as it may vary by implementation.
     # Should show menu or help
     # Exit status may vary based on implementation
 }
