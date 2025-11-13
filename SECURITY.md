@@ -14,6 +14,45 @@ We actively support the following versions with security updates:
 
 **Note**: This project is currently in active development and should be considered **prototype/experimental**. It is NOT recommended for production use without thorough security hardening.
 
+## Release Verification
+
+All official releases of the Parrot MCP Server are cryptographically signed with GPG keys to ensure authenticity and integrity. This helps protect against supply chain attacks and ensures you're installing legitimate, unmodified software.
+
+### Release Signing Keys
+
+Public GPG keys used for signing releases are stored in the `gpg-keys/` directory and follow this naming convention:
+- `<first_version>-<last_version>.gpg` - For rotated keys
+- `<first_version>-current.gpg` - For currently active keys
+
+**Current Key Fingerprints**: *(To be added upon first release)*
+
+### Verifying Releases
+
+Each release includes:
+- **GPG signatures** (`.asc` files) - Cryptographic signatures for all release artifacts
+- **SHA-256 checksums** (`.sha256` files) - File integrity verification
+
+**Before installing any release**, verify both the GPG signature and checksum to ensure the release is authentic and has not been tampered with.
+
+For detailed instructions on verifying releases, see our comprehensive [Release Verification Guide](docs/RELEASES.md).
+
+**Quick Verification**:
+```bash
+# Download release, signature, and checksum
+wget https://github.com/canstralian/parrot_mcp_server/releases/download/v1.0.0/parrot-mcp-server-v1.0.0.tar.gz{,.asc,.sha256}
+
+# Import public key
+gpg --import gpg-keys/v1.0.0-current.gpg
+
+# Verify signature
+gpg --verify parrot-mcp-server-v1.0.0.tar.gz.asc parrot-mcp-server-v1.0.0.tar.gz
+
+# Verify checksum
+sha256sum -c parrot-mcp-server-v1.0.0.tar.gz.sha256
+```
+
+**⚠️ Security Warning**: If either verification fails, **DO NOT use the release**. It may have been compromised. Report the issue immediately through our security advisory process.
+
 ## Known Security Issues
 
 ### Critical Vulnerabilities
@@ -305,6 +344,7 @@ For reviewers, check:
 
 ## Additional Resources
 
+- **Release Verification Guide**: [docs/RELEASES.md](docs/RELEASES.md) - How to verify release authenticity
 - **Bash Security Best Practices**: https://mywiki.wooledge.org/BashGuide/Practices
 - **ShellCheck**: https://www.shellcheck.net/
 - **OWASP Top 10**: https://owasp.org/www-project-top-ten/
