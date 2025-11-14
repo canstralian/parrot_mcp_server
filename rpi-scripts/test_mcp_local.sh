@@ -32,12 +32,12 @@ else
 	echo "[FAIL] Valid MCP message not found in logs."
 fi
 
-if grep -q 'error' ./logs/parrot.log 2>/dev/null; then
+if grep -iq 'error' ./logs/parrot.log 2>/dev/null; then
 	echo "[PASS] Malformed MCP message error logged."
 else
 	echo "[FAIL] Malformed MCP message error not found in logs."
 fi
 
 # Stop the server
-$STOP
+$STOP || true
 kill $SERVER_PID 2>/dev/null || true
