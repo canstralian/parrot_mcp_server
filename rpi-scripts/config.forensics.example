@@ -1,0 +1,158 @@
+# Forensics Configuration Example
+# Copy this file to config.env and customize as needed
+# These settings extend the base configuration in common_config.sh
+
+# ============================================================================
+# FORENSICS DIRECTORIES
+# ============================================================================
+
+# Main forensics directory for all forensics operations
+PARROT_FORENSICS_DIR="${PARROT_FORENSICS_DIR:-${PARROT_BASE_DIR}/forensics}"
+
+# Cache directory for storing analysis results (improves performance)
+PARROT_FORENSICS_CACHE="${PARROT_FORENSICS_CACHE:-${PARROT_FORENSICS_DIR}/cache}"
+
+# Results directory for storing analysis outputs
+PARROT_FORENSICS_RESULTS="${PARROT_FORENSICS_RESULTS:-${PARROT_FORENSICS_DIR}/results}"
+
+# Log file for forensics operations
+PARROT_FORENSICS_LOG="${PARROT_FORENSICS_LOG:-${PARROT_LOG_DIR}/forensics.log}"
+
+# ============================================================================
+# FORENSICS SETTINGS
+# ============================================================================
+
+# Cache expiration time in seconds (default: 86400 = 24 hours)
+PARROT_FORENSICS_CACHE_EXPIRY="${PARROT_FORENSICS_CACHE_EXPIRY:-86400}"
+
+# Maximum result age in days (older results are candidates for cleanup)
+PARROT_FORENSICS_RESULT_MAX_AGE="${PARROT_FORENSICS_RESULT_MAX_AGE:-30}"
+
+# Enable progress reporting for long-running operations
+PARROT_FORENSICS_PROGRESS="${PARROT_FORENSICS_PROGRESS:-true}"
+
+# Default hash algorithm (md5, sha1, sha256)
+PARROT_FORENSICS_HASH_ALGO="${PARROT_FORENSICS_HASH_ALGO:-sha256}"
+
+# ============================================================================
+# MEMORY FORENSICS SETTINGS
+# ============================================================================
+
+# Default Volatility plugins to run (comma-separated)
+PARROT_MEMORY_DEFAULT_PLUGINS="${PARROT_MEMORY_DEFAULT_PLUGINS:-pslist,netscan}"
+
+# Volatility command (use 'vol' if installed, or python module)
+PARROT_VOLATILITY_CMD="${PARROT_VOLATILITY_CMD:-vol}"
+
+# Maximum memory dump size to process (in MB, 0 = unlimited)
+PARROT_MEMORY_MAX_SIZE="${PARROT_MEMORY_MAX_SIZE:-16384}"
+
+# ============================================================================
+# DISK FORENSICS SETTINGS
+# ============================================================================
+
+# Default disk forensics operation
+PARROT_DISK_DEFAULT_OPERATION="${PARROT_DISK_DEFAULT_OPERATION:-timeline}"
+
+# Maximum disk image size to process (in MB, 0 = unlimited)
+PARROT_DISK_MAX_SIZE="${PARROT_DISK_MAX_SIZE:-0}"
+
+# SleuthKit tools path (leave empty for system default)
+PARROT_SLEUTHKIT_PATH="${PARROT_SLEUTHKIT_PATH:-}"
+
+# ============================================================================
+# PERFORMANCE SETTINGS
+# ============================================================================
+
+# Enable parallel plugin execution (future feature)
+PARROT_FORENSICS_PARALLEL="${PARROT_FORENSICS_PARALLEL:-false}"
+
+# Number of parallel workers (when parallel execution is enabled)
+PARROT_FORENSICS_WORKERS="${PARROT_FORENSICS_WORKERS:-4}"
+
+# Progress report interval in seconds
+PARROT_FORENSICS_PROGRESS_INTERVAL="${PARROT_FORENSICS_PROGRESS_INTERVAL:-10}"
+
+# ============================================================================
+# SECURITY SETTINGS
+# ============================================================================
+
+# Validate file extensions before processing
+PARROT_FORENSICS_VALIDATE_EXT="${PARROT_FORENSICS_VALIDATE_EXT:-true}"
+
+# Allowed memory dump extensions (comma-separated)
+PARROT_MEMORY_ALLOWED_EXT="${PARROT_MEMORY_ALLOWED_EXT:-dump,mem,raw,vmem,dmp}"
+
+# Allowed disk image extensions (comma-separated)
+PARROT_DISK_ALLOWED_EXT="${PARROT_DISK_ALLOWED_EXT:-dd,img,raw,e01,aff}"
+
+# Maximum path length (prevent path traversal attacks)
+PARROT_FORENSICS_MAX_PATH="${PARROT_FORENSICS_MAX_PATH:-4096}"
+
+# ============================================================================
+# OUTPUT SETTINGS
+# ============================================================================
+
+# Default output format (json, csv, text)
+PARROT_FORENSICS_OUTPUT_FORMAT="${PARROT_FORENSICS_OUTPUT_FORMAT:-json}"
+
+# Compress old results automatically
+PARROT_FORENSICS_AUTO_COMPRESS="${PARROT_FORENSICS_AUTO_COMPRESS:-false}"
+
+# Compression format (gzip, bzip2, xz)
+PARROT_FORENSICS_COMPRESS_FORMAT="${PARROT_FORENSICS_COMPRESS_FORMAT:-gzip}"
+
+# ============================================================================
+# NOTIFICATION SETTINGS
+# ============================================================================
+
+# Email notifications for completed analyses (requires PARROT_NOTIFY_EMAIL)
+PARROT_FORENSICS_NOTIFY="${PARROT_FORENSICS_NOTIFY:-false}"
+
+# Alert on suspicious findings
+PARROT_FORENSICS_ALERT="${PARROT_FORENSICS_ALERT:-false}"
+
+# Alert keywords (comma-separated patterns to trigger alerts)
+PARROT_FORENSICS_ALERT_KEYWORDS="${PARROT_FORENSICS_ALERT_KEYWORDS:-malware,suspicious,backdoor,trojan}"
+
+# ============================================================================
+# INTEGRATION SETTINGS
+# ============================================================================
+
+# Export results to external system (future feature)
+PARROT_FORENSICS_EXPORT="${PARROT_FORENSICS_EXPORT:-false}"
+
+# Export endpoint URL
+PARROT_FORENSICS_EXPORT_URL="${PARROT_FORENSICS_EXPORT_URL:-}"
+
+# API key for export (if required)
+PARROT_FORENSICS_API_KEY="${PARROT_FORENSICS_API_KEY:-}"
+
+# ============================================================================
+# MAINTENANCE SETTINGS
+# ============================================================================
+
+# Auto-cleanup old results (days)
+PARROT_FORENSICS_AUTO_CLEANUP="${PARROT_FORENSICS_AUTO_CLEANUP:-true}"
+
+# Cleanup age in days
+PARROT_FORENSICS_CLEANUP_AGE="${PARROT_FORENSICS_CLEANUP_AGE:-30}"
+
+# Auto-cleanup old cache
+PARROT_FORENSICS_CLEANUP_CACHE="${PARROT_FORENSICS_CLEANUP_CACHE:-true}"
+
+# Cache cleanup age in days
+PARROT_FORENSICS_CACHE_CLEANUP_AGE="${PARROT_FORENSICS_CACHE_CLEANUP_AGE:-7}"
+
+# ============================================================================
+# DEBUGGING SETTINGS
+# ============================================================================
+
+# Enable verbose forensics logging
+PARROT_FORENSICS_VERBOSE="${PARROT_FORENSICS_VERBOSE:-false}"
+
+# Save intermediate files (for debugging)
+PARROT_FORENSICS_KEEP_TEMP="${PARROT_FORENSICS_KEEP_TEMP:-false}"
+
+# Temp directory for intermediate files
+PARROT_FORENSICS_TEMP="${PARROT_FORENSICS_TEMP:-/tmp/parrot_forensics}"
