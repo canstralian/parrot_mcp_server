@@ -350,6 +350,7 @@ def update_whitelist():
             f.write(f"# Last update: {datetime.now().isoformat()}\n")
             f.write(f"# Updated by: {request.username}\n\n")
             for ip_range in data['whitelist']:
+                # TODO: Add validation to ensure ip_range is a valid IP/CIDR.
                 f.write(f"{ip_range}\n")
 
         audit_log("INFO", f"Whitelist updated ({len(data['whitelist'])} entries)",
