@@ -6,3 +6,5 @@
 [2025-11-13 22:15:59] [INFO] [msgid:1763072159200588416] MCP message received: ping
 [2025-11-13 22:15:59] [ERROR] [msgid:1763072159204309437] Malformed MCP message received
 ERROR: Malformed MCP message received
+[2025-11-19 09:57:04] [INFO] [msgid:1763546224585436617] MCP server started (stub)
+[2025-11-19 09:57:04] [WARN] [msgid:1763546224589241804] No valid MCP message file found
