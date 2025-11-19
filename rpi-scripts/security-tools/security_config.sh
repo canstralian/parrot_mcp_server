@@ -414,7 +414,7 @@ security_encrypt_file() {
             ;;
         openssl)
             openssl enc "-${SECURITY_OPENSSL_CIPHER}" -salt -in "$input_file" -out "$output_file" \
-                -pass "pass:$(openssl rand -base64 32)"
+                -pass env:SECURITY_ENCRYPTION_PASSWORD
             rm -f "$input_file"
             ;;
         *)
