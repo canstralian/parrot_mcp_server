@@ -302,7 +302,9 @@ def list_results():
 def download_result(filename):
     """Download scan result file"""
     # Prevent directory traversal
-    if '/' in filename or '\\' in filename or '..' in filename:
+    # Prevent directory traversal by resolving the path
+    file_path = (SECURITY_RESULTS_DIR / filename).resolve()
+    if not str(file_path).startswith(str(SECURITY_RESULTS_DIR.resolve())):
         audit_log("ERROR", f"Directory traversal attempt: {filename}", request.username, request.remote_addr)
         return jsonify({"error": "Invalid filename"}), 400
 
