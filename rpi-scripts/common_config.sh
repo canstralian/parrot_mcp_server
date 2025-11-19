@@ -77,6 +77,11 @@ PARROT_DEBUG="${PARROT_DEBUG:-false}"
 PARROT_DRY_RUN="${PARROT_DRY_RUN:-false}"
 PARROT_TRACE="${PARROT_TRACE:-false}"
 
+# Rate Limiting Configuration
+PARROT_RATE_LIMIT="${PARROT_RATE_LIMIT:-100}"  # Max operations per hour per user
+PARROT_RATE_LIMIT_WINDOW="${PARROT_RATE_LIMIT_WINDOW:-3600}"  # Time window in seconds (1 hour)
+PARROT_RATE_LIMIT_FILE="${PARROT_RATE_LIMIT_FILE:-${PARROT_LOG_DIR}/rate_limit.log}"
+
 # Cron Schedule
 PARROT_CRON_DAILY="${PARROT_CRON_DAILY:-0 2 * * *}"
 PARROT_CRON_BACKUP="${PARROT_CRON_BACKUP:-0 3 * * 0}"
@@ -366,6 +371,86 @@ parrot_validate_json() {
         parrot_warn "jq not available, skipping JSON validation"
     fi
 
+    return 0
+}
+
+# Rate limiting function
+# Usage: parrot_check_rate_limit <user> <operation>
+# Returns: 0 if within limits, 1 if rate limit exceeded
+parrot_check_rate_limit() {
+    local user="$1"
+    local operation="$2"
+    
+    # Validate inputs
+    if [ -z "$user" ] || [ -z "$operation" ]; then
+        parrot_error "Rate limit check requires user and operation"
+        return 1
+    fi
+    
+    # Sanitize inputs to prevent injection
+    user=$(echo "$user" | tr -cd '[:alnum:]_-')
+    operation=$(echo "$operation" | tr -cd '[:alnum:]_-')
+    
+    # Ensure rate limit file exists
+    if [ ! -f "$PARROT_RATE_LIMIT_FILE" ]; then
+        mkdir -p "$(dirname "$PARROT_RATE_LIMIT_FILE")"
+        touch "$PARROT_RATE_LIMIT_FILE"
+        chmod 600 "$PARROT_RATE_LIMIT_FILE"
+    fi
+    
+    # Get current timestamp
+    local now
+    now=$(date +%s)
+    
+    # Calculate cutoff time (entries older than this will be cleaned up)
+    local cutoff=$((now - PARROT_RATE_LIMIT_WINDOW))
+    
+    # Create a temporary file for atomic operations
+    local temp_file
+    temp_file=$(parrot_mktemp "rate_limit.XXXXXX")
+    
+    # Use awk to:
+    # 1. Clean up old entries (older than cutoff) for ALL users/operations
+    # 2. Write back only recent entries to temp file
+    # 3. Output count of matching entries to stdout
+    local entry_count
+    entry_count=$(awk -v user="$user" -v operation="$operation" -v cutoff="$cutoff" '
+        BEGIN { count = 0 }
+        {
+            # Parse the line: format is "user:operation:timestamp"
+            split($0, parts, ":")
+            entry_user = parts[1]
+            entry_operation = parts[2]
+            entry_timestamp = parts[3]
+            
+            # Only keep entries that are within the time window (not expired)
+            if (entry_timestamp >= cutoff) {
+                # Write to temp file (preserve recent entries)
+                print $0 > "'"$temp_file"'"
+                
+                # Count matching entries for this user and operation
+                if (entry_user == user && entry_operation == operation) {
+                    count++
+                }
+            }
+        }
+        END { print count }
+    ' "$PARROT_RATE_LIMIT_FILE")
+    
+    # Check if user is within rate limit
+    if [ "$entry_count" -ge "$PARROT_RATE_LIMIT" ]; then
+        parrot_warn "Rate limit exceeded for user '$user' operation '$operation': $entry_count/$PARROT_RATE_LIMIT"
+        rm -f "$temp_file"
+        return 1
+    fi
+    
+    # Add new entry for this operation
+    echo "${user}:${operation}:${now}" >> "$temp_file"
+    
+    # Atomically replace the rate limit file
+    mv "$temp_file" "$PARROT_RATE_LIMIT_FILE"
+    
+    parrot_debug "Rate limit check passed for user '$user' operation '$operation': $entry_count/$PARROT_RATE_LIMIT"
     return 0
 }
 
