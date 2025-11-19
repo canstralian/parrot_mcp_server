@@ -345,7 +345,7 @@ openvas_execute() {
     local target="$1"
     local config_name="$2"
     local scan_name="$3"
-    local output_basename="$4"
+    local output_basename="$(basename -- "$4")"
     local user="$5"
     local wait_for_completion="$6"
 
