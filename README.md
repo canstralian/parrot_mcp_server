@@ -38,6 +38,39 @@ Plugins extend capability without touching the core. Each module behaves like a 
 
 These layers behave less like a stack and more like a system in equilibrium.
 
+### Illustrated Architecture Diagram
+
+The Parrot MCP Server behaves like a coordinated system rather than a monolithic block. The diagram below captures the flow of signals, decisions, and transformations—an ecosystem of components in constant dialogue.
+
+                                     ┌─────────────────────────────┐
+                                     │         External Clients     │
+                                     │     (HTTP, WebSocket, CLI)   │
+                                     └───────────────┬──────────────┘
+                                                     │
+                                                     │ signals (I/O)
+                                          ┌──────────▼───────────┐
+                                          │     Signal Reactor     │
+                                          │  (Non-blocking core)   │
+                                          └──────────┬────────────┘
+                                                     │ dispatch
+                     ┌───────────────────────────────┼──────────────────────────────┐
+                     │                               │                              │
+              ┌──────▼────────┐             ┌────────▼───────────┐          ┌──────▼─────────┐
+              │   Security     │             │   Configuration     │          │    Plugin       │
+              │   Core         │             │    Bus              │          │   Modules       │
+              │ (Adaptive      │             │ (Dynamic Params)    │          │ (Extensions /   │
+              │  Immunity)     │             │                     │          │  Capabilities)  │
+              └──────┬─────────┘             └────────┬────────────┘          └──────┬──────────┘
+                     │ monitoring                        │ updates                     │ hooks
+                     └──────────────┬─────────────────────┴──────────────────────┬─────┘
+                                    │                                            │
+                           ┌────────▼────────────────────────────────────────────▼─────────┐
+                           │                     Observability Bus                          │
+                           │      (Structured Logs, Metrics, Tracing, Forensic Timelines)   │
+                           └────────────────────────────────────────────────────────────────┘
+
+This visualization turns what could be an abstract list of subsystems into a dynamic flow. Each part has a job; each job reinforces the others.
+
 ⸻
 
 ## Collaboration Through the Parrot OS Lens
