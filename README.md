@@ -40,7 +40,7 @@ These layers behave less like a stack and more like a system in equilibrium.
 
 ⸻
 
-Collaboration Through the Parrot OS Lens
+## Collaboration Through the Parrot OS Lens
 
 Parrot OS inspires a mindset rather than an instruction manual:
 	•	Observation as Insight
@@ -56,7 +56,7 @@ These patterns are about clarity, not intrusion—tools for shaping your own env
 
 ⸻
 
-Community Collaboration
+# Community Collaboration
 
 Parrot MCP Server grows best in a crowd of curious engineers.
 Whether you’re refining a subsystem, tuning performance, or proposing new behavior, your contribution strengthens the organism.
@@ -65,7 +65,7 @@ Issues, discussions, and pull requests aren’t maintenance—they’re how the 
 
 ⸻
 
-Roadmap
+## Roadmap
 
 Upcoming releases will focus on:
 	•	Expanding multilingual support for broader developer landscapes.
@@ -76,7 +76,7 @@ Each addition is another evolutionary trait.
 
 ⸻
 
-License
+# License
 
 This project is released under the MIT License.
 See the LICENSE￼ file for full details.
