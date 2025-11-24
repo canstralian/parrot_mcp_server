@@ -1,70 +1,77 @@
 # GitHub Copilot & Codex Configuration Guide for the Trading Bot Swarm
 
 ## Purpose and Scope
-- **Objective**: Establish a single source of truth for configuring GitHub Copilot and Codex so that every contributor receives consistent guidance, adheres to security defaults, and maintains high-quality automation for the Trading Bot Swarm.
-- **Applicability**: All contributors, maintainers, and automation bots operating in this repository or derivative services.
-- **Pair-programming expectation**: Treat Copilot/Codex as a disciplined collaborator. They must follow the same standards as human contributors—tests must pass, security guardrails stay enabled, and code review norms are respected.
+- **Objective**: Create a single, authoritative playbook for configuring GitHub Copilot and Codex so contributors and automation share the same standards across the Trading Bot Swarm ecosystem.
+- **Applicability**: All maintainers, contributors, release engineers, CI/CD pipelines, and service accounts interacting with this repository or downstream forks.
+- **Pair-programming expectation**: Treat Copilot/Codex as disciplined pair programmers with zero tolerance for partial solutions; suggestions must uphold security defaults, code quality, and observability requirements before they are accepted.
+- **Out-of-scope**: Cloud infrastructure rollout and environment provisioning are documented separately; this guide focuses on developer experience, automation behavior, and CI policy.
 
 ## Configuration Overview
 1. **Testing Philosophy**
-   - Run unit, integration, and simulation tests relevant to the modified modules.
-   - Prioritize determinism; prefer hermetic test fixtures for protocol message flows.
-   - Never skip failing tests; diagnose flakiness before merging.
+   - Run unit, integration, and simulation tests relevant to touched modules before merging.
+   - Favor deterministic fixtures for protocol message flows; record/playback external calls where possible.
+   - Do not skip failing or flaky tests. Investigate and deflake before merge.
+   - Capture coverage for critical trading strategies and MCP protocol edges.
 2. **Linting & Static Analysis**
-   - Enforce `shellcheck` and `shfmt` for all Bash scripts in `rpi-scripts/` and `scripts/`.
-   - Prevent Copilot/Codex from suggesting code that suppresses linters (e.g., `# shellcheck disable=SC...`) unless explicitly justified in the PR description.
-3. **Code Style**
-   - Prefer functional purity where possible; isolate side effects in adapters.
-   - Async paths must use `asyncio` primitives with explicit timeouts; propagate cancellation.
-   - Require type annotations on public functions and protocol boundaries.
+   - Enforce `shellcheck` and `shfmt` for Bash in `rpi-scripts/` and `scripts/`.
+   - Use the repository linters (e.g., `ruff`, `mypy`, `eslint`) where configured; do not suppress warnings without justification in the PR description.
+   - Prefer pre-commit hooks to keep formatting consistent before CI.
+3. **Code Style & Async Patterns**
+   - Keep side effects isolated in adapters; keep core logic functional and pure when practical.
+   - All public functions require type annotations; treat protocol boundaries as typed contracts.
+   - Async code must await tasks, propagate cancellations, and apply explicit timeouts to outbound calls.
+   - Prefer structured error handling over blanket exception catches; surface actionable messages with context IDs.
 4. **Security Defaults**
-   - Avoid storing secrets in code snippets; reference secrets via environment variables or secret managers.
-   - Enforce least-privilege IAM for any automation tokens referenced in examples.
-   - Use parameterized queries for SQL, and verify TLS by default for HTTP clients.
+   - Never embed secrets or tokens in code or tests; load from environment variables or secret managers.
+   - Apply least-privilege IAM for automation tokens; scope PATs to required repos and permissions only.
+   - Enforce TLS verification by default; use parameterized queries for data stores.
+   - Redact sensitive fields in logs and traces.
 5. **Logging & Observability**
-   - Use structured logging (`structlog`/`logging` with JSON formatter) with correlation IDs per request.
-   - Emit metrics via OpenTelemetry exporters; tag automated trades with strategy identifiers.
-   - Collect traces for long-running orchestration flows; add spans for external API calls.
+   - Emit structured logs (JSON) with correlation IDs per request and per trade execution.
+   - Instrument spans for external API calls and long-running orchestration; export traces via OpenTelemetry.
+   - Tag metrics with strategy identifiers and MCP component names; monitor latency/throughput regressions.
 6. **CI/CD Integration**
-   - All Copilot/Codex-generated patches must trigger the same CI gates as human contributions.
-   - Require green status checks before merge; block merges on failed security scans.
+   - Copilot/Codex-generated diffs must trigger the same CI gates as human changes.
+   - Block merges on failed quality gates, security scans, or missing approvals.
+   - Keep pipelines hermetic: pin tool versions and avoid network access where feasible during tests.
 7. **Version Control Discipline**
-   - Keep commits atomic; each commit should address a single intent and include passing tests.
-   - Write conventional commit messages for release automation (`feat:`, `fix:`, `chore:` etc.).
-   - Restrict force pushes to release maintainers; bots must push to dedicated branches.
+   - Use conventional commits (`feat:`, `fix:`, `chore:`, `docs:`, `ci:`, etc.) to support semantic release.
+   - Keep commits atomic and scoped to one intent; include tests relevant to that intent.
+   - Avoid force pushes on protected branches; automation uses dedicated branches with PRs.
 
 ## Custom Instruction Behavior
 ### Example Rules for Copilot & Codex
-- Never accept incomplete code; if unsure, request clarification.
-- Suggest test cases alongside implementation changes.
-- Highlight security-sensitive operations for reviewer attention.
-- Decline to auto-generate secrets or embed API keys.
+- Never provide incomplete code; if context is insufficient, ask for clarification or suggest guarded placeholders with TODOs.
+- Recommend or auto-generate tests alongside implementation changes.
+- Highlight security-sensitive operations (credentials, key management, signing) for reviewer attention.
+- Refuse to generate secrets, API keys, or hard-coded credentials.
+- Prefer safe defaults for timeouts, retries, and circuit-breaking in async workflows.
 
 ### Conceptual YAML Custom Instructions
 ```yaml
 copilot:
-  persona: "System automation engineer for MCP protocol on Raspberry Pi"
+  persona: "System automation engineer for the Trading Bot Swarm"
   behavior:
-    - "Act as a pair programmer that proposes complete, secure diffs."
+    - "Act as a pair programmer that proposes complete, secure diffs with tests."
     - "Refuse to generate or commit secrets."
-    - "Recommend tests (unit/integration) for each change."
+    - "Recommend unit/integration tests and observability updates for each change."
     - "Honor repository lint, type-check, and format rules."
-    - "Respect async best practices: await all tasks, propagate cancellations, set timeouts."
+    - "Respect async best practices: await tasks, propagate cancellations, set timeouts, and avoid unbounded concurrency."
   prompts:
-    testing: "Have you added or updated tests?"
-    security: "Are all credentials sourced from secrets management?"
-    observability: "Do logs and metrics capture MCP server operations and system automation events?"
+    testing: "Have you added or updated tests for trading strategies, protocols, and scripts?"
+    security: "Are credentials sourced from secrets management with least privilege?"
+    observability: "Do logs, metrics, and traces capture MCP server automation events?"
 
 codex:
   persona: "Automation gatekeeper"
   behavior:
-    - "Validate Copilot outputs against coding standards."
-    - "Block merges if lint/tests/security scans are failing."
-    - "Ignore documentation-only diffs when running test suites, but still lint markdown."
-    - "Flag async code lacking timeouts or exception handling."
+    - "Validate Copilot outputs against coding standards and security defaults."
+    - "Block merges if lint/tests/security scans fail or are missing."
+    - "Ignore runtime tests for documentation-only diffs but still run markdown linting/link checks."
+    - "Flag async code lacking timeouts, cancellation, or error propagation."
   pipelines:
     - name: "quality_gates"
-      runs: ["lint", "test", "type-check"]
+      runs: ["lint", "test", "type-check", "security-scan"]
       ignore:
         paths: ["**/*.md", "docs/**"]
         when: "no code files changed"
@@ -72,10 +79,10 @@ codex:
 
 ### Emphasis on Tests & Linters
 - Copilot/Codex must always recommend running tests and linters after code changes.
-- Documentation-only changes should skip runtime tests but still perform markdown linting and link checks.
+- Documentation-only changes should skip runtime test suites but must run markdown linting, link checks, and spell checks.
 
 ## GitHub Workflow: Lint & Test Automation
-Trigger: push or pull request to protected branches (`main`, `release/*`), excluding markdown-only changes.
+Trigger on pushes or pull requests to protected branches (`main`, `release/*`), while ignoring markdown-only changes.
 
 ```yaml
 name: quality-gate
@@ -93,15 +100,53 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
       - name: Lint shell scripts
         run: |
           shellcheck cli.sh scripts/*.sh rpi-scripts/*.sh
           shfmt -d cli.sh scripts/*.sh rpi-scripts/*.sh
-      - name: Run Bash test harness
-        run: ./rpi-scripts/test_mcp_local.sh
+      - name: Lint Python
+        run: |
+          ruff check .
+          mypy .
+      - name: Run tests
+        run: |
+          pytest --maxfail=1 --disable-warnings -q
 ```
 
 ## Best Practice Workflows
+
+### Semantic Release & Version Tagging
+```yaml
+name: release
+on:
+  push:
+    branches: [main]
+
+jobs:
+  semantic-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node for semantic-release
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install release tooling
+        run: |
+          npm ci
+      - name: Run semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
+```
 
 ### Security & Dependency Scanning
 ```yaml
@@ -116,7 +161,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Dependency audit
+      - name: Python dependency audit
+        run: pip install pip-audit && pip-audit --desc --strict
+      - name: Node dependency audit
         run: npm audit --audit-level=high
 
   codeql:
@@ -134,28 +181,31 @@ jobs:
 
 ## Contributor Guidelines
 1. **Proposal Stage**
-   - Open a GitHub issue describing the system automation feature, MCP protocol update, or infrastructure change.
-   - Provide risk assessment, telemetry impact, and validation plan.
+   - Open an issue describing the automation feature, MCP protocol update, or infrastructure change along with risk/impact analysis.
+   - Include validation and rollback plans plus observability hooks you intend to add.
 2. **Review Criteria**
-   - Completeness: implementation + tests + documentation updates where necessary.
-   - Safety: adherence to security defaults, dependency hygiene, and logging policy.
+   - Completeness: implementation, tests, and documentation updates where required.
+   - Safety: adherence to security defaults, dependency hygiene, and logging/metrics policies.
    - Performance: demonstrate latency/throughput impact for automation-critical paths.
+   - Release readiness: commits follow conventional format and CI pipelines are green.
 3. **Validation Process**
-   - Run `quality-gate` workflow locally or via GitHub Actions before requesting review.
-   - Attach evidence of tests/simulations for protocol or feature changes.
+   - Run `quality-gate` locally or via GitHub Actions before requesting review.
+   - Provide evidence of tests/simulations for protocol or strategy changes.
    - Obtain approvals from domain owners (automation, infra, security) prior to merge.
+   - Ensure semantic-release will classify the change correctly (check commit type and conventional scope).
 
 ## Troubleshooting & Optimization Tips
 - **Copilot suggestions are off-topic**: regenerate prompts with tighter context; reference the YAML custom instructions.
-- **Codex rejects merge despite passing tests**: ensure lint/static analysis logs are clean; check for skipped scans.
-- **Flaky shell tests**: use `timeout` to guard long-running scripts and provide deterministic input files or environment variables for reproducible results.
+- **Codex blocks merge despite passing tests**: ensure lint/static/security logs are clean; confirm markdown-only changes are excluded from runtime tests.
+- **Flaky shell tests**: apply `timeout` guards, use deterministic fixtures, and prefer hermetic mocks for external services.
 - **Security scans flag secrets**: rotate credentials, revoke leaked tokens, and document remediation steps.
-- **Performance regressions**: use shell profiling and tracing tools (e.g., `time`, `strace`, `bash -x`) and compare with baseline traces.
+- **Performance regressions**: benchmark with `time`, `strace`, and tracing; compare against baseline metrics.
+- **Semantic-release errors**: verify branch protection, token scopes, and that commit messages follow conventional format.
 
 ## Maintenance Schedule
-- Review this guide quarterly as part of regular repository maintenance.
-- Update after major tooling upgrades (new Python version, CI runner changes, or security policy revisions).
-- Track revisions via semantic versioning embedded in the document front matter (future enhancement).
+- Review this guide quarterly and after major tooling upgrades (new Python/Node versions, CI runner updates, security policy changes).
+- Track revisions via semantic versioning embedded in the document front matter (planned enhancement).
+- Archive superseded guidance but keep changelog entries for traceability.
 
 ## Closing Note
-Standardizing excellence across Copilot, Codex, and human contributors strengthens the reliability, performance, and safety of the Parrot MCP Server. Revisit these practices regularly to keep automation trustworthy and resilient.
+Standardizing excellence across Copilot, Codex, and human contributors strengthens the reliability, performance, and safety of the Trading Bot Swarm. Revisit these practices regularly to keep automation trustworthy and resilient.
