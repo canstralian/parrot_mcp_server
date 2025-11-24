@@ -1,11 +1,11 @@
 
 ⸻
 
-Parrot MCP Server
+# Parrot MCP Server
 
 High-performance orchestration for systems that think.
 
-Overview
+## Overview
 
 Parrot MCP Server is built for teams who design software the way engineers design circuits: clear inputs, predictable flows, and room for creative voltage. It handles concurrency at scale, shapes configuration dynamically, and anchors everything in a security model closer to an immune system than a firewall.
 
@@ -13,7 +13,7 @@ The server isn’t a collection of features—it’s an adaptive core you can gr
 
 ⸻
 
-Philosophy
+# Philosophy
 
 Every design choice follows a simple principle: empower builders while reducing friction.
 The server should disappear into the workflow, letting developers focus on shaping behavior, not wrestling infrastructure.
@@ -22,7 +22,7 @@ This project evolves like any living system: through feedback, iteration, and th
 
 ⸻
 
-Architecture
+## Architecture
 
 Signal Reactor — The Nervous System
 Connections and events are treated as signals flowing through a non-blocking reactor. It scales as naturally as widening a highway during peak traffic.
