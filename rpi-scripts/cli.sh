@@ -134,15 +134,19 @@ menu() {
 				# shellcheck disable=SC2086
 				set -- $args
 				hashed_first_arg=$(hash_arg "$1")
-				"$SCRIPT" "$hashed_first_arg" "${@:2}" || {
-					log_error "Script '$choice' exited with error code $? (menu mode)"
-					echo "[ERROR] Script '$choice' exited with error code $?"
-				}
+				"$SCRIPT" "$hashed_first_arg" "${@:2}" || script_exit=$?
+				if [ -n "${script_exit:-}" ] && [ "$script_exit" -ne 0 ]; then
+					log_error "Script '$choice' exited with error code $script_exit (menu mode)"
+					echo "[ERROR] Script '$choice' exited with error code $script_exit"
+					unset script_exit
+				fi
 			else
-				"$SCRIPT" || {
-					log_error "Script '$choice' exited with error code $? (menu mode)"
-					echo "[ERROR] Script '$choice' exited with error code $?"
-				}
+				"$SCRIPT" || script_exit=$?
+				if [ -n "${script_exit:-}" ] && [ "$script_exit" -ne 0 ]; then
+					log_error "Script '$choice' exited with error code $script_exit (menu mode)"
+					echo "[ERROR] Script '$choice' exited with error code $script_exit"
+					unset script_exit
+				fi
 			fi
 		else
 			echo "[ERROR] Script '$choice' not found or not executable."
@@ -198,5 +202,4 @@ main() {
 # Trap unexpected errors and log them.
 # Exit codes 0 (success), 2 (usage error, e.g. from 'getopts'), and 130 (SIGINT/Ctrl-C) are considered "expected" and will not trigger error logging.
 # All other exit codes are treated as unexpected and will be logged for auditability.
-# shellcheck disable=SC2154
 trap 'ret=$?; if [ "$ret" -ne 0 ] && [ "$ret" -ne 2 ] && [ "$ret" -ne 130 ]; then log_error "Unexpected error (exit code $ret) in cli.sh"; echo "\n[ERROR] An unexpected error occurred. Exiting."; fi' EXIT
