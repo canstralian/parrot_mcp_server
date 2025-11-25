@@ -376,8 +376,9 @@ teardown() {
 
 @test "SECURITY: openvas_scan prevents command injection in profile" {
 	run bash scripts/openvas_scan.sh --profile "Full; cat /etc/passwd"
-	# Script should handle safely
-	[ "$status" -eq 0 ] || [ "$status" -eq 1 ]
+	# Script should reject malicious input and exit with error
+	[ "$status" -eq 1 ]
+	[[ "$output" == *"Invalid scan profile"* ]]
 }
 
 @test "SECURITY: openvas_scan cleans up password from memory" {
