@@ -441,7 +441,9 @@ main() {
 	# Create scan task
 	local task_id
 	task_id="task_$(date +%Y%m%d_%H%M%S)"
-	if ! openvas_create_task "Scan_${TARGET}_$(date +%Y%m%d)" "$target_id" "$PROFILE"; then
+	local safe_target
+	safe_target=$(echo "$TARGET" | tr -cd '0-9a-zA-Z._-')
+	if ! openvas_create_task "Scan_${safe_target}_$(date +%Y%m%d)" "$target_id" "$PROFILE"; then
 		parrot_error "Failed to create scan task"
 		return 1
 	fi
