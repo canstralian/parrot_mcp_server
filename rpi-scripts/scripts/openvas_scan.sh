@@ -477,8 +477,12 @@ main() {
 
 	# Send notification if configured
 	if [ -n "$PARROT_NOTIFY_EMAIL" ]; then
+		local safe_target
+		safe_target=$(parrot_sanitize_input "$TARGET")
+		local safe_report
+		safe_report=$(parrot_sanitize_input "$report_file")
 		parrot_send_notification "OpenVAS Scan Completed" \
-			"Vulnerability scan completed for target: $TARGET\nReport: $report_file"
+			"Vulnerability scan completed for target: $safe_target\nReport: $safe_report"
 	fi
 
 	return 0
