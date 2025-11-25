@@ -341,7 +341,7 @@ TOTAL                     |          | 1 read
 2. **Memory Scraping**: Mitigated by cleanup trap and password overwriting
 3. **Password File Tampering**: Detected by permission and content validation
 4. **Weak Passwords**: Prevented by minimum length requirement
-5. **Command Injection**: Prevented by proper quoting and input validation
+5. **Command Injection**: Mitigated by proper quoting; input validation recommended for production use
 
 ### Best Practices
 
