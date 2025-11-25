@@ -368,8 +368,8 @@ teardown() {
 
 @test "SECURITY: openvas_scan prevents command injection in target" {
 	run bash scripts/openvas_scan.sh --target "192.168.1.1; rm -rf /"
-	# Script should handle safely (may complete or reject malicious input)
-	[ "$status" -eq 0 ] || [ "$status" -eq 1 ]
+	# Script should reject malicious input (must exit non-zero)
+	[ "$status" -ne 0 ]
 	# System should still be intact
 	[ -d /bin ]
 }
