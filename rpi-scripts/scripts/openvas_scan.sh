@@ -70,7 +70,7 @@ read_openvas_password() {
 	fi
 
 	# Read password from file (only once!)
-	OPENVAS_PASSWORD=$(cat "$OPENVAS_PASSWORD_FILE")
+	OPENVAS_PASSWORD=$(head -n 1 "$OPENVAS_PASSWORD_FILE")
 
 	# Validate password is not empty
 	if [ -z "$OPENVAS_PASSWORD" ]; then
