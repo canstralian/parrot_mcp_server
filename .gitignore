@@ -16,3 +16,9 @@ rpi-scripts/logs/*.pid
 # OS files
 .DS_Store
 Thumbs.db
+
+# OpenVAS Integration - Security sensitive files
+.openvas_password
+*_password
+scan_results/
+*.openvas
