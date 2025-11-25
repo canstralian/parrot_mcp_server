@@ -465,8 +465,11 @@ main() {
 	fi
 
 	# Generate report
+	# Sanitize TARGET for use in filename (prevent path traversal/file injection)
+	local safe_target
+	safe_target=$(echo "$TARGET" | tr -cd '0-9a-zA-Z._-')
 	local report_file
-	report_file="${SCAN_RESULTS_DIR}/scan_${TARGET}_$(date +%Y%m%d_%H%M%S).${REPORT_FORMAT,,}"
+	report_file="${SCAN_RESULTS_DIR}/scan_${safe_target}_$(date +%Y%m%d_%H%M%S).${REPORT_FORMAT,,}"
 	if ! openvas_generate_report "$task_id" "$REPORT_FORMAT" "$report_file"; then
 		parrot_error "Failed to generate report"
 		return 1
