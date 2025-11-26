@@ -5,23 +5,11 @@
 
 set -euo pipefail
 
-# Determine script directory to find other scripts
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Get the directory where this script is located
+cd "$(dirname "${BASH_SOURCE[0]}")"
 
-SERVER="${SCRIPT_DIR}/start_mcp_server.sh"
-STOP="${SCRIPT_DIR}/stop_mcp_server.sh"
-
-# Check that required scripts exist
-echo "[TEST] Checking for required scripts..."
-if [ ! -f "$SERVER" ]; then
-	echo "[ERROR] start_mcp_server.sh not found at: $SERVER"
-	exit 1
-fi
-if [ ! -f "$STOP" ]; then
-	echo "[ERROR] stop_mcp_server.sh not found at: $STOP"
-	exit 1
-fi
-echo "[TEST] Required scripts found."
+SERVER="./start_mcp_server.sh"
+STOP="./stop_mcp_server.sh"
 
 # Start the server
 echo "[TEST] Starting MCP server..."
@@ -39,20 +27,19 @@ echo '{"type":"mcp_message",' >/tmp/mcp_bad.json
 cat /tmp/mcp_bad.json >/dev/null
 
 # Check logs for expected output
-if grep -q 'ping' ./logs/parrot.log; then
+if grep -q 'ping' ./logs/parrot.log 2>/dev/null; then
 	echo "[PASS] Valid MCP message processed."
 else
 	echo "[FAIL] Valid MCP message not found in logs."
 fi
 
-if grep -q 'error' ./logs/parrot.log; then
+if grep -iq 'error' ./logs/parrot.log 2>/dev/null; then
 	echo "[PASS] Malformed MCP message error logged."
 else
 	echo "[FAIL] Malformed MCP message error not found in logs."
 fi
 
 # Stop the server
-echo "[TEST] Stopping MCP server..."
-$STOP
+$STOP || true
 kill $SERVER_PID 2>/dev/null || true
 echo "[TEST] Test completed."

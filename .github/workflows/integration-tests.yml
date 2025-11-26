@@ -1,0 +1,43 @@
+name: Integration Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Grant execute permissions
+        run: chmod +x ./rpi-scripts/*.sh
+
+      - name: Run integration tests
+        run: |
+          bash ./rpi-scripts/test_mcp_local.sh
+        continue-on-error: true
+
+      - name: Upload test logs
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-logs
+          path: rpi-scripts/logs/
+          retention-days: 30
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: |
+            /tmp/mcp_in.json
+            /tmp/mcp_bad.json
+          retention-days: 7

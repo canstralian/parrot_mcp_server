@@ -1,122 +1,118 @@
-# 🦜 Parrot MCP Server
-
-[![Build Status](https://github.com/canstralian/parrot_mcp_server/actions/workflows/build.yml/badge.svg)](https://github.com/canstralian/parrot_mcp_server/actions/workflows/build.yml)
-[![Tests](https://github.com/canstralian/parrot_mcp_server/actions/workflows/test.yml/badge.svg)](https://github.com/canstralian/parrot_mcp_server/actions/workflows/test.yml)
-[![Shell Lint](https://github.com/canstralian/parrot_mcp_server/actions/workflows/lint.yml/badge.svg)](https://github.com/canstralian/parrot_mcp_server/actions/workflows/lint.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/canstralian/parrot_mcp_server/issues)
-[![Built with ❤️ by Humans and Parrots](https://img.shields.io/badge/built%20with-%E2%9D%A4%EF%B8%8F%20by%20parrots-blueviolet)](#)
-
-**Hardware setup? See [`HARDWARE_BOM.md`](./HARDWARE_BOM.md) for a complete bill of materials and assembly checklist for the Rackmate T0 Parrot MCP Edge Node.**
-A lightweight, modular, and hacker-friendly **Model Context Protocol (MCP)** server designed to make your AI integrations sing.  
-Built for tinkerers, researchers, and developers who believe that communication between machines should be as elegant as parrots mimicking poetry.
-
----
-
-## 🚀 What Is This?
-
-**Parrot MCP Server** is a minimal yet extensible implementation of the **Model Context Protocol**, enabling structured message exchange between AI clients and local tools or services.  
-Think of it as a translation layer that helps your AI agents "talk" to your system — whether it’s running on a Raspberry Pi, a cloud VM, or your secret lab server.
-
-It’s built in **Shell** for portability and clarity, with simple scripts to configure, launch, and manage model-context endpoints.
-
----
-
-## 🧩 Features
-
-- **MCP-compliant core** – speaks the official Model Context Protocol fluently.  
-- **Lightweight shell design** – runs anywhere Bash runs (including tiny SBCs).  
-- **Modular structure** – extend with your own tools or agents.  
-- **Zero dependencies** – no Python virtualenvs or Node modules needed.  
-- **Perfect for experimentation** – hack, fork, break, and rebuild with joy.
-
----
-
-## 🛠️ Installation
-
-Clone and run locally:
-
-```bash
-git clone https://github.com/canstralian/parrot_mcp_server.git
-cd parrot_mcp_server
-chmod +x ./rpi-scripts/*.sh
-```
-
----
-
-## 🧠 Philosophy
-
-This project is an invitation — not a product.
-Its mission is to demystify the infrastructure that connects AIs to their contexts.
-In a world of opaque LLM integrations, Parrot MCP aims for clarity, transparency, and hackability.
-
-The best way to understand a system is to build it, break it, and build it again.
-
----
-
-## 🤝 Contributing
-
-We welcome pull requests, issue reports, and wild ideas.
-	1.	Fork the repo
-	2.	Create a feature branch (git checkout -b feature/your-idea)
-	3.	Commit changes with meaning (git commit -m "Add rainbow squawk support")
-	4.	Push and open a PR
-
-Please follow good shell practices:
-	•	Use portable Bash syntax (#!/usr/bin/env bash)
-	•	Comment clearly, especially for edge-case handling
-	•	Keep functions small and composable
-
----
-
-## 🧪 Testing
-
-If you have a Raspberry Pi or similar SBC:
-
-./rpi-scripts/test_mcp_local.sh
-
-Want to run tests headless on CI/CD?
-Integrate with GitHub Actions or any Bash-compatible runner — the scripts are designed to work cleanly in isolated environments.
-
----
-
-## 🦜 Community and Collaboration
-
-This project thrives on curiosity.
-You don’t need to be a veteran developer to join — only to care about making AI tools more open, more understandable, and more fun.
-
-Join discussions, open issues, and share insights.
-If you make something weird or brilliant, please tell us — parrots love to echo brilliance.
-
----
-
-## 🪶 License
-
-Released under the MIT License.
-You’re free to use, modify, and redistribute — just keep the credits intact.
-
----
-
-## 🌈 Future Directions
-
-- Add Python and Go bindings for hybrid setups
-- Support for WebSocket-based AI toolchains
-- Optional encryption layer for secure context exchange
-- Visualization dashboard for active context sessions
-
----
-
-## 🗣️ Final Words
-
-This isn’t just a server — it’s a conversation starter between humans, code, and context.
-The MCP is young, and the ecosystem needs explorers.
-Let’s make open source speak louder, clearer, and stranger together.
-
----
-
-"When machines talk, may they do so in the voice of a parrot — endlessly curious, delightfully weird, and never dull."
 
 ⸻
 
+# Parrot MCP Server
 
+High-performance orchestration for systems that think.
+
+## Overview
+
+Parrot MCP Server is built for teams who design software the way engineers design circuits: clear inputs, predictable flows, and room for creative voltage. It handles concurrency at scale, shapes configuration dynamically, and anchors everything in a security model closer to an immune system than a firewall.
+
+The server isn’t a collection of features—it’s an adaptive core you can grow with.
+
+⸻
+
+# Philosophy
+
+Every design choice follows a simple principle: empower builders while reducing friction.
+The server should disappear into the workflow, letting developers focus on shaping behavior, not wrestling infrastructure.
+
+This project evolves like any living system: through feedback, iteration, and the strange joy of shared problem-solving. The community is invited to guide the organism as it grows.
+
+⸻
+
+## Architecture
+
+Signal Reactor — The Nervous System
+Connections and events are treated as signals flowing through a non-blocking reactor. It scales as naturally as widening a highway during peak traffic.
+
+Configuration Bus — The Feedback Loop
+Parameters adjust behavior without shutdowns or migrations. Think of it as tuning the server’s chemical balance: small shifts, large effects, zero disruption.
+
+Security Core — Adaptive Immunity
+Authentication, sandboxing, and observability form a self-monitoring security layer that responds to anomalies rather than merely blocking them.
+
+Plugin Modules — Skill Acquisition
+Plugins extend capability without touching the core. Each module behaves like a contained experiment: isolated, reversible, and safe to iterate on.
+
+These layers behave less like a stack and more like a system in equilibrium.
+
+### Illustrated Architecture Diagram
+
+The Parrot MCP Server behaves like a coordinated system rather than a monolithic block. The diagram below captures the flow of signals, decisions, and transformations—an ecosystem of components in constant dialogue.
+
+                                     ┌─────────────────────────────┐
+                                     │         External Clients     │
+                                     │     (HTTP, WebSocket, CLI)   │
+                                     └───────────────┬──────────────┘
+                                                     │
+                                                     │ signals (I/O)
+                                          ┌──────────▼───────────┐
+                                          │     Signal Reactor     │
+                                          │  (Non-blocking core)   │
+                                          └──────────┬────────────┘
+                                                     │ dispatch
+                     ┌───────────────────────────────┼──────────────────────────────┐
+                     │                               │                              │
+              ┌──────▼────────┐             ┌────────▼───────────┐          ┌──────▼─────────┐
+              │   Security     │             │   Configuration     │          │    Plugin       │
+              │   Core         │             │    Bus              │          │   Modules       │
+              │ (Adaptive      │             │ (Dynamic Params)    │          │ (Extensions /   │
+              │  Immunity)     │             │                     │          │  Capabilities)  │
+              └──────┬─────────┘             └────────┬────────────┘          └──────┬──────────┘
+                     │ monitoring                        │ updates                     │ hooks
+                     └──────────────┬─────────────────────┴──────────────────────┬─────┘
+                                    │                                            │
+                           ┌────────▼────────────────────────────────────────────▼─────────┐
+                           │                     Observability Bus                          │
+                           │      (Structured Logs, Metrics, Tracing, Forensic Timelines)   │
+                           └────────────────────────────────────────────────────────────────┘
+
+This visualization turns what could be an abstract list of subsystems into a dynamic flow. Each part has a job; each job reinforces the others.
+
+⸻
+
+## Collaboration Through the Parrot OS Lens
+
+Parrot OS inspires a mindset rather than an instruction manual:
+	•	Observation as Insight
+Use safe packet-inspection and logging tools to visualize flow, latency, and malformed traffic. Debugging becomes a kind of field anthropology.
+	•	Integrity as Ritual
+Verify releases with cryptographic hashes—simple, reliable, and expressive. Each artifact carries a fingerprint of trust.
+	•	Forensics as Storytelling
+The observability pipeline records events as coherent timelines so that debugging feels like reading a narrative, not parsing static.
+	•	Isolation as Creativity
+Plugins operate inside lightweight sandboxes. This keeps the system stable and gives contributors the freedom to experiment boldly.
+
+These patterns are about clarity, not intrusion—tools for shaping your own environment rather than probing someone else’s.
+
+⸻
+
+# Community Collaboration
+
+Parrot MCP Server grows best in a crowd of curious engineers.
+Whether you’re refining a subsystem, tuning performance, or proposing new behavior, your contribution strengthens the organism.
+
+Issues, discussions, and pull requests aren’t maintenance—they’re how the server learns.
+
+⸻
+
+## Roadmap
+
+Upcoming releases will focus on:
+	•	Expanding multilingual support for broader developer landscapes.
+	•	Seamless integration with mainstream CI/CD pipelines.
+	•	Community-driven design sessions, events, and experiments.
+
+Each addition is another evolutionary trait.
+
+⸻
+
+# License
+
+This project is released under the MIT License.
+See the LICENSE￼ file for full details.
+
+⸻
 

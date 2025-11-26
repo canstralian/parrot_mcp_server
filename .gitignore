@@ -1,15 +1,18 @@
 # Log files
 *.log
-logs/
-rpi-scripts/logs/
+logs/*.log
+rpi-scripts/logs/*.log
 
 # PID files
 *.pid
+logs/*.pid
+rpi-scripts/logs/*.pid
 
 # Temporary files
-/tmp/
 *.tmp
+*.swp
+*~
 
-# OS-specific files
+# OS files
 .DS_Store
 Thumbs.db
