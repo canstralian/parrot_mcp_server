@@ -268,10 +268,10 @@ source "${SCRIPT_DIR}/common_config.sh"
 # Access variables
 parrot_info "Logging to: $PARROT_SERVER_LOG"
 
-# Use validation functions
-parrot_validate_email "$email" || parrot_die "Invalid email"
-parrot_validate_path "$file_path" || parrot_die "Invalid path"
-parrot_validate_json "$json_file" || parrot_die "Invalid JSON"
+# Use validation functions with explicit error handling
+parrot_validate_email "$email" || { parrot_error "Invalid email"; exit 1; }
+parrot_validate_path "$file_path" || { parrot_error "Invalid path"; exit 1; }
+parrot_validate_json "$json_file" || { parrot_error "Invalid JSON"; exit 1; }
 ```
 
 ---
