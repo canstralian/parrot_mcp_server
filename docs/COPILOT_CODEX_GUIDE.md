@@ -8,7 +8,7 @@
 
 ## Configuration Overview
 1. **Testing Philosophy**
-   - Run unit, integration, contract, and simulation tests relevant to touched modules before merging.
+   - Run unit, integration, and simulation tests relevant to touched modules before merging.
    - Favor deterministic fixtures for protocol message flows; record/playback external calls where possible.
    - Do not skip failing or flaky tests. Investigate and deflake before merge.
    - Capture coverage for critical MCP protocol edges and server operations; block on meaningful coverage regressions.
