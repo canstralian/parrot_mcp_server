@@ -195,7 +195,7 @@ jobs:
    - Release readiness: commits follow conventional format, CI pipelines are green, and semantic-release will classify correctly.
 3. **Validation Process**
    - Run `quality-gate` locally or via GitHub Actions before requesting review.
-   - Provide evidence of tests/simulations for protocol or strategy changes, including failure cases and rollback drills.
+   - Provide evidence of tests/simulations for protocol or server behavior changes, including failure cases and rollback drills.
    - Obtain approvals from domain owners (automation, infra, security) prior to merge.
    - Ensure semantic-release scope and commit types match intent; verify generated changelog entries in dry runs.
 
