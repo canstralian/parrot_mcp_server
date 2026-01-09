@@ -155,19 +155,19 @@ source "${SCRIPT_DIR}/common_config.sh"
 
 # Initialize logging
 parrot_init_log_dir
-parrot_info "MSG_ID_001" "Script started"
+parrot_info "Script started"
 
 # Main logic here
 main() {
     # Use utility functions from common_config.sh
     parrot_validate_email "$email" || parrot_die "Invalid email"
 
-    # Log with message IDs
-    parrot_info "MSG_ID_002" "Processing data"
+    # Log progress
+    parrot_info "Processing data"
 
     # Handle errors explicitly
     if ! some_command; then
-        parrot_error "MSG_ID_ERR_001" "Command failed"
+        parrot_error "Command failed"
         return 1
     fi
 }
