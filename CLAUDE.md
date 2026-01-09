@@ -419,7 +419,7 @@ eval "ls $user_input"
 if parrot_validate_path "$user_input"; then
     ls -la "$user_input"
 else
-    parrot_error "ERR_001" "Invalid path: $user_input"
+    parrot_error "Invalid path: $user_input"
     return 1
 fi
 ```
