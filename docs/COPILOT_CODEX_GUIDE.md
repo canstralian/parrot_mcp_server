@@ -11,7 +11,7 @@
    - Run unit, integration, contract, and simulation tests relevant to touched modules before merging.
    - Favor deterministic fixtures for protocol message flows; record/playback external calls where possible.
    - Do not skip failing or flaky tests. Investigate and deflake before merge.
-   - Capture coverage for critical trading strategies and MCP protocol edges; block on meaningful coverage regressions.
+   - Capture coverage for critical MCP protocol edges and server operations; block on meaningful coverage regressions.
 2. **Linting & Static Analysis**
    - Enforce `shellcheck` and `shfmt` for Bash in `rpi-scripts/` and `scripts/`.
    - Use repository linters (e.g., `ruff`, `mypy`, `eslint`) where configured; do not suppress warnings without justification in the PR description.
