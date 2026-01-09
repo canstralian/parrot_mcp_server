@@ -102,20 +102,8 @@ parrot_mcp_server/
 
 2. **Start the Server**
    ```bash
-   ./rpi-scripts/start_mcp_server.sh
-   tail -f ./logs/parrot.log  # Monitor runtime
-   ```
-
-3. **Test Locally**
-   ```bash
-   ./rpi-scripts/test_mcp_local.sh
-   ```
-
-4. **Run Utility Scripts**
-   ```bash
-   ./rpi-scripts/cli.sh <script_name> [args]
-   # Example:
-   ./rpi-scripts/cli.sh health_check
+   ./start_mcp_server.sh
+   tail -f ../logs/parrot.log  # Monitor runtime
    ```
 
 ### Development Cycle
