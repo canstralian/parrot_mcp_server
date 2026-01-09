@@ -14,7 +14,7 @@
    - Capture coverage for critical MCP protocol edges and server operations; block on meaningful coverage regressions.
 2. **Linting & Static Analysis**
    - Enforce `shellcheck` and `shfmt` for Bash in `rpi-scripts/` and `scripts/`.
-   - Use repository linters (e.g., `ruff`, `mypy`, `eslint`) where configured; do not suppress warnings without justification in the PR description.
+   - Only `shellcheck` and `shfmt` are enforced in CI; do not suppress warnings without justification in the PR description.
    - Prefer pre-commit hooks to keep formatting consistent before CI; pin tool versions in CI to avoid drift.
 3. **Code Style & Async Patterns**
    - Keep side effects isolated in adapters; keep core logic functional and pure when practical.
