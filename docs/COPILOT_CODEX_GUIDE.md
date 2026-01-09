@@ -215,4 +215,4 @@ jobs:
 - Align updates with MCP protocol revisions and infrastructure drift remediation cycles.
 
 ## Closing Note
-Standardizing excellence across Copilot, Codex, and human contributors strengthens the reliability, performance, and safety of the Trading Bot Swarm. Revisit these practices regularly to keep automation trustworthy and resilient.
+Standardizing excellence across Copilot, Codex, and human contributors strengthens the reliability, performance, and safety of the Parrot MCP Server and its MCP protocol automation. Revisit these practices regularly to keep automation trustworthy and resilient.
