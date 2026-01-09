@@ -160,7 +160,7 @@ parrot_info "Script started"
 # Main logic here
 main() {
     # Use utility functions from common_config.sh
-    parrot_validate_email "$email" || parrot_die "Invalid email"
+    parrot_validate_email "$email" || { parrot_error "MSG_ID_ERR_INVALID_EMAIL" "Invalid email"; return 1; }
 
     # Log progress
     parrot_info "Processing data"
