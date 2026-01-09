@@ -27,7 +27,7 @@
    - Enforce TLS verification by default; use parameterized queries for data stores; sign and verify artifacts in CI.
    - Redact sensitive fields in logs and traces; ensure rotated credentials invalidate prior tokens.
 5. **Logging & Observability**
-   - Emit structured logs (JSON) with correlation IDs per request and per trade execution.
+   - Emit structured logs (JSON) with correlation IDs per request and per MCP message handling.
    - Instrument spans for external API calls and long-running orchestration; export traces via OpenTelemetry.
    - Tag metrics with strategy identifiers and MCP component names; monitor latency/throughput regressions and surface SLO dashboards.
    - Include diagnostic context (version tag, commit SHA, environment) in logs and traces to simplify incident response.
