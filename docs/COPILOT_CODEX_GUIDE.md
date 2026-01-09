@@ -183,32 +183,6 @@ jobs:
       - uses: gitleaks/gitleaks-action@v2
 ```
 
-### CI/CD Guardrails for Infrastructure Changes
-```yaml
-name: infra-changes
-on:
-  pull_request:
-    branches: [main, "release/*"]
-    paths:
-      - "infra/**"
-      - "deploy/**"
-
-jobs:
-  plan-and-validate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Validate Terraform
-        run: terraform fmt -check && terraform validate
-      - name: Terraform plan
-        env:
-          TF_CLOUD_TOKEN: ${{ secrets.TF_CLOUD_TOKEN }}
-        run: terraform plan -no-color
-      - name: Policy checks
-        run: |
-          opa eval --fail-defined -i policy/inputs.json -d policy
-```
-
 ## Contributor Guidelines
 1. **Proposal Stage**
    - Open an issue describing the automation feature, MCP protocol update, or infrastructure change along with risk/impact analysis.
