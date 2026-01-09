@@ -451,7 +451,7 @@ fi
    ```
 
 5. **Add Tests**
-   - Add test cases to `tests/` or `test_mcp_local.sh`
+   - Add test cases to `rpi-scripts/tests/` or `rpi-scripts/test_mcp_local.sh`
 
 6. **Document**
    - Add usage comments in script header
