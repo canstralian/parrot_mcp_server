@@ -191,7 +191,7 @@ jobs:
 2. **Review Criteria**
    - Completeness: implementation, tests, and documentation updates where required.
    - Safety: adherence to security defaults, dependency hygiene, and logging/metrics policies.
-   - Performance: demonstrate latency/throughput impact for automation-critical paths with reproducible benchmarks.
+   - Performance: demonstrate latency/throughput impact for automation-critical paths using available shell tools (e.g., `time`, `strace`, logging); formal benchmarking infrastructure is not required.
    - Release readiness: commits follow conventional format, CI pipelines are green, and semantic-release will classify correctly.
 3. **Validation Process**
    - Run `quality-gate` locally or via GitHub Actions before requesting review.
