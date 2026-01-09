@@ -544,7 +544,7 @@ Before submitting changes, verify:
 - [ ] Script has proper shebang: `#!/usr/bin/env bash`
 - [ ] Error handling: `set -euo pipefail` present
 - [ ] Sources `common_config.sh` if needed
-- [ ] Uses `parrot_*` logging functions with message IDs
+- [ ] Uses `parrot_*` logging functions (message IDs are auto-generated; pass only message content)
 - [ ] Input validation for user-supplied data
 - [ ] Variables are quoted: `"$var"`
 - [ ] Script is executable: `chmod +x`
