@@ -312,8 +312,8 @@ tail -f logs/parrot.log
 # Search for errors
 grep "ERROR" logs/parrot.log
 
-# Filter by message ID
-grep "MSG_STARTUP" logs/parrot.log
+# Filter by startup messages (search by content, not numeric ID)
+grep "startup" logs/parrot.log
 
 # View last 100 lines
 tail -n 100 logs/parrot.log
