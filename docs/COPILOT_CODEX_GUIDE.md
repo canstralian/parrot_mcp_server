@@ -206,7 +206,7 @@ jobs:
         run: terraform plan -no-color
       - name: Policy checks
         run: |
-          opa eval --fail-defined -i policy/inputs.json -d policy --data policy
+          opa eval --fail-defined -i policy/inputs.json -d policy
 ```
 
 ## Contributor Guidelines
