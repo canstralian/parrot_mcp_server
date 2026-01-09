@@ -280,12 +280,12 @@ parrot_validate_json "$json_file" || { parrot_error "Invalid JSON"; exit 1; }
 
 ### Structured Logging
 
-All logs use structured format with message IDs for traceability:
+All logs use structured format with auto-generated numeric message IDs (derived from timestamps) for traceability:
 
 ```bash
-parrot_info "MSG_STARTUP_001" "MCP Server starting on port $PARROT_MCP_PORT"
-parrot_warn "MSG_DISK_001" "Disk usage at ${usage}% exceeds threshold"
-parrot_error "MSG_ERR_001" "Failed to process message: $error_msg"
+parrot_info "MCP Server starting on port $PARROT_MCP_PORT"
+parrot_warn "Disk usage at ${usage}% exceeds threshold"
+parrot_error "Failed to process message: $error_msg"
 ```
 
 ### Log Levels
