@@ -122,7 +122,7 @@ parrot_mcp_server/
 
 1. **Read Before Modifying**: Always read existing code before making changes
 2. **Follow MCP Spec**: All protocol-related changes must comply with the official MCP specification
-3. **Write Tests**: Add tests to `tests/` or extend `test_mcp_local.sh`
+3. **Write Tests**: Add tests to rpi-scripts/tests/ or extend ./rpi-scripts/test_mcp_local.sh
 4. **Lint & Format**: Run ShellCheck and shfmt before committing
 5. **Log Everything**: Use structured logging with message IDs
 6. **Document Edge Cases**: Comment protocol boundaries and error handling
