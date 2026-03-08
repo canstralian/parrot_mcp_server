@@ -118,40 +118,61 @@ parrot_format_error_response() {
     local expected="${5:-}"
     # shellcheck disable=SC2119
     local request_id="${6:-$(parrot_generate_request_id)}"
-    
+
     local error_name
     error_name="$(parrot_error_code_to_name "$code")"
-    
+
     local timestamp
     timestamp="$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
-    
-    # Build details object
-    local details="{}"
-    if [ -n "$field" ]; then
-        details="{\"field\":\"$field\""
-        if [ "$provided" != "null" ]; then
-            details="$details,\"provided\":\"$provided\""
-        else
-            details="$details,\"provided\":null"
-        fi
-        if [ -n "$expected" ]; then
-            details="$details,\"expected\":\"$expected\""
-        fi
-        details="$details}"
+
+    # Build error response using jq for proper JSON encoding of all fields
+    # Note: this intentionally preserves the semantics of the previous implementation:
+    # - details is {} when no field is provided
+    # - provided is JSON null when the shell variable equals the string "null"
+    # - expected is omitted from details when empty
+    local jq_args
+
+    # Base jq arguments with safely encoded string and numeric values
+    jq_args=(
+        jq -n
+        --arg code "$error_name"
+        --arg message "$message"
+        --arg request_id "$request_id"
+        --arg timestamp "$timestamp"
+        --arg field "$field"
+        --arg expected "$expected"
+        --argjson exit_code "$code"
+    )
+
+    # Handle provided specially so that the default "null" becomes a JSON null literal
+    if [ "$provided" = "null" ]; then
+        jq_args+=(--argjson provided null)
+    else
+        jq_args+=(--arg provided "$provided")
     fi
-    
-    # Build error response
-    cat <<EOF
-{
-  "error": {
-    "code": "$error_name",
-    "exit_code": $code,
-    "message": "$message",
-    "details": $details,
-    "request_id": "$request_id",
-    "timestamp": "$timestamp"
-  }
-}
+
+    "${jq_args[@]}" '
+      {
+        error: {
+          code: $code,
+          exit_code: $exit_code,
+          message: $message,
+          details: (
+            if $field == "" then
+              {}
+            else
+              (
+                {field: $field}
+                + (if $provided == null then {provided: null} else {provided: $provided} end)
+                + (if $expected == "" then {} else {expected: $expected} end)
+              )
+            end
+          ),
+          request_id: $request_id,
+          timestamp: $timestamp
+        }
+      }
+    '
 EOF
 }
 
