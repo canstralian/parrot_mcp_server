@@ -1,0 +1,5 @@
+{
+    "svn.ignoreMissingSvnWarning": true,
+    "snyk.advanced.autoSelectOrganization": true,
+    "DockerRun.DisableAutoGenerateConfig": true
+}
