@@ -453,9 +453,64 @@ parrot_rollback_checkpoint() {
         return 1
     fi
     
-    # Load checkpoint state
-    # shellcheck disable=SC1090
-    source "$checkpoint_file"
+    # Load checkpoint state safely without sourcing executable content.
+    # The checkpoint file is expected to contain simple KEY=VALUE lines such as:
+    #   timestamp=...
+    #   pwd=...
+    #   user=...
+    #   PARROT_FOO=...
+    #
+    # To avoid arbitrary code execution, we:
+    #   - Parse each line as data (key/value),
+    #   - Apply a strict allowlist on variable names,
+    #   - Assign values without evaluation or command substitution.
+    local key value
+    local checkpoint_pwd=""
+    
+    # Read the checkpoint file line by line.
+    while IFS='=' read -r key value; do
+        # Skip empty keys/lines
+        [ -z "${key:-}" ] && continue
+        
+        case "$key" in
+            # Remember working directory to restore later
+            pwd)
+                checkpoint_pwd="$value"
+                ;;
+            
+            # Metadata fields we currently do not act upon
+            timestamp|user)
+                :
+                ;;
+            
+            # Disallow variable names that are not strictly [A-Z0-9_].
+            # This prevents odd characters in names even if the file is tampered with.
+            PARROT_*[!A-Z0-9_]*)
+                # Invalid/suspicious variable name, skip
+                ;;
+            
+            # Restore only well-formed PARROT_* variables.
+            PARROT_*)
+                # Assign the value exactly as-is, without triggering command substitution.
+                # printf -v avoids evaluating $value; we then export the variable name.
+                printf -v "$key" '%s' "$value"
+                export "$key"
+                ;;
+            
+            # Ignore any other keys
+            *)
+                :
+                ;;
+        esac
+    done < "$checkpoint_file"
+    
+    # Restore working directory if it was saved.
+    if [ -n "${checkpoint_pwd:-}" ]; then
+        if ! cd -- "$checkpoint_pwd" 2>/dev/null; then
+            # Non-fatal: we log a warning but continue.
+            parrot_warn "Failed to restore working directory to checkpoint path: $checkpoint_pwd"
+        fi
+    fi
     
     parrot_info "Rolled back to checkpoint: $checkpoint_file"
     return 0
