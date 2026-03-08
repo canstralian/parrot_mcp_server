@@ -179,7 +179,7 @@ generate_test_string() {
     if command_exists openssl; then
         openssl rand -hex "$((length / 2))"
     else
-        head /dev/urandom | tr -dc A-Za-z0-9 | head -c "$length"
+        head -c $((length * 2)) /dev/urandom | tr -dc A-Za-z0-9 | head -c "$length"
     fi
 }
 
