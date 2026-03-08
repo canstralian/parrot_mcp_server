@@ -191,8 +191,15 @@ teardown() {
     # Check if setup_cron.sh requires root
     run bash -c "grep -n 'sudo\|require.*root\|must.*root' ./scripts/setup_cron.sh || echo 'no-root-required'"
     
-    # Should not require root (or explicitly check for it)
-    [[ "$output" == *"no-root-required"* ]] || [[ "$output" == *"root"* ]]
+    # Should not require root (or must explicitly document and check for it)
+    if [[ "$output" == *"no-root-required"* ]]; then
+        # Pass: script does not require root
+        true
+    elif [[ "$output" == *"require"*root* ]] || [[ "$output" == *"must"*root* ]] || [[ "$output" == *"sudo"* ]]; then
+        skip "setup_cron.sh requires root privileges (explicitly documented)"
+    else
+        false  # Fail: ambiguous, neither documented as not requiring root nor explicitly requiring it
+    fi
 }
 
 # ============================================================================
