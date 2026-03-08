@@ -5,23 +5,22 @@
 setup() {
     # Store original directory
     ORIG_DIR="$(pwd)"
-    
-    # Navigate to script directory
-    if [ -f "cli.sh" ]; then
+
+    # Standardized script directory detection (matches integration_server_lifecycle.bats)
+    if [ -f "cli.sh" ] || [ -f "start_mcp_server.sh" ]; then
         SCRIPT_DIR="$(pwd)"
-    elif [ -f "../cli.sh" ]; then
+    elif [ -f "../cli.sh" ] || [ -f "../start_mcp_server.sh" ]; then
         SCRIPT_DIR="$(cd .. && pwd)"
-    elif [ -f "rpi-scripts/cli.sh" ]; then
+    elif [ -f "rpi-scripts/cli.sh" ] || [ -f "rpi-scripts/start_mcp_server.sh" ]; then
         SCRIPT_DIR="$(pwd)/rpi-scripts"
     else
-        echo "# Cannot find cli.sh" >&2
+        echo "# Cannot find cli.sh or start_mcp_server.sh" >&2
         return 1
     fi
-    
+
     # Create temporary test directory
     TEST_DIR="$(mktemp -d)"
     export TEST_DIR
-    
     # Change to script directory for execution
     cd "$SCRIPT_DIR"
 }
