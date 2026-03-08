@@ -370,7 +370,7 @@ teardown() {
         if [ -f "$file" ]; then
             PERMS=$(stat -c %a "$file")
             LAST_DIGIT="${PERMS: -1}"
-            [ "$LAST_DIGIT" != "7" ] || [ "$LAST_DIGIT" != "6" ] || true
+            [ "$LAST_DIGIT" != "7" ] && [ "$LAST_DIGIT" != "6" ]
         fi
     done
 }
