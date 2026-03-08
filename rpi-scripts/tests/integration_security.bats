@@ -362,6 +362,9 @@ teardown() {
     # Run server to create files
     ./start_mcp_server.sh
     sleep 2
+    if [ ! -f "./logs/mcp_server.pid" ]; then
+        fail "Server did not start successfully: ./logs/mcp_server.pid not found"
+    fi
     ./stop_mcp_server.sh
     
     # Check created files
