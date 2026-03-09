@@ -1,0 +1,542 @@
+# Instincts generated from https://github.com/canstralian/parrot_mcp_server
+# Generated: 2026-03-09T18:42:42.818Z
+# Version: 2.0
+
+---
+id: parrot_mcp_server-commit-length
+trigger: "when writing a commit message"
+confidence: 0.6
+domain: git
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Commit Length
+
+## Action
+
+Keep commit messages concise (under 50 characters)
+
+## Evidence
+
+- Average commit message length: 49 chars
+- Based on 90 commits
+
+---
+id: parrot_mcp_server-naming-files
+trigger: "when creating a new file"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Naming Files
+
+## Action
+
+Use snake_case naming convention
+
+## Evidence
+
+- Analyzed file naming patterns in repository
+- Dominant pattern: snake_case
+
+---
+id: parrot_mcp_server-export-style
+trigger: "when exporting from a module"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Export Style
+
+## Action
+
+Prefer mixed exports
+
+## Evidence
+
+- Export pattern analysis
+- Dominant style: mixed
+
+---
+id: parrot_mcp_server-test-separate
+trigger: "when writing tests"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Test Separate
+
+## Action
+
+Place tests in the tests/ or __tests__/ directory, mirroring src structure
+
+## Evidence
+
+- Separate test directory pattern detected
+- Tests live in dedicated test folders
+
+---
+id: parrot_mcp_server-workflow-feature-development
+trigger: "when implementing a new feature"
+confidence: 0.75
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Workflow Feature Development
+
+## Action
+
+Follow the feature-development workflow:
+1. Add feature implementation
+2. Add tests for feature
+3. Update documentation
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~5x per month
+- Files: **/*.test.*
+
+---
+id: parrot_mcp_server-workflow-documentation-update
+trigger: "when doing documentation update"
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Workflow Documentation Update
+
+## Action
+
+Follow the documentation-update workflow:
+1. Edit documentation file
+2. Make incremental changes
+3. Commit with descriptive message
+4. Repeat with further refinements
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~15x per month
+- Files: docs/*.md, README.md, COPILOT_CODEX_GUIDE.md
+
+---
+id: parrot_mcp_server-workflow-github-actions-security-fix
+trigger: "when doing github actions security fix"
+confidence: 0.65
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Workflow Github Actions Security Fix
+
+## Action
+
+Follow the github-actions-security-fix workflow:
+1. Identify workflow file with security alert
+2. Add permissions section to workflow
+3. Commit with autofix attribution
+4. Merge via pull request
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~3x per month
+- Files: .github/workflows/*.yml
+
+---
+id: parrot_mcp_server-workflow-shell-script-security-hardening
+trigger: "when doing shell script security hardening"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Workflow Shell Script Security Hardening
+
+## Action
+
+Follow the shell-script-security-hardening workflow:
+1. Identify vulnerable scripts
+2. Add input validation
+3. Fix path traversal issues
+4. Add proper error handling
+5. Update configuration loading
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: rpi-scripts/*.sh, rpi-scripts/scripts/*.sh, rpi-scripts/common_config.sh
+
+---
+id: parrot_mcp_server-workflow-test-script-path-fixes
+trigger: "when doing test script path fixes"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Workflow Test Script Path Fixes
+
+## Action
+
+Follow the test-script-path-fixes workflow:
+1. Identify failing test script
+2. Add SCRIPT_DIR variable for dynamic path resolution
+3. Update relative paths to use absolute references
+4. Test in both local and CI environments
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: rpi-scripts/test_mcp_local.sh
+
+---
+id: parrot_mcp_server-workflow-configuration-and-logging-updates
+trigger: "when doing configuration and logging updates"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Workflow Configuration And Logging Updates
+
+## Action
+
+Follow the configuration-and-logging-updates workflow:
+1. Update common configuration files
+2. Modify logging functions
+3. Add new configuration examples
+4. Update dependent scripts
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: rpi-scripts/common_config.sh, rpi-scripts/config.env.example, logs/parrot.log
+
+---
+id: parrot_mcp_server-snake-case-files
+trigger: "When creating new Python files"
+confidence: 0.85
+domain: code-style
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Snake Case Files
+
+## Action
+
+Use snake_case naming convention
+
+## Evidence
+
+- Consistent snake_case pattern in parrot_mcp_server directory
+- File naming follows snake_case convention throughout project
+
+---
+id: parrot_mcp_server-camel-case-functions
+trigger: "When defining functions in Python code"
+confidence: 0.75
+domain: code-style
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Camel Case Functions
+
+## Action
+
+Use camelCase naming convention
+
+## Evidence
+
+- Code analysis shows camelCase function naming pattern
+- Consistent with project's Python style guide
+
+---
+id: parrot_mcp_server-pascal-case-classes
+trigger: "When defining classes in Python code"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Pascal Case Classes
+
+## Action
+
+Use PascalCase naming convention
+
+## Evidence
+
+- Class naming follows PascalCase pattern in codebase
+- Standard Python class naming convention applied
+
+---
+id: parrot_mcp_server-screaming-snake-constants
+trigger: "When defining constants in Python code"
+confidence: 0.85
+domain: code-style
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Screaming Snake Constants
+
+## Action
+
+Use SCREAMING_SNAKE_CASE naming convention
+
+## Evidence
+
+- Constant naming follows SCREAMING_SNAKE_CASE pattern
+- Consistent with Python naming conventions
+
+---
+id: parrot_mcp_server-mixed-import-style
+trigger: "When importing modules"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Mixed Import Style
+
+## Action
+
+Use mixed import style based on context
+
+## Evidence
+
+- Mixed import patterns observed in codebase
+- Both relative and absolute imports used contextually
+
+---
+id: parrot_mcp_server-separate-test-files
+trigger: "When writing tests"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Separate Test Files
+
+## Action
+
+Create separate test files using *.test.* pattern
+
+## Evidence
+
+- Test location marked as separate in architecture
+- **/*.test.* pattern in feature development workflow
+
+---
+id: parrot_mcp_server-freeform-commits
+trigger: "When making commits"
+confidence: 0.9
+domain: git
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Freeform Commits
+
+## Action
+
+Use descriptive commit messages without strict prefix requirements
+
+## Evidence
+
+- No prefixes required in commit pattern
+- Examples show varied commit styles
+- Average length 49 characters suggests descriptive messages
+
+---
+id: parrot_mcp_server-conventional-commit-types
+trigger: "When making specific types of changes"
+confidence: 0.6
+domain: git
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Conventional Commit Types
+
+## Action
+
+Use conventional commit prefixes: fix:, docs:, feat:
+
+## Evidence
+
+- Examples include 'fix: address security vulnerabilities'
+- 'docs: expand Copilot and Codex guide'
+- 'feat: Major refinements'
+
+---
+id: parrot_mcp_server-update-docs
+trigger: "When documentation needs improvement"
+confidence: 0.92
+domain: workflow
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Update Docs
+
+## Action
+
+Edit documentation files iteratively with descriptive commit messages
+
+## Evidence
+
+- 15x/month frequency
+- Pattern in README.md, docs/*.md updates
+- commit: 'Updated README.md to enhance content'
+
+---
+id: parrot_mcp_server-fix-workflow-permissions
+trigger: "When security scanning alerts identify missing permissions in workflows"
+confidence: 0.88
+domain: workflow
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Fix Workflow Permissions
+
+## Action
+
+Add permissions section to GitHub Actions workflow files
+
+## Evidence
+
+- 3x/month frequency
+- .github/workflows/*.yml files involved
+- Security vulnerability fixes in commit history
+
+---
+id: parrot_mcp_server-harden-scripts
+trigger: "When security vulnerabilities are found in bash scripts"
+confidence: 0.85
+domain: workflow
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Harden Scripts
+
+## Action
+
+Add input validation and fix path traversal issues
+
+## Evidence
+
+- 2x/month frequency
+- rpi-scripts/*.sh files involved
+- commit: 'fix: address security vulnerabilities found in code review'
+
+---
+id: parrot_mcp_server-fix-test-paths
+trigger: "When test scripts fail due to relative path issues in CI/CD"
+confidence: 0.83
+domain: workflow
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Fix Test Paths
+
+## Action
+
+Add SCRIPT_DIR variable for dynamic path resolution
+
+## Evidence
+
+- 2x/month frequency
+- test_mcp_local.sh path fixes
+- CI/CD integration tests workflow
+
+---
+id: parrot_mcp_server-update-config
+trigger: "When refactoring configuration management or logging systems"
+confidence: 0.79
+domain: workflow
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Update Config
+
+## Action
+
+Update common configuration files and logging functions together
+
+## Evidence
+
+- 2x/month frequency
+- common_config.sh and logs/parrot.log involved
+- Configuration and logging updates pattern
+
+---
+id: parrot_mcp_server-single-package-structure
+trigger: "When organizing code architecture"
+confidence: 0.9
+domain: architecture
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Single Package Structure
+
+## Action
+
+Use single-package structure with parrot_mcp_server as main source
+
+## Evidence
+
+- Single-package type in architecture
+- parrot_mcp_server as primary source layout
+- Separate test location
+
+---
+id: parrot_mcp_server-pr-merge-pattern
+trigger: "When merging pull requests"
+confidence: 0.7
+domain: git
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Pr Merge Pattern
+
+## Action
+
+Use descriptive merge commit messages referencing PR numbers
+
+## Evidence
+
+- Merge pull request #62 from canstralian/codex/clarify-alignment-discrepancies
+- Merge pull request #61 from canstralian/copilot/fix-rate-limiter-implementation
+
