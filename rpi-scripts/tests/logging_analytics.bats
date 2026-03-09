@@ -96,7 +96,9 @@ teardown() {
   run grep -c "CRITICAL" "$PARROT_SERVER_LOG"
   [ "$output" -ge 1 ]
 
-  # Verify log-level filtering: set to ERROR and ensure DEBUG is not logged
+  # Verify log-level filtering: set to ERROR and ensure DEBUG is not logged.
+  # grep -c exits 0 when matches found (count > 0) and 1 when no matches found (count = 0).
+  # The || pre_count=0 handles the case where the file doesn't exist (grep exits 2).
   export PARROT_LOG_LEVEL="ERROR"
   local pre_count post_count
   pre_count=$(grep -c "DEBUG_FILTER_TEST" "$PARROT_SERVER_LOG" 2>/dev/null) || pre_count=0

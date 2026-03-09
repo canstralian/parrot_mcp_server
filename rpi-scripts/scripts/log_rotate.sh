@@ -22,8 +22,8 @@ _parse_size_to_mb() {
     local suffix
     suffix=$(printf '%s' "$raw" | tr -d '0-9.' | tr '[:lower:]' '[:upper:]')
     case "$suffix" in
-        K|KB) awk "BEGIN {printf \"%.6f\", $num / 1024}" ;;
-        G|GB) awk "BEGIN {printf \"%.6f\", $num * 1024}" ;;
+        K|KB) awk -v n="$num" 'BEGIN {printf "%.6f", n / 1024}' ;;
+        G|GB) awk -v n="$num" 'BEGIN {printf "%.6f", n * 1024}' ;;
         *)    echo "$num" ;;  # M, MB, or bare number -> treat as MB
     esac
 }

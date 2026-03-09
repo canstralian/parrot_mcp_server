@@ -267,6 +267,7 @@ parrot_metrics_end() {
 
     # Sanitize label values: strip characters that are not safe in Prometheus label values
     # to prevent corruption of the Prometheus text format exposition.
+    # The hyphen is last in the class (before ]) making it a literal, not a range.
     local safe_operation safe_status
     safe_operation="${operation//[^a-zA-Z0-9_:-]/}"
     safe_status="${status//[^a-zA-Z0-9_:-]/}"
