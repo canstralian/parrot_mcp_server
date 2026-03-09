@@ -13,8 +13,21 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # shellcheck source=../common_config.sh
 source "${SCRIPT_DIR}/common_config.sh"
 
-# Default values from config or defaults
-MAX_SIZE_MB=100
+# Default values from config or defaults.
+# Parse PARROT_LOG_MAX_SIZE which may use K/M/G suffixes (e.g., "100M").
+_parse_size_to_mb() {
+    local raw="${1:-100M}"
+    # Extract numeric part and optional suffix using parameter expansion
+    local num="${raw//[^0-9.]/}"
+    local suffix
+    suffix=$(printf '%s' "$raw" | tr -d '0-9.' | tr '[:lower:]' '[:upper:]')
+    case "$suffix" in
+        K|KB) awk "BEGIN {printf \"%.6f\", $num / 1024}" ;;
+        G|GB) awk "BEGIN {printf \"%.6f\", $num * 1024}" ;;
+        *)    echo "$num" ;;  # M, MB, or bare number -> treat as MB
+    esac
+}
+MAX_SIZE_MB=$(_parse_size_to_mb "${PARROT_LOG_MAX_SIZE:-100M}")
 MAX_AGE_DAYS="${PARROT_LOG_MAX_AGE:-30}"
 MAX_COUNT="${PARROT_LOG_ROTATION_COUNT:-5}"
 
@@ -107,17 +120,19 @@ clean_old_logs() {
     local logdir logbase
     logdir=$(dirname "$logfile")
     logbase=$(basename "$logfile")
-    
-    # Remove logs older than MAX_AGE_DAYS
-    find "$logdir" -name "$logbase".*.gz -type f -mtime +"$MAX_AGE_DAYS" -delete 2>/dev/null || true
-    
-    # Keep only MAX_COUNT most recent rotated logs
-    local rotated_logs
-    rotated_logs=$(
-        cd "$logdir" 2>/dev/null && \
-            ls -1t "$logbase".*.gz 2>/dev/null || true
-    )
-    
+
+    # Remove logs older than MAX_AGE_DAYS; quote glob to avoid shell expansion
+    find "$logdir" -name "${logbase}.*.gz" -type f -mtime +"$MAX_AGE_DAYS" -delete 2>/dev/null || true
+
+    # Keep only MAX_COUNT most recent rotated logs.
+    # Use portable ls -t (sorted newest-first) instead of GNU find -printf.
+    # Use if/fi to avoid the SC2015 A&&B||C pitfall.
+    local rotated_logs=""
+    if cd "$logdir" 2>/dev/null; then
+        rotated_logs=$(ls -1t "${logbase}".*.gz 2>/dev/null || true)
+        cd - >/dev/null
+    fi
+
     local count=0
     while IFS= read -r rotated_log; do
         # Skip empty lines defensively

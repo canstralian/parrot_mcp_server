@@ -161,6 +161,8 @@ parrot_critical() { parrot_log "CRITICAL" "$@"; }
 
 # JSON structured logging function
 # Usage: parrot_log_json LEVEL "message" [key1=value1 key2=value2 ...]
+# Uses jq for safe JSON encoding to handle backslashes, newlines, tabs,
+# and other control characters that would produce invalid JSON.
 parrot_log_json() {
     local level="$1"
     shift
@@ -178,36 +180,44 @@ parrot_log_json() {
     # Ensure log directory exists
     parrot_init_log_dir
 
-    # Start building JSON object
-    local json_parts=()
-    local escaped_message="${message//\"/\\\"}"
-    json_parts+=("\"timestamp\":\"$timestamp\"")
-    json_parts+=("\"level\":\"$level\"")
-    json_parts+=("\"message\":\"$escaped_message\"")
-    json_parts+=("\"msgid\":\"$msgid\"")
-    json_parts+=("\"hostname\":\"$hostname\"")
-    json_parts+=("\"user\":\"$username\"")
-    json_parts+=("\"pid\":$$")
+    # Sanitize the message for logging before encoding
+    local safe_message
+    safe_message="$(parrot_sanitize_log_value "$(parrot_sanitize_input "$message")")"
 
-    # Parse additional key=value pairs
+    # Build base JSON using jq for safe encoding (handles \, newlines, tabs, etc.)
+    # SC2016: single-quoted strings are intentional jq expressions; $var = jq variables, not shell
+    # shellcheck disable=SC2016
+    local jq_args=(--arg timestamp "$timestamp" --arg level "$level"
+        --arg message "$safe_message" --arg msgid "$msgid"
+        --arg hostname "$hostname" --arg user "$username"
+        --argjson pid "$$")
+    # shellcheck disable=SC2016
+    local jq_expr='{ timestamp: $timestamp, level: $level, message: $message,
+        msgid: $msgid, hostname: $hostname, user: $user, pid: $pid }'
+
+    # Parse additional key=value pairs and append to jq expression.
+    # Use object merge (+) so additional fields are appended to the base object.
+    # Each `+ { key: $key }` is valid jq and evaluated left-to-right.
     while [ $# -gt 0 ]; do
         local kv="$1"
         if [[ "$kv" =~ ^([a-zA-Z_][a-zA-Z0-9_]*)=(.*)$ ]]; then
             local key="${BASH_REMATCH[1]}"
             local value="${BASH_REMATCH[2]}"
-            # Sanitize value and escape quotes
-            local escaped_value="${value//\"/\\\"}"
-            json_parts+=("\"$key\":\"$escaped_value\"")
+            # Sanitize each value before encoding to prevent credential leakage
+            local safe_value
+            safe_value="$(parrot_sanitize_log_value "$value")"
+            jq_args+=(--arg "$key" "$safe_value")
+            # Append to the full expression (keep base closing } intact)
+            # shellcheck disable=SC2016
+            jq_expr="${jq_expr} + { ${key}: \$${key} }"
         fi
         shift
     done
 
-    # Join all parts and write JSON line
+    # Write JSON line using jq for safe encoding
     local json_line
-    json_line="{$(
-        IFS=','
-        echo "${json_parts[*]}"
-    )}"
+    json_line=$(jq -cn "${jq_args[@]}" "$jq_expr" 2>/dev/null) || \
+        json_line="{\"timestamp\":\"$timestamp\",\"level\":\"$level\",\"message\":\"[encoding error]\",\"msgid\":\"$msgid\"}"
     echo "$json_line" >>"$log_file"
 
     # Also log to regular log if not in json-only mode
@@ -240,6 +250,7 @@ parrot_metrics_start() {
 
 # Performance metrics: End timing and log
 # Usage: parrot_metrics_end START_TIME "operation_name" [status] [additional_context...]
+# Duration (ms) is printed to stderr to avoid polluting stdout/MCP protocol output.
 parrot_metrics_end() {
     local start_time="$1"
     local operation="$2"
@@ -251,9 +262,18 @@ parrot_metrics_end() {
     duration_ns=$((end_time - start_time))
     duration_ms=$((duration_ns / 1000000))
 
+    # Ensure log directory exists before writing
+    parrot_init_log_dir
+
+    # Sanitize label values: strip characters that are not safe in Prometheus label values
+    # to prevent corruption of the Prometheus text format exposition.
+    local safe_operation safe_status
+    safe_operation="${operation//[^a-zA-Z0-9_:-]/}"
+    safe_status="${status//[^a-zA-Z0-9_:-]/}"
+
     # Log to metrics file in Prometheus format
     local metric_line
-    metric_line="parrot_operation_duration_milliseconds{operation=\"$operation\",status=\"$status\"} $duration_ms $(date +%s)"
+    metric_line="parrot_operation_duration_milliseconds{operation=\"$safe_operation\",status=\"$safe_status\"} $duration_ms $(date +%s)"
     echo "$metric_line" >>"$PARROT_METRICS_LOG"
 
     # Also log structured event
