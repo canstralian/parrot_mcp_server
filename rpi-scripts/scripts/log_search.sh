@@ -176,12 +176,10 @@ output_results() {
             echo "]"
             ;;
         csv)
-            # Output as CSV
-            # Extract all unique keys first
-            local keys
-            keys=$(jq -r 'keys | @csv' "$temp_file" 2>/dev/null | head -1)
-            if [ -n "$keys" ]; then
-                echo "$keys"
+            # Output as CSV with a fixed schema matching the selected fields
+            # Only emit a header and rows if there is at least one matching entry
+            if [ -s "$temp_file" ]; then
+                echo "timestamp,level,message,user,operation,status,duration_ms"
                 jq -r '[.timestamp, .level, .message, .user // "", .operation // "", .status // "", .duration_ms // ""] | @csv' "$temp_file" 2>/dev/null
             fi
             ;;
