@@ -58,11 +58,11 @@ METRICS_JSON=$(cd "$SCRIPT_DIR/scripts" && ./metrics_export.sh --format json 2>/
 
 # Get recent errors
 RECENT_ERRORS=$(jq -r 'select(.level == "ERROR" or .level == "CRITICAL") | [.timestamp, .level, .message] | @tsv' "$PARROT_JSON_LOG" 2>/dev/null | tail -10 | \
-    awk -F'\t' '{printf "<tr><td>%s</td><td>%s</td><td>%s</td></tr>\n", $1, $2, $3}' || echo "<tr><td colspan='3'>No errors found</td></tr>")
+    awk -F'\t' 'function escape(s) { gsub(/&/, "&amp;", s); gsub(/</, "&lt;", s); gsub(/>/, "&gt;", s); gsub(/"/, "&quot;", s); gsub(/\047/, "&#39;", s); return s } {printf "<tr><td>%s</td><td>%s</td><td>%s</td></tr>\n", escape($1), escape($2), escape($3)}' || echo "<tr><td colspan='3'>No errors found</td></tr>")
 
 # Get recent audit events
 RECENT_AUDIT=$(tail -10 "$PARROT_AUDIT_LOG" 2>/dev/null | \
-    awk -F'|' '{printf "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n", $1, $2, $3, $5}' || echo "<tr><td colspan='4'>No audit events found</td></tr>")
+    awk -F'|' 'function escape(s) { gsub(/&/, "&amp;", s); gsub(/</, "&lt;", s); gsub(/>/, "&gt;", s); gsub(/"/, "&quot;", s); gsub(/\047/, "&#39;", s); return s } {printf "<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>\n", escape($1), escape($2), escape($3), escape($5)}' || echo "<tr><td colspan='4'>No audit events found</td></tr>")
 
 # Extract metrics from JSON
 UPTIME=$(echo "$METRICS_JSON" | jq -r '.uptime_seconds // 0')
