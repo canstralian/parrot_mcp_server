@@ -69,28 +69,40 @@ teardown() {
 }
 
 @test "All log levels work correctly" {
+  # Use DEBUG level so every level is logged
+  export PARROT_LOG_LEVEL="DEBUG"
+
   parrot_debug "Debug message"
   parrot_info "Info message"
   parrot_warn "Warning message"
-  parrot_error "Error message"
-  parrot_critical "Critical message"
-  
+  parrot_error "Error message" 2>/dev/null
+  parrot_critical "Critical message" 2>/dev/null
+
   [ -f "$PARROT_SERVER_LOG" ]
-  
+
+  # Each level must appear at least once in the log
   run grep -c "DEBUG" "$PARROT_SERVER_LOG"
-  [ "$output" -ge 0 ]
-  
+  [ "$output" -ge 1 ]
+
   run grep -c "INFO" "$PARROT_SERVER_LOG"
-  [ "$output" -ge 0 ]
-  
+  [ "$output" -ge 1 ]
+
   run grep -c "WARN" "$PARROT_SERVER_LOG"
-  [ "$output" -ge 0 ]
-  
+  [ "$output" -ge 1 ]
+
   run grep -c "ERROR" "$PARROT_SERVER_LOG"
-  [ "$output" -ge 0 ]
-  
+  [ "$output" -ge 1 ]
+
   run grep -c "CRITICAL" "$PARROT_SERVER_LOG"
-  [ "$output" -ge 0 ]
+  [ "$output" -ge 1 ]
+
+  # Verify log-level filtering: set to ERROR and ensure DEBUG is not logged
+  export PARROT_LOG_LEVEL="ERROR"
+  local pre_count post_count
+  pre_count=$(grep -c "DEBUG_FILTER_TEST" "$PARROT_SERVER_LOG" 2>/dev/null) || pre_count=0
+  parrot_debug "DEBUG_FILTER_TEST should not appear"
+  post_count=$(grep -c "DEBUG_FILTER_TEST" "$PARROT_SERVER_LOG" 2>/dev/null) || post_count=0
+  [ "$pre_count" -eq "$post_count" ]
 }
 
 @test "Credential sanitization works" {
@@ -113,24 +125,26 @@ teardown() {
 @test "Metrics timing functions work" {
   local start_time
   start_time=$(parrot_metrics_start)
-  
+
   # Simulate some work
   sleep 0.1
-  
-  local duration
-  duration=$(parrot_metrics_end "$start_time" "test_operation" "success")
-  
-  # Duration should be at least 100ms
-  [ "$duration" -ge 100 ]
-  
+
+  # Run metrics end; duration goes to stderr, suppress all output from this call
+  parrot_metrics_end "$start_time" "test_operation" "success" >/dev/null 2>/dev/null
+
   # Check metrics log file was created
   [ -f "$PARROT_METRICS_LOG" ]
-  
+
   # Check metrics format (Prometheus format)
   run grep "parrot_operation_duration_milliseconds" "$PARROT_METRICS_LOG"
   [ "$status" -eq 0 ]
   [[ "$output" == *"operation=\"test_operation\""* ]]
   [[ "$output" == *"status=\"success\""* ]]
+
+  # Verify duration was at least 100ms by parsing the Prometheus metrics log
+  local duration
+  duration=$(grep "test_operation" "$PARROT_METRICS_LOG" | awk '{print $2}' | head -1)
+  [ "$duration" -ge 100 ]
 }
 
 @test "Audit logging creates entries" {

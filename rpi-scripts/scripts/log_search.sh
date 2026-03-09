@@ -116,46 +116,71 @@ if [ ! -f "$LOG_FILE" ]; then
     exit 1
 fi
 
-# Build jq filter based on criteria
-JQ_FILTER="."
-
-if [ -n "$FILTER_LEVEL" ]; then
-    JQ_FILTER="$JQ_FILTER | select(.level == \"$FILTER_LEVEL\")"
-fi
-
-if [ -n "$FILTER_TOOL" ]; then
-    JQ_FILTER="$JQ_FILTER | select(.tool == \"$FILTER_TOOL\" or .operation == \"$FILTER_TOOL\")"
-fi
-
-if [ -n "$FILTER_USER" ]; then
-    JQ_FILTER="$JQ_FILTER | select(.user == \"$FILTER_USER\" or .audit_user == \"$FILTER_USER\")"
-fi
-
-if [ -n "$FILTER_STATUS" ]; then
-    JQ_FILTER="$JQ_FILTER | select(.status == \"$FILTER_STATUS\" or .audit_result == \"$FILTER_STATUS\")"
-fi
-
-if [ -n "$FILTER_SINCE" ]; then
-    # Convert date to ISO format if needed
-    SINCE_ISO=$(date -d "$FILTER_SINCE" -u '+%Y-%m-%dT%H:%M:%S' 2>/dev/null || echo "$FILTER_SINCE")
-    JQ_FILTER="$JQ_FILTER | select(.timestamp >= \"$SINCE_ISO\")"
-fi
-
-if [ -n "$FILTER_UNTIL" ]; then
-    # Convert date to ISO format if needed
-    UNTIL_ISO=$(date -d "$FILTER_UNTIL" -u '+%Y-%m-%dT%H:%M:%S' 2>/dev/null || echo "$FILTER_UNTIL")
-    JQ_FILTER="$JQ_FILTER | select(.timestamp <= \"$UNTIL_ISO\")"
-fi
-
-# Function to output results
+# Build jq filter using --arg to pass user-supplied values safely, preventing
+# jq injection via crafted --level/--user/--status/--tool/--since/--until values.
 output_results() {
     local temp_file
     temp_file=$(mktemp)
 
-    # Filter logs with jq
-    jq -c "$JQ_FILTER" "$LOG_FILE" 2>/dev/null >"$temp_file" || {
+    # Assemble jq --arg flags and a safe filter expression
+    local jq_args=()
+    local jq_conditions=()
+
+    # SC2016: single-quoted strings are intentional jq expressions where $var = jq --arg variables
+    # shellcheck disable=SC2016
+    if [ -n "$FILTER_LEVEL" ]; then
+        jq_args+=(--arg filter_level "$FILTER_LEVEL")
+        jq_conditions+=('(.level == $filter_level)')
+    fi
+
+    # shellcheck disable=SC2016
+    if [ -n "$FILTER_TOOL" ]; then
+        jq_args+=(--arg filter_tool "$FILTER_TOOL")
+        jq_conditions+=('(.tool == $filter_tool or .operation == $filter_tool)')
+    fi
+
+    # shellcheck disable=SC2016
+    if [ -n "$FILTER_USER" ]; then
+        jq_args+=(--arg filter_user "$FILTER_USER")
+        jq_conditions+=('(.user == $filter_user or .audit_user == $filter_user)')
+    fi
+
+    # shellcheck disable=SC2016
+    if [ -n "$FILTER_STATUS" ]; then
+        jq_args+=(--arg filter_status "$FILTER_STATUS")
+        jq_conditions+=('(.status == $filter_status or .audit_result == $filter_status)')
+    fi
+
+    # shellcheck disable=SC2016
+    if [ -n "$FILTER_SINCE" ]; then
+        local since_iso
+        since_iso=$(date -d "$FILTER_SINCE" -u '+%Y-%m-%dT%H:%M:%S' 2>/dev/null || echo "$FILTER_SINCE")
+        jq_args+=(--arg filter_since "$since_iso")
+        jq_conditions+=('(.timestamp >= $filter_since)')
+    fi
+
+    # shellcheck disable=SC2016
+    if [ -n "$FILTER_UNTIL" ]; then
+        local until_iso
+        until_iso=$(date -d "$FILTER_UNTIL" -u '+%Y-%m-%dT%H:%M:%S' 2>/dev/null || echo "$FILTER_UNTIL")
+        jq_args+=(--arg filter_until "$until_iso")
+        jq_conditions+=('(.timestamp <= $filter_until)')
+    fi
+
+    # Combine conditions with 'and'; if none, select everything
+    local jq_filter="."
+    if [ "${#jq_conditions[@]}" -gt 0 ]; then
+        # Join array elements with ' and ' using printf for portability
+        local combined
+        combined=$(printf '%s and ' "${jq_conditions[@]}")
+        combined="${combined% and }"  # strip trailing ' and '
+        jq_filter="select($combined)"
+    fi
+
+    # Filter logs with jq using safe arg passing
+    jq -c "${jq_args[@]}" "$jq_filter" "$LOG_FILE" 2>/dev/null >"$temp_file" || {
         rm -f "$temp_file"
-        parrot_error "Error filtering logs. Check jq filter syntax."
+        parrot_error "Error filtering logs."
         exit 1
     }
 
