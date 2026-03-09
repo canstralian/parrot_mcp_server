@@ -226,8 +226,8 @@ This section maps how a local MCP request flows through the currently selected i
    - Process remains alive briefly for the test harness to inspect side effects.
 4. **Lifecycle shutdown** (`rpi-scripts/stop_mcp_server.sh`)
    - Stop script reads PID and attempts cleanup/termination so repeated tests can run.
-5. **Authorization gate for tool calls** (`src/parrot_mcp_server/auth.py`)
-   - In the Python tool path, `require_authorization()` enforces that every tool call has an active engagement ID, valid time window, and in-scope target before execution.
+5. **Authorization gate design for tool calls** (`src/parrot_mcp_server/auth.py`)
+   - In the Python tool path, `auth.py` defines `require_authorization()`, which is intended to ensure that every tool call has an active engagement ID, valid time window, and in-scope target before execution; this check becomes effective only where the surrounding tool-dispatch logic actually invokes it.
 
 ### Module Responsibilities (Short Summary)
 - `rpi-scripts/test_mcp_local.sh`: protocol smoke harness and expected-log assertions.
