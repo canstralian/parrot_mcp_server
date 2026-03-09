@@ -263,7 +263,8 @@ parrot_metrics_end() {
         "status=$status" \
         "$@"
 
-    echo "$duration_ms"
+    # Print duration to stderr to avoid polluting stdout, which is used for MCP protocol output.
+    echo "$duration_ms" >&2
 }
 
 # Audit trail logging
