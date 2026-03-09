@@ -54,8 +54,29 @@ def require_authorization(engagement_id: str, target: str) -> Engagement:
             f"({eng.start_utc.isoformat()} – {eng.end_utc.isoformat()})."
         )
 
-    # Simple scope check: target must match at least one scope entry prefix
-    in_scope = any(target.startswith(s) or s == "*" for s in eng.scope)
+    # Scope check: target must exactly match a scope entry, be a sub-path of one
+    # (delimited by '/' or '.'), or be covered by the wildcard '*'.
+    # Using plain startswith() is intentionally avoided here because it would
+    # allow "192.168.1.100.attacker.com" to match scope entry "192.168.1." —
+    # a bypass that could let out-of-scope targets appear authorized.
+    def _in_scope_entry(target: str, entry: str) -> bool:
+        if entry == "*":
+            return True
+        if target == entry:
+            return True
+        # Allow sub-paths: scope "192.168.1." covers "192.168.1.5" (note trailing dot)
+        # and scope "example.com/" covers "example.com/path".
+        # Only accept the target if it starts with the entry AND the boundary
+        # character is '/', '.', or ':' (port separator) — never a bare prefix.
+        if entry.endswith(("/", ".", ":")):
+            return target.startswith(entry)
+        # For entries without an explicit boundary suffix, require an exact match
+        # or that the next character after the entry is a boundary.
+        if target.startswith(entry) and len(target) > len(entry) and target[len(entry)] in {".", "/", ":"}:
+            return True
+        return False
+
+    in_scope = any(_in_scope_entry(target, s) for s in eng.scope)
     if not in_scope:
         raise PermissionError(
             f"Target '{target}' is NOT in scope for engagement '{engagement_id}'. "

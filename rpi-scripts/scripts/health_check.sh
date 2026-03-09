@@ -37,6 +37,11 @@ while [[ $# -gt 0 ]]; do
                 parrot_error "Missing value for --load-threshold"
                 exit 1
             fi
+            # Validate that the value looks like a non-negative decimal number
+            if [[ ! "${2}" =~ ^[0-9]+(\.[0-9]+)?$ ]]; then
+                parrot_error "Invalid load threshold: ${2} (must be a non-negative number, e.g. 2.0)"
+                exit 1
+            fi
             LOAD_THRESHOLD="$2"
             shift 2
             ;;

@@ -9,6 +9,13 @@
 set -euo pipefail
 
 BACKUP_DIR="${1:-/var/backups}"
+
+# Reject unsafe backup directory paths (null bytes or path traversal sequences)
+if [[ "$BACKUP_DIR" == *$'\0'* ]] || [[ "$BACKUP_DIR" == *".."* ]]; then
+    echo "ERROR: Invalid backup directory: $BACKUP_DIR" >&2
+    exit 1
+fi
+
 DATE=$(date +%Y%m%d_%H%M%S)
 BACKUP_FILE="$BACKUP_DIR/home_backup_$DATE.tar.gz"
 
