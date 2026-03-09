@@ -104,21 +104,29 @@ rotate_log_file() {
 # Function to clean old rotated logs
 clean_old_logs() {
     local logfile="$1"
+    local logdir logbase
+    logdir=$(dirname "$logfile")
+    logbase=$(basename "$logfile")
     
     # Remove logs older than MAX_AGE_DAYS
-    find "$(dirname "$logfile")" -name "$(basename "$logfile").*.gz" -type f -mtime +"$MAX_AGE_DAYS" -delete 2>/dev/null || true
+    find "$logdir" -name "$logbase".*.gz -type f -mtime +"$MAX_AGE_DAYS" -delete 2>/dev/null || true
     
     # Keep only MAX_COUNT most recent rotated logs
     local rotated_logs
-    rotated_logs=$(find "$(dirname "$logfile")" -name "$(basename "$logfile").*.gz" -type f -printf "%T@ %p\n" 2>/dev/null | \
-        sort -rn | awk '{print $2}' || true)
+    rotated_logs=$(
+        cd "$logdir" 2>/dev/null && \
+            ls -1t "$logbase".*.gz 2>/dev/null || true
+    )
     
     local count=0
     while IFS= read -r rotated_log; do
+        # Skip empty lines defensively
+        [ -n "$rotated_log" ] || continue
         count=$((count + 1))
         if [ "$count" -gt "$MAX_COUNT" ]; then
-            parrot_info "Removing old rotated log: $rotated_log"
-            rm -f "$rotated_log"
+            local full_path="$logdir/$rotated_log"
+            parrot_info "Removing old rotated log: $full_path"
+            rm -f "$full_path"
         fi
     done <<< "$rotated_logs"
 }
