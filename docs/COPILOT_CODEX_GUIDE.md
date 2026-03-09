@@ -250,3 +250,5 @@ This section maps how a local MCP request flows through the currently selected i
    - The shell path does not fully parse JSON; it relies on `grep`/file presence, so seemingly valid structural changes can silently bypass intended behavior.
 2. **Scope matching is prefix-based**
    - `target.startswith(scope_entry)` is simple and fast, but broad prefixes can authorize more than intended (e.g., overlapping hostnames/assets). Tight scope definitions are essential.
+3. **Test harness paths are hardcoded**
+   - The `rpi-scripts/test_mcp_local.sh` script writes to hardcoded paths like `/tmp/mcp_in.json`, while the server reads from configurable paths (e.g., `$PARROT_MCP_INPUT`) defined in `common_config.sh`. This can cause tests to fail if the `PARROT_IPC_DIR` configuration is changed.
