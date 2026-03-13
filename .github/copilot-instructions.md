@@ -2,7 +2,7 @@
 
 ## 1. Architecture & Tech Stack
 
-* **Backend:** **Flask (Python 3.10+)**. Use strict Type Hinting and `pydantic` for validation. Design for RESTful modularity.
+* **Backend:** **Flask (Python 3.11+)**. Use strict Type Hinting and `pydantic` for validation. Design for RESTful modularity.
 * **Frontend:** **React (JS/TS)**. Functional components, Hooks, and modular CSS/Tailwind. No class components.
 * **Database:** **PostgreSQL**. Use SQLAlchemy (2.0 style) or raw parameterized SQL. Prioritize indexing and connection pooling.
 * **Environment:** **WSL2 (Ubuntu)** focus. Assume `bash` for scripts, standard Linux paths, and VS Code.
