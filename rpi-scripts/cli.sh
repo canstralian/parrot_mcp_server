@@ -1,4 +1,3 @@
-
 #!/bin/bash
 # Central CLI tool for Raspberry Pi 5 scripts
 # Author: Canstralian
@@ -41,11 +40,13 @@ show_help() {
 	list_scripts
 }
 
+# validate_script_name checks that the given name contains only letters, digits, underscores, or dashes.
 validate_script_name() {
 	# Only allow alphanumeric, underscore, and dash
 	[[ "$1" =~ ^[a-zA-Z0-9_-]+$ ]]
 }
 
+# menu displays an interactive CLI that lists available scripts, prompts for a script name or 'q' to quit, validates the choice, runs the selected script with optional arguments while logging non-zero exits, and returns to the menu until the user quits.
 menu() {
 	while true; do
 		ascii_art
@@ -89,6 +90,11 @@ menu() {
 	done
 }
 
+# main dispatches to the interactive menu or executes a named script from SCRIPTS_DIR.
+# It handles `--help`/`-h` by showing help, validates the provided script name (letters, numbers, dash, underscore)
+# and exits with code 3 on invalid input. On valid names it sets `SCRIPT_NAME`, runs `SCRIPTS_DIR/<name>.sh` with
+# remaining arguments, logs and reports non-zero exit codes, and if the script is missing or not executable logs the
+# condition and falls back to the interactive menu.
 main() {
 	if [ $# -eq 0 ]; then
 		menu

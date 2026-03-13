@@ -46,6 +46,14 @@ WEIGHT_CLEAN_CREDIT = int(os.environ.get("WEIGHT_CLEAN_CREDIT", "-1"))
 
 
 def _load_audit_entries() -> list[dict]:
+    """
+    Load audit entries from the configured JSONL audit log.
+    
+    Reads AUDIT_LOG line-by-line, parsing each non-empty line as JSON and collecting resulting dictionaries. Empty lines and lines that fail JSON parsing are skipped. If the audit file does not exist or an OSError occurs while reading, returns an empty list.
+    
+    Returns:
+        entries (list[dict]): Parsed audit entries in file order; empty if file missing or unreadable.
+    """
     entries: list[dict] = []
     if not AUDIT_LOG.exists():
         return entries
@@ -70,6 +78,23 @@ def _load_audit_entries() -> list[dict]:
 
 
 def _score_session(entries: list[dict]) -> tuple[int, list[str]]:
+    """
+    Compute the cumulative risk score for a session and produce human-readable reason strings for score contributions.
+    
+    Parameters:
+        entries (list[dict]): Audit log entry dictionaries as parsed from the session JSONL audit file. Expected keys used by scoring include:
+            - "tool_name" (str): name of the tool that produced the entry.
+            - "ts" (number): timestamp of the event.
+            - "secret_leak_detected" (bool)
+            - "secret_patterns_matched" (list[str])
+            - "out_of_scope_detected" (bool)
+            - "scope_drift" (dict) with "out_of_scope_ips" (list[str])
+            - "blocked" (bool)
+    
+    Returns:
+        tuple[int, list[str]]: total_score (int): cumulative risk score computed using configured weights;
+                              reasons (list[str]): formatted strings describing each score-contributing event.
+    """
     score = 0
     reasons: list[str] = []
 
@@ -116,6 +141,11 @@ def _score_session(entries: list[dict]) -> tuple[int, list[str]]:
 
 
 def main() -> None:
+    """
+    Evaluate audit entries, print a concise risk summary and either approve or reject the session by exiting with a status code.
+    
+    Loads audit entries, computes the cumulative risk score and human-readable reasons, prints a summary line and any reasons, and then terminates the process: exits with code 2 to reject the session when the score is greater than or equal to THRESHOLD, or exits with code 0 to approve the session (also used when no audit entries are present).
+    """
     entries = _load_audit_entries()
 
     if not entries:

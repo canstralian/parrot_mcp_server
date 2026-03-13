@@ -58,20 +58,46 @@ PARROT_MCP_PREFIXES = ("mcp__parrot-bash__", "mcp__parrot-python__", "mcp__parro
 
 
 def _is_production() -> bool:
+    """
+    Determine whether the current runtime environment is production.
+    
+    Returns:
+        True if the PARROT_ENV environment variable equals "production" (case-insensitive), False otherwise.
+    """
     return os.environ.get("PARROT_ENV", "dev").lower() == "production"
 
 
 def _engagement_active() -> bool:
+    """
+    Checks whether the Parrot engagement feature is enabled via environment.
+    
+    Determines if the PARROT_ENGAGEMENT_ACTIVE environment variable, after trimming whitespace
+    and lowercasing, is set to one of the truthy values "1", "true", or "yes".
+    
+    Returns:
+        `true` if PARROT_ENGAGEMENT_ACTIVE is set to "1", "true", or "yes" (case-insensitive, whitespace ignored), `false` otherwise.
+    """
     return os.environ.get("PARROT_ENGAGEMENT_ACTIVE", "").strip().lower() in ("1", "true", "yes")
 
 
 def _block(reason: str) -> None:
+    """
+    Emit a JSON payload indicating a blocking decision and terminate the process with exit code 2.
+    
+    Writes {"decision": "block", "reason": <reason>} to stdout and then exits the interpreter with status 2.
+    
+    Parameters:
+        reason (str): Human-readable explanation included in the emitted JSON payload to indicate why the call was blocked.
+    """
     payload = {"decision": "block", "reason": reason}
     print(json.dumps(payload))
     sys.exit(2)
 
 
 def _allow() -> None:
+    """
+    Signal that the tool call is allowed and terminate the process with exit code 0.
+    """
     sys.exit(0)
 
 
@@ -81,6 +107,15 @@ def _allow() -> None:
 
 
 def check_ipc_safety(tool_name: str, tool_input: dict) -> None:
+    """
+    Enforces production IPC directory safety by blocking tool calls that reference "/tmp".
+    
+    Checks the JSON-serialized tool_input for the substring "/tmp" when running in production and, if found, issues a block decision citing PARROT_IPC_DIR. Parameters are described only to clarify their roles.
+    
+    Parameters:
+        tool_name (str): Name of the tool invoking the check, used in block message.
+        tool_input (dict): The tool's input payload to be inspected for disallowed IPC paths.
+    """
     if not _is_production():
         return
     raw = json.dumps(tool_input)
@@ -97,6 +132,14 @@ def check_ipc_safety(tool_name: str, tool_input: dict) -> None:
 
 
 def check_engagement_gate(tool_name: str) -> None:
+    """
+    Enforces that Parrot MCP tools may only run when an engagement is active.
+    
+    If the provided tool name identifies a Parrot MCP tool and the engagement flag is not active, this will block the invocation with a reason instructing to set PARROT_ENGAGEMENT_ACTIVE=1.
+    
+    Parameters:
+        tool_name (str): The name of the tool being invoked.
+    """
     is_parrot_mcp = any(tool_name.startswith(p) for p in PARROT_MCP_PREFIXES)
     if is_parrot_mcp and not _engagement_active():
         _block(
@@ -111,6 +154,15 @@ def check_engagement_gate(tool_name: str) -> None:
 
 
 def check_blocked_commands(tool_name: str, tool_input: dict) -> None:
+    """
+    Enforces a deny-list for Bash commands.
+    
+    When invoked for the Bash tool, inspects the "command" entry in tool_input and blocks the call if the command matches any configured denied regular-expression patterns; otherwise does nothing.
+    
+    Parameters:
+        tool_name (str): Name of the tool being executed.
+        tool_input (dict): Mapping of tool arguments; expected to contain a "command" string to evaluate.
+    """
     if tool_name != "Bash":
         return
     command: str = tool_input.get("command", "")
@@ -129,6 +181,15 @@ def check_blocked_commands(tool_name: str, tool_input: dict) -> None:
 
 def check_injection_chars(tool_name: str, tool_input: dict) -> None:
     # Only inspect MCP tool arguments (not Bash, which legitimately uses these)
+    """
+    Rejects MCP tool arguments that contain shell metacharacters.
+    
+    Inspects string-valued arguments for tools whose names start with a Parrot MCP prefix; if any value contains shell metacharacters, signals a block decision and exits the process.
+    
+    Parameters:
+        tool_name (str): The invoked tool's name; checked against PARROT_MCP_PREFIXES to determine applicability.
+        tool_input (dict): Mapping of argument names to values; string values are scanned for injection characters.
+    """
     if not any(tool_name.startswith(p) for p in PARROT_MCP_PREFIXES):
         return
     for key, value in tool_input.items():
@@ -145,6 +206,19 @@ def check_injection_chars(tool_name: str, tool_input: dict) -> None:
 
 
 def check_mcp_argument_shapes(tool_name: str, tool_input: dict) -> None:
+    """
+    Validate MCP tool argument shapes and sizes for safe JSON serialization.
+    
+    Applies only to tools whose name starts with any value in PARROT_MCP_PREFIXES.
+    For each argument that is a list or dict, blocks the tool call if the value is not
+    JSON-serializable or if its JSON-serialized representation exceeds 4096 bytes.
+    
+    Parameters:
+        tool_name (str): Name of the tool being invoked.
+        tool_input (dict): Mapping of argument names to their values; inspected for
+            structured (list/dict) values that must be JSON-serializable and under
+            the size limit.
+    """
     if not any(tool_name.startswith(p) for p in PARROT_MCP_PREFIXES):
         return
     for key, value in tool_input.items():
@@ -170,6 +244,11 @@ def check_mcp_argument_shapes(tool_name: str, tool_input: dict) -> None:
 
 
 def main() -> None:
+    """
+    Run pre-tool-use security checks against a JSON event read from standard input.
+    
+    Reads a JSON event from stdin, extracts `tool_name` and `tool_input`, and runs the suite of enforcement checks in sequence (IPC directory safety, engagement gate, blocked command patterns, injection-character detection, and MCP argument shape validation). If any check fails the function signals a block and exits; if input is empty or invalid JSON the function allows the call, and if all checks pass the function allows the call and exits.
+    """
     raw = sys.stdin.read().strip()
     if not raw:
         _allow()

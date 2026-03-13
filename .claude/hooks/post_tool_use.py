@@ -61,7 +61,12 @@ PUBLIC_IP_RE = re.compile(
 
 
 def _prev_hash() -> str:
-    """Return the SHA-256 hash of the last line in the audit log."""
+    """
+    Get the SHA-256 hash of the last non-empty line in the audit log.
+    
+    Returns:
+        A 64-character hex SHA-256 digest of the last non-empty audit log line. If the audit log does not exist, is empty, or cannot be read, returns a string of 64 zeros.
+    """
     if not AUDIT_LOG.exists():
         return "0" * 64
     try:
@@ -84,6 +89,21 @@ def _prev_hash() -> str:
 
 
 def _write_audit_entry(entry: dict) -> None:
+    """
+    Append a chained audit entry to the session audit JSONL log.
+    
+    Injects a "prev_hash" (SHA-256 of the last non-empty audit line or zero-hash) into the provided entry, computes
+    and injects the entry's own "hash" (SHA-256 of the serialized entry), and appends the final JSON line to the
+    configured audit log file, creating the log directory if necessary.
+    
+    Parameters:
+        entry (dict): Mutable mapping representing the audit entry; this function will add "prev_hash" and "hash"
+            keys and persist the resulting object.
+    
+    Notes:
+        If the audit log cannot be written due to an OSError, a warning is printed to stderr and the function returns
+        without raising an exception.
+    """
     try:
         LOG_DIR.mkdir(parents=True, exist_ok=True)
         prev = _prev_hash()
@@ -104,6 +124,15 @@ def _write_audit_entry(entry: dict) -> None:
 
 
 def _scan_secrets(output: str) -> list[str]:
+    """
+    Detects which configured secret patterns appear in the provided output.
+    
+    Parameters:
+        output (str): Text to scan for secret patterns.
+    
+    Returns:
+        matched_patterns (list[str]): Names of secret patterns that matched the output; empty list if none.
+    """
     hits: list[str] = []
     for name, pattern in SECRET_PATTERNS:
         if pattern.search(output):
@@ -117,6 +146,18 @@ def _scan_secrets(output: str) -> list[str]:
 
 
 def _scan_scope_drift(output: str) -> dict:
+    """
+    Detect IP-based scope drift in the provided output string and report seen IPs and any that fall outside configured scope.
+    
+    Reads the PARROT_SCOPE_TARGETS environment variable (comma-separated IPs) to form an allowed target set. Extracts private and public IPv4 addresses from the output and, if scope targets are configured, identifies addresses not present in that target set.
+    
+    Returns:
+        dict: {
+            "private_ips_seen": list of unique private IPv4 addresses found in the output,
+            "public_ips_seen": list of unique public IPv4 addresses found in the output,
+            "out_of_scope_ips": list of IP addresses that were found but are not included in PARROT_SCOPE_TARGETS (empty if no targets configured)
+        }
+    """
     scope_targets: list[str] = []
     raw = os.environ.get("PARROT_SCOPE_TARGETS", "")
     if raw:
@@ -145,6 +186,11 @@ def _scan_scope_drift(output: str) -> dict:
 
 
 def main() -> None:
+    """
+    Process a tool event read from standard input, scan the tool output for secret leaks and scope drift, append a chained audit entry to the session audit log, emit warnings to stderr if issues are found, and exit with status code 0.
+    
+    Reads JSON from stdin into an event (invalid or missing JSON is treated as an empty event), extracts tool_name, tool_input, and tool_response, normalizes the response to a string, runs secret and scope-drift scans, constructs an audit entry containing timestamp, session id, tool metadata, output metrics, and scan results, and writes the entry to the audit log. If secret patterns or out-of-scope IPs are detected, prints a warning to stderr. Always terminates the process with exit code 0.
+    """
     raw = sys.stdin.read().strip()
     event: dict = {}
     if raw:
