@@ -18,8 +18,8 @@ RUN apt-get update \
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy source and install the package
-COPY pyproject.toml ./
+# Copy source and install the package (include README for hatchling metadata)
+COPY pyproject.toml README.md ./
 COPY src/ ./src/
 RUN pip install --no-cache-dir -e .
 
