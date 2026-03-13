@@ -200,3 +200,5 @@ main() {
 # All other exit codes are treated as unexpected and will be logged for auditability.
 # shellcheck disable=SC2154
 trap 'ret=$?; if [ "$ret" -ne 0 ] && [ "$ret" -ne 2 ] && [ "$ret" -ne 130 ]; then log_error "Unexpected error (exit code $ret) in cli.sh"; echo "\n[ERROR] An unexpected error occurred. Exiting."; fi' EXIT
+
+main "$@"

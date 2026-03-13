@@ -8,7 +8,9 @@
 
 set -euo pipefail
 
-CRON_FILE="/tmp/rpi_maintenance_cron"
+# Use mktemp to avoid predictable temp-file name (prevents symlink / TOCTOU attacks)
+CRON_FILE="$(mktemp -t rpi_maintenance_cron.XXXXXX)"
+chmod 600 "$CRON_FILE"
 SCRIPT_DIR="$(dirname "$0")/.."
 
 cat >"$CRON_FILE" <<EOF

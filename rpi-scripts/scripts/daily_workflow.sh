@@ -10,6 +10,16 @@ SCRIPT_DIR="$(dirname "$0")/.."
 LOG_FILE="./logs/daily_workflow.log"
 NOTIFY_EMAIL="${NOTIFY_EMAIL:-}"  # Optional email for notifications
 
+# Validate email format to prevent header/argument injection via NOTIFY_EMAIL
+_validate_email() {
+    [[ "$1" =~ ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$ ]]
+}
+
+if [ -n "$NOTIFY_EMAIL" ] && ! _validate_email "$NOTIFY_EMAIL"; then
+    echo "ERROR: NOTIFY_EMAIL contains an invalid address; notifications disabled." >&2
+    NOTIFY_EMAIL=""
+fi
+
 log() {
     echo "$(date '+%Y-%m-%d %H:%M:%S') [DAILY_WORKFLOW] $*" | tee -a "$LOG_FILE"
 }
