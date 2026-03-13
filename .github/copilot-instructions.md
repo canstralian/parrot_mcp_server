@@ -9,6 +9,16 @@ This repository follows the Model Context Protocol (MCP) specification and Anthr
 - **Testability:** Use `rpi-scripts/test_mcp_local.sh` and `tests/` to validate protocol compliance. Add new tests for any protocol-relevant change.
 - **Spec updates:** If the MCP spec changes, update scripts and documentation to match. Note any spec deltas in PRs.
 
+## Hardened by Default
+
+- Use **context-appropriate security controls** for sanitization:
+  - Use `bleach` exclusively for sanitizing untrusted HTML fragments.
+  - Use parameterized queries or ORM parameter binding for SQL queries.
+  - Validate API inputs using schema-based validation (e.g., JSON Schema, pydantic).
+  - Apply proper escaping/encoding for other output contexts.
+- Always include **input validation** and **rate limiting** to harden interfaces.
+- Avoid the blanket use of `bleach` as a universal sanitizer—select tools and practices that align with the specific context and type of data being processed.
+
 Reference: See the official MCP Server specification and Anthropic’s guidelines for further details. If unsure, ask the maintainer for clarification before deviating from the spec or introducing new patterns.
 
 <!-- Copilot instructions tailored for the parrot_mcp_server repository -->
