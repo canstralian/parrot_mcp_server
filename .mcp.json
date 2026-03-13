@@ -1,0 +1,35 @@
+{
+  "mcpServers": {
+    "parrot-bash": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["-m", "parrot_mcp_server.servers.bash_server"],
+      "env": {
+        "PARROT_SERVER_ROLE": "lifecycle",
+        "PARROT_LOG_DIR": "${PARROT_LOG_DIR:-/var/log/parrot}"
+      },
+      "description": "Lifecycle and Raspberry Pi operations server. Handles system-level automation, cron setup, and RPi-specific tooling."
+    },
+    "parrot-python": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["-m", "parrot_mcp_server.servers.python_server"],
+      "env": {
+        "PARROT_SERVER_ROLE": "orchestration",
+        "PARROT_LOG_DIR": "${PARROT_LOG_DIR:-/var/log/parrot}"
+      },
+      "description": "Red/purple team orchestration server. Drives engagement workflows, scope validation, and tool chaining."
+    },
+    "parrot-workflow": {
+      "type": "stdio",
+      "command": "python",
+      "args": ["-m", "parrot_mcp_server.servers.workflow_server"],
+      "env": {
+        "PARROT_SERVER_ROLE": "workflow",
+        "PARROT_LOG_DIR": "${PARROT_LOG_DIR:-/var/log/parrot}",
+        "PARROT_WORKFLOW_DIR": "${PARROT_WORKFLOW_DIR:-./workflows}"
+      },
+      "description": "JSON workflow execution server. Loads, validates, and steps through declarative workflow definitions."
+    }
+  }
+}

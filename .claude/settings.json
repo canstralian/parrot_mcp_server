@@ -1,0 +1,85 @@
+{
+  "enableAllProjectMcpServers": false,
+  "enabledMcpServers": [
+    "parrot-bash",
+    "parrot-python",
+    "parrot-workflow"
+  ],
+  "permissions": {
+    "allow": [
+      "Bash(git:*)",
+      "Bash(python:*)",
+      "Bash(pip:*)",
+      "Bash(make:*)",
+      "Bash(cat:*)",
+      "Bash(ls:*)",
+      "Bash(echo:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(mv:*)",
+      "Bash(chmod:*)",
+      "Bash(touch:*)",
+      "Bash(test:*)",
+      "Bash(bash:*)",
+      "Bash(sh:*)",
+      "mcp__parrot-bash__*",
+      "mcp__parrot-python__*",
+      "mcp__parrot-workflow__*"
+    ],
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+      "Bash(sudo:*)",
+      "Bash(eval:*)",
+      "Bash(exec:*)",
+      "Bash(dd:*)",
+      "Bash(mkfs:*)",
+      "Bash(fdisk:*)",
+      "Bash(nc:*)",
+      "Bash(netcat:*)",
+      "Bash(nmap:*)",
+      "Bash(kill -9:*)",
+      "Bash(pkill:*)",
+      "Bash(shutdown:*)",
+      "Bash(reboot:*)",
+      "Bash(crontab -r:*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/hooks/pre_tool_use.py"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/hooks/post_tool_use.py"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/hooks/stop_gate.py"
+          }
+        ]
+      }
+    ]
+  }
+}
