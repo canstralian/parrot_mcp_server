@@ -37,4 +37,4 @@ USER parrot
 
 EXPOSE 8000
 
-ENTRYPOINT ["parrot-mcp"]
+ENTRYPOINT ["./rpi-scripts/start_mcp_server.sh"]
