@@ -26,8 +26,13 @@
 ### Python/Flask Backend Logic
 
 ```python
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request
 from pydantic import BaseModel, ValidationError
+
+FAKE_USERS: dict[int, dict[str, object]] = {
+    1: {"id": 1, "name": "Alice"},
+    2: {"id": 2, "name": "Bob"},
+}
 
 user_bp = Blueprint('user', __name__)
 
@@ -42,11 +47,11 @@ def get_user_profile() -> tuple[dict, int]:
     except ValidationError as e:
         return {"error": "Invalid User ID", "details": e.errors()}, 400
 
-    user = db.session.execute(db.select(User).filter_by(id=query.user_id)).scalar_one_or_none()
+    user = FAKE_USERS.get(query.user_id)
 
-    if not user:
+    if user is None:
         return {"error": "Not Found"}, 404
-    return jsonify(user.to_dict()), 200
+    return user, 200
 ```
 
 ### React Functional Component
