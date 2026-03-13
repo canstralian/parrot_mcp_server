@@ -91,7 +91,7 @@ logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 def run_scan(target: str):
     """Executes Nmap scan within WSL2 environment."""
     try:
-        result = subprocess.run(['nmap', '-F', target], capture_output=True, text=True, check=True)
+        result = subprocess.run(['nmap', '-F', '--', target], capture_output=True, text=True, check=True)
         print(result.stdout)
     except subprocess.CalledProcessError as e:
         logging.error(f"Scan failed on {target}: {e.stderr}")
