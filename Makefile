@@ -21,7 +21,7 @@ test:
 	@echo "--- [Bash Tests: BATS] ---"
 	bats rpi-scripts/tests/*.bats
 	@echo "--- [Python Tests: pytest] ---"
-	pytest --asyncio-mode=auto tests/
+	pytest --asyncio-mode=auto
 
 secure:
 	@echo "--- [Security Core: Adaptive Immunity Audit] ---"
