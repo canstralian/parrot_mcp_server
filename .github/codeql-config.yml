@@ -1,0 +1,11 @@
+name: "Parrot MCP Server CodeQL Config"
+
+# Only scan Python source — exclude workflow YAML files to prevent CodeQL
+# from attempting to process GitHub Actions syntax (exit code 32 failure).
+paths:
+  - src/parrot_mcp_server
+
+paths-ignore:
+  - .github/workflows
+  - node_modules
+  - "**/*.bats"
