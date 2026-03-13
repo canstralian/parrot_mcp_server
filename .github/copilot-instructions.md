@@ -1,64 +1,104 @@
-# Spec-driven development and MCP compliance
+# GitHub Copilot: Integrated Security & Full-Stack Persona
 
-This repository follows the Model Context Protocol (MCP) specification and Anthropic's best practices for spec-driven coding:
+## 1. Architecture & Tech Stack
 
-- **Spec-first:** All features and changes should be guided by the official MCP Server spec. If in doubt, consult the spec before implementing or modifying behavior.
-- **Semantic compliance:** Scripts must preserve the intent and contract of the MCP protocol—structured message exchange, clear context boundaries, and auditable data flows.
-- **Literal compliance:** Code should be portable, POSIX-compliant Bash, and avoid hidden dependencies. All protocol interactions must be testable and observable via logs or test harnesses.
-- **Transparency:** Favor explicit, auditable shell logic over cleverness. Document edge cases and protocol boundaries in comments.
-- **Testability:** Use `rpi-scripts/test_mcp_local.sh` and `tests/` to validate protocol compliance. Add new tests for any protocol-relevant change.
-- **Spec updates:** If the MCP spec changes, update scripts and documentation to match. Note any spec deltas in PRs.
+* **Backend:** **Flask (Python 3.10+)**. Use strict Type Hinting and `pydantic` for validation. Design for RESTful modularity.
+* **Frontend:** **React (JS/TS)**. Functional components, Hooks, and modular CSS/Tailwind. No class components.
+* **Database:** **PostgreSQL**. Use SQLAlchemy (2.0 style) or raw parameterized SQL. Prioritize indexing and connection pooling.
+* **Environment:** **WSL2 (Ubuntu)** focus. Assume `bash` for scripts, standard Linux paths, and VS Code.
 
-Reference: See the official MCP Server specification and Anthropic’s guidelines for further details. If unsure, ask the maintainer for clarification before deviating from the spec or introducing new patterns.
+## 2. The "Purple Team" Security Standard
 
-<!-- Copilot instructions tailored for the parrot_mcp_server repository -->
+* **Hardened by Default:** Every endpoint must include input validation and rate limiting. Use `bleach` for sanitization.
+* **API Security:** Implement JWT-based auth or OAuth2. Ensure CORS is strictly configured.
+* **Security Automation:** For **Kali Linux** tools, include `try-except` blocks that log to `stderr` and exit with non-zero codes.
+* **Secret Management:** Never suggest hardcoded keys. Always use `os.getenv` or `python-dotenv`.
 
-## Parrot MCP Server — AI assistant instructions
+## 3. Negative Constraints (Strict Avoidance)
 
-Short, actionable guidance to help AI coding agents be immediately productive in this repo.
+* **No "Lazy" Python:** Avoid `dict` access without `.get()` if the key might be missing. Never use `f-strings` for SQL.
+* **No "Lazy" JS:** Never use `var`. Avoid `any` in TypeScript. Do not use `alert()` for debugging.
+* **No Insecure Defaults:** Never suggest `DEBUG=True` in production-like snippets. Never suggest `chmod 777`.
+* **No Boilerplate:** Do not explain basic syntax unless the logic is non-standard.
 
-- Project shape: small, Bash-first repository. Primary code lives under `rpi-scripts/` and `scripts/` and is driven by `cli.sh`.
-- Core purpose: a lightweight Model Context Protocol (MCP) server implemented with portable Bash. Expect shell scripts, no language runtimes or package managers.
+## 4. Output Examples (Desired Style)
 
-Key files and commands (quick references)
+### Python/Flask Backend Logic
 
-- `./rpi-scripts/start_mcp_server.sh` — start the MCP server locally.
-- `./rpi-scripts/stop_mcp_server.sh` — stop it.
-- `./rpi-scripts/test_mcp_local.sh` — local test harness for the MCP server.
-- `./rpi-scripts/*.sh` and `./scripts/*.sh` — the reusable script library; run via `./cli.sh <script>`.
-- Logs: `./logs/parrot.log` (tail -f to follow runtime output).
+```python
+from flask import Blueprint, request, jsonify
+from pydantic import BaseModel, ValidationError
 
-What to change and how
+user_bp = Blueprint('user', __name__)
 
-- When editing scripts, preserve the script shebang (for example, /usr/bin/env bash) and keep changes POSIX-friendly where possible.
-- Make new scripts executable (`chmod +x`) and add them to `scripts/` if they should be exposed via `./cli.sh`.
-- Follow existing naming patterns: `scripts/<name>.sh` and small, composable functions inside scripts.
+class UserQuery(BaseModel):
+    user_id: int
 
-Testing, linting and CI
+@user_bp.route('/user', methods=['GET'])
+def get_user_profile() -> tuple[dict, int]:
+    """Fetches user profile with validated ID."""
+    try:
+        query = UserQuery(user_id=request.args.get('id'))
+    except ValidationError as e:
+        return {"error": "Invalid User ID", "details": e.errors()}, 400
 
-- Repo uses ShellCheck and shfmt. Run locally before commits:
-  - `shellcheck cli.sh scripts/*.sh rpi-scripts/*.sh`
-  - `shfmt -w cli.sh scripts/*.sh rpi-scripts/*.sh`
-- Tests: simple Bash tests and `rpi-scripts/test_mcp_local.sh`. CI runs these on push.
+    user = db.session.execute(db.select(User).filter_by(id=query.user_id)).scalar_one_or_none()
 
-Conventions and patterns specific to this repo
+    if not user:
+        return {"error": "Not Found"}, 404
+    return jsonify(user.to_dict()), 200
+```
 
-- Minimal dependencies: avoid adding heavy language-specific toolchains. If required, document clearly in README.
-- CLI wrapper: `cli.sh` is the canonical way to run library scripts — prefer modifying/adding scripts compatible with the CLI interface.
-- Cron/setup: `./rpi-scripts/setup_cron.sh` sets up automated maintenance — changes that affect scheduling should update that script and note cron expectations in the PR.
+### React Functional Component
 
-Integration points and expectations
+```javascript
+import React, { useState, useEffect } from 'react';
 
-- The server communicates via filesystem and standard streams; expect scripts to read/write files under the repo or /tmp in CI-friendly ways.
-- Keep any external integration (network, devices) toggled behind clear env vars so CI can run headless tests.
+/**
+ * DataGrid for security logs.
+ * @param {Array} logs - Array of log objects.
+ */
+const LogViewer = ({ logs = [] }) => {
+  const [filter, setFilter] = useState('');
+  const filteredLogs = logs.filter(log => log.message.includes(filter));
 
-Examples to follow
+  return (
+    <div className="p-4 bg-slate-900 text-green-400 font-mono">
+      <input
+        type="text"
+        onChange={(e) => setFilter(e.target.value)}
+        placeholder="Search logs..."
+        className="border-b border-green-800 bg-transparent outline-none"
+      />
+      <ul className="mt-2">
+        {filteredLogs.map(log => <li key={log.id}>{log.timestamp}: {log.message}</li>)}
+      </ul>
+    </div>
+  );
+};
+```
 
-- Adding a script: put `scripts/clean_logs.sh`, make executable, add a small usage block, verify via `./cli.sh clean_logs` and lint/tests.
-- Start/stop flow: use `./rpi-scripts/start_mcp_server.sh` then `tail -f ./logs/parrot.log` to validate runtime behavior.
+### Security Scripting (WSL2/Bash/Python)
 
-Editing this file
+```python
+#!/usr/bin/env python3
+import sys
+import subprocess
+import logging
 
-- If you find additional repo-specific rules or patterns, update this file with a short example and reference the touched file(s).
+logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 
-If something is unclear (missing env, CI secrets, or external hardware assumptions), ask the maintainer before making behavioral changes.
+def run_scan(target: str):
+    """Executes Nmap scan within WSL2 environment."""
+    try:
+        result = subprocess.run(['nmap', '-F', '--', target], capture_output=True, text=True, check=True)
+        print(result.stdout)
+    except subprocess.CalledProcessError as e:
+        logging.error(f"Scan failed on {target}: {e.stderr}")
+        sys.exit(1)
+```
+
+## 5. Communication Style
+
+* Tone: Technical, direct, and candid.
+* Critique: If a request is insecure, provide the secure alternative first with a brief risk explanation.
