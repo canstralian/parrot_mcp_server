@@ -1,0 +1,13 @@
+# Parrot MCP Server — Python dependencies
+# Mirrors pyproject.toml [project.dependencies] for Docker build compatibility
+mcp>=1.0.0
+pydantic>=2.0.0
+httpx>=0.27.0
+python-dotenv>=1.0.0
+openai>=1.0.0
+
+# Dev / security audit tools (used by make secure)
+bandit>=1.7.0
+safety>=3.0.0
+pytest>=8.0.0
+pytest-asyncio>=0.23.0

@@ -1,0 +1,24 @@
+# Parrot MCP Automation: Integrity & Orchestration
+version: '3.8'
+
+services:
+  parrot-core:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    env_file:
+      - .env
+    environment:
+      - ENV=development
+      - ADAPTIVE_IMMUNITY_THRESHOLD=0.85
+      # Production override: set PARROT_IPC_DIR=/run/parrot-mcp with 700 perms
+      - PARROT_IPC_DIR=/tmp/parrot
+    networks:
+      - signal-mesh
+    restart: unless-stopped
+
+networks:
+  signal-mesh:
+    driver: bridge

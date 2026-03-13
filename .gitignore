@@ -16,3 +16,18 @@ rpi-scripts/logs/*.pid
 # OS files
 .DS_Store
 Thumbs.db
+
+# Environment secrets
+.env
+
+# Build artifacts
+build_manifest.sha256
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.venv/
