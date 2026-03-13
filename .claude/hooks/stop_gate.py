@@ -103,11 +103,11 @@ def _score_session(entries: list[dict]) -> tuple[int, list[str]]:
         ts   = entry.get("ts", 0)
 
         if entry.get("secret_leak_detected"):
-            patterns = entry.get("secret_patterns_matched", [])
+            count = entry.get("secret_pattern_count", 0)
             score += WEIGHT_SECRET_LEAK
             reasons.append(
                 f"[+{WEIGHT_SECRET_LEAK}] Secret leak in '{tool}' "
-                f"(patterns: {', '.join(patterns)}) @ ts={ts:.0f}"
+                f"({count} pattern type(s) matched) @ ts={ts:.0f}"
             )
 
         if entry.get("out_of_scope_detected"):

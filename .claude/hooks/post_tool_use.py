@@ -225,7 +225,7 @@ def main() -> None:
         "tool_input_keys": sorted(tool_input.keys()) if isinstance(tool_input, dict) else [],
         "output_len": len(output_str),
         "secret_leak_detected": bool(secret_hits),
-        "secret_patterns_matched": secret_hits,
+        "secret_pattern_count": len(secret_hits),
         "scope_drift": scope_info,
         "out_of_scope_detected": bool(scope_info["out_of_scope_ips"]),
     }
@@ -236,7 +236,7 @@ def main() -> None:
     if secret_hits:
         print(
             f"[AUDIT] SECRET LEAK DETECTED in output of '{tool_name}': "
-            f"{', '.join(secret_hits)}",
+            f"{len(secret_hits)} pattern type(s) matched",
             file=sys.stderr,
         )
 
