@@ -38,6 +38,40 @@ else
 	echo "[FAIL] Malformed MCP message error not found in logs."
 fi
 
+# ---------------------------------------------------------------------------
+# tools/list — verify all orchestration tool names are advertised
+# ---------------------------------------------------------------------------
+echo "[TEST] Verifying tools/list advertises all orchestration tools..."
+
+TOOLS_REQUEST='{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'
+TOOLS_RESPONSE=$(echo "$TOOLS_REQUEST" | parrot-mcp 2>/dev/null || true)
+
+REQUIRED_TOOLS=(
+    "register_agent"
+    "deregister_agent"
+    "submit_task"
+    "complete_task"
+    "submit_workflow"
+    "agent_heartbeat"
+    "orchestrator_status"
+)
+
+TOOLS_PASS=true
+for tool in "${REQUIRED_TOOLS[@]}"; do
+    if echo "$TOOLS_RESPONSE" | grep -q "\"$tool\""; then
+        echo "[PASS] Tool advertised: $tool"
+    else
+        echo "[FAIL] Tool NOT advertised: $tool"
+        TOOLS_PASS=false
+    fi
+done
+
+if $TOOLS_PASS; then
+    echo "[PASS] All orchestration tools present in tools/list response."
+else
+    echo "[FAIL] Some orchestration tools missing from tools/list response."
+fi
+
 # Stop the server
 $STOP || true
 kill $SERVER_PID 2>/dev/null || true
