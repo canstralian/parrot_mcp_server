@@ -209,3 +209,46 @@ jobs:
 
 ## Closing Note
 Standardizing excellence across Copilot, Codex, and human contributors strengthens the reliability, performance, and safety of the Trading Bot Swarm. Revisit these practices regularly to keep automation trustworthy and resilient.
+
+
+## Request Flow Through Selected Code (Local MCP Path)
+This section maps how a local MCP request flows through the currently selected implementation (`rpi-scripts/` harness + authorization module).
+
+1. **Test/client request creation** (`rpi-scripts/test_mcp_local.sh`)
+   - The harness starts `start_mcp_server.sh`, then writes a valid JSON message to `/tmp/mcp_in.json` and a malformed one to `/tmp/mcp_bad.json`.
+   - It does a lightweight protocol simulation (`cat ... >/dev/null`) and validates behavior indirectly by inspecting logs.
+2. **Server bootstrap + config loading** (`rpi-scripts/start_mcp_server.sh`)
+   - Server startup sources `common_config.sh`, initializes logging, and exports `PARROT_CURRENT_LOG`.
+   - Runtime file locations (input/bad message files, PID file, log file) come from centralized config variables.
+3. **Message handling (stub behavior)** (`rpi-scripts/start_mcp_server.sh`)
+   - If the valid input file exists and contains `"content":"ping"`, an info log entry is emitted.
+   - If malformed file exists, an error log entry is emitted.
+   - Process remains alive briefly for the test harness to inspect side effects.
+4. **Lifecycle shutdown** (`rpi-scripts/stop_mcp_server.sh`)
+   - Stop script reads PID and attempts cleanup/termination so repeated tests can run.
+5. **Authorization gate design for tool calls** (`src/parrot_mcp_server/auth.py`)
+   - In the Python tool path, `auth.py` defines `require_authorization()`, which is intended to ensure that every tool call has an active engagement ID, valid time window, and in-scope target before execution; this check becomes effective only where the surrounding tool-dispatch logic actually invokes it.
+
+### Module Responsibilities (Short Summary)
+- `rpi-scripts/test_mcp_local.sh`: protocol smoke harness and expected-log assertions.
+- `rpi-scripts/start_mcp_server.sh`: bootstrap, config wiring, and stub request processing.
+- `rpi-scripts/common_config.sh`: shared paths, log policy, and utility functions used across scripts.
+- `rpi-scripts/stop_mcp_server.sh`: process lifecycle cleanup.
+- `src/parrot_mcp_server/auth.py`: engagement registration + authorization/guardrail checks.
+
+### What Data Is Validated and Where
+- **CLI script name safety**: `rpi-scripts/cli.sh` validates script names with a strict regex before execution.
+- **MCP payload presence/content (stub-level)**: `start_mcp_server.sh` validates only file existence and a `ping` substring check.
+- **Malformed payload path**: existence of `PARROT_MCP_BAD` triggers error logging.
+- **Authorization metadata** (`auth.py`):
+  - engagement ID must exist in the active registry,
+  - current UTC time must be inside `start_utc..end_utc`,
+  - target must match at least one scope prefix (or `*`).
+
+### Gotchas to Watch For
+1. **Stub parsing is intentionally shallow**
+   - The shell path does not fully parse JSON; it relies on `grep`/file presence, so seemingly valid structural changes can silently bypass intended behavior.
+2. **Scope matching is prefix-based**
+   - `target.startswith(scope_entry)` is simple and fast, but broad prefixes can authorize more than intended (e.g., overlapping hostnames/assets). Tight scope definitions are essential.
+3. **Test harness paths are hardcoded**
+   - The `rpi-scripts/test_mcp_local.sh` script writes to hardcoded paths like `/tmp/mcp_in.json`, while the server reads from configurable paths (e.g., `$PARROT_MCP_INPUT`) defined in `common_config.sh`. This can cause tests to fail if the `PARROT_IPC_DIR` configuration is changed.
