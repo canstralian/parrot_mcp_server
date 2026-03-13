@@ -63,7 +63,7 @@ class SignalReactor:
             "[msgid:%d] SignalReactor: connected %s -> %s",
             time.time_ns(),
             signal,
-            callback.__qualname__,
+            getattr(callback, "__qualname__", getattr(callback, "__name__", repr(callback))),
         )
 
     def disconnect(self, signal: str, callback: HookFn) -> None:
@@ -74,7 +74,7 @@ class SignalReactor:
             "[msgid:%d] SignalReactor: disconnected %s -> %s",
             time.time_ns(),
             signal,
-            callback.__qualname__,
+            getattr(callback, "__qualname__", getattr(callback, "__name__", repr(callback))),
         )
 
     # ------------------------------------------------------------------
