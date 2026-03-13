@@ -16,3 +16,4 @@ rpi-scripts/logs/*.pid
 # OS files
 .DS_Store
 Thumbs.db
+__pycache__/
