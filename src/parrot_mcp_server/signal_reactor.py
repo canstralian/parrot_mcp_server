@@ -38,7 +38,7 @@ class SignalReactor:
     """
 
     def __init__(self, timeout_ms: int = 500) -> None:
-        self._hooks: dict[str, list[HookFn]] = {}
+        self._hooks: dict[str, set[HookFn]] = {}
         # Per-signal timeout in seconds; prevents a runaway hook stalling emit.
         self._timeout_s: float = timeout_ms / 1000.0
 
