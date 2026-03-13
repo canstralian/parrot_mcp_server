@@ -13,7 +13,7 @@ services:
     environment:
       - ENV=development
       - ADAPTIVE_IMMUNITY_THRESHOLD=0.85
-      # Production override: set PARROT_IPC_DIR=/run/parrot with 700 perms
+      # Production override: set PARROT_IPC_DIR=/run/parrot-mcp with 700 perms
       - PARROT_IPC_DIR=/tmp/parrot
     ports:
       - "${PORT:-8000}:8000"
