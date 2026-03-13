@@ -1,0 +1,333 @@
+# Instincts generated from https://github.com/canstralian/parrot_mcp_server
+# Generated: 2026-03-13T15:31:52.307Z
+# Version: 2.0
+
+---
+id: parrot_mcp_server-commit-length
+trigger: "when writing a commit message"
+confidence: 0.6
+domain: git
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Commit Length
+
+## Action
+
+Keep commit messages concise (under 50 characters)
+
+## Evidence
+
+- Average commit message length: 48 chars
+- Based on 5 commits
+
+---
+id: parrot_mcp_server-naming-files
+trigger: "when creating a new file"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Naming Files
+
+## Action
+
+Use snake_case naming convention
+
+## Evidence
+
+- Analyzed file naming patterns in repository
+- Dominant pattern: snake_case
+
+---
+id: parrot_mcp_server-export-style
+trigger: "when exporting from a module"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Export Style
+
+## Action
+
+Prefer mixed exports
+
+## Evidence
+
+- Export pattern analysis
+- Dominant style: mixed
+
+---
+id: parrot_mcp_server-test-separate
+trigger: "when writing tests"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Test Separate
+
+## Action
+
+Place tests in the tests/ or __tests__/ directory, mirroring src structure
+
+## Evidence
+
+- Separate test directory pattern detected
+- Tests live in dedicated test folders
+
+---
+id: parrot_mcp_server-workflow-rpi-script-bug-fixing
+trigger: "when doing rpi script bug fixing"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Workflow Rpi Script Bug Fixing
+
+## Action
+
+Follow the rpi-script-bug-fixing workflow:
+1. Identify critical/high priority bugs
+2. Fix shell script issues (permissions, paths, logic)
+3. Update multiple script files simultaneously
+4. Add safety checks and error handling
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: rpi-scripts/cli.sh, rpi-scripts/scripts/*.sh
+
+---
+id: parrot_mcp_server-workflow-rpi-script-enhancement
+trigger: "when doing rpi script enhancement"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Workflow Rpi Script Enhancement
+
+## Action
+
+Follow the rpi-script-enhancement workflow:
+1. Identify scripts needing enhancement
+2. Add comprehensive logging
+3. Improve error handling and safety checks
+4. Make scripts executable and fix paths
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: rpi-scripts/scripts/system_update.sh, rpi-scripts/scripts/setup_cron.sh, rpi-scripts/scripts/*.sh
+
+---
+id: parrot_mcp_server-snake-case-files
+trigger: "When creating new Python files"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Snake Case Files
+
+## Action
+
+Name files using snake_case convention
+
+## Evidence
+
+- File naming pattern observed across repository structure
+- Python files follow snake_case naming
+
+---
+id: parrot_mcp_server-camel-case-functions
+trigger: "When defining Python functions"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Camel Case Functions
+
+## Action
+
+Use camelCase naming for function names
+
+## Evidence
+
+- Function naming convention detected in codebase analysis
+
+---
+id: parrot_mcp_server-pascal-case-classes
+trigger: "When defining Python classes"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Pascal Case Classes
+
+## Action
+
+Use PascalCase naming for class names
+
+## Evidence
+
+- Class naming convention detected in codebase analysis
+
+---
+id: parrot_mcp_server-screaming-snake-constants
+trigger: "When defining constants in Python"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Screaming Snake Constants
+
+## Action
+
+Use SCREAMING_SNAKE_CASE for constant names
+
+## Evidence
+
+- Constant naming convention observed in Python files
+
+---
+id: parrot_mcp_server-freeform-commits
+trigger: "When making git commits"
+confidence: 0.9
+domain: git
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Freeform Commits
+
+## Action
+
+Write descriptive commit messages without enforced prefixes, averaging ~48 characters
+
+## Evidence
+
+- All example commits follow freeform pattern
+- Average length of 48 characters observed
+- No conventional commit prefixes used
+
+---
+id: parrot_mcp_server-separate-test-location
+trigger: "When organizing test files"
+confidence: 0.6
+domain: architecture
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Separate Test Location
+
+## Action
+
+Place tests in separate directories from source code
+
+## Evidence
+
+- Repository shows separate test location pattern
+
+---
+id: parrot_mcp_server-rpi-bug-fixing
+trigger: "When RPI scripts have critical bugs or security issues"
+confidence: 0.75
+domain: workflow
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Rpi Bug Fixing
+
+## Action
+
+Fix shell script permissions, paths, logic and add safety checks simultaneously across multiple script files
+
+## Evidence
+
+- Commit: Fix critical and high priority bugs in RPI scripts
+- Pattern shows fixing multiple scripts at once
+- Focus on cli.sh and scripts/*.sh files
+
+---
+id: parrot_mcp_server-rpi-enhancement
+trigger: "When RPI scripts need improved functionality or reliability"
+confidence: 0.7
+domain: workflow
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Rpi Enhancement
+
+## Action
+
+Add comprehensive logging, improve error handling, and enhance cron/system update scripts
+
+## Evidence
+
+- Commit: Enhance RPI scripts: improve cron setup and system updates
+- Focus on system_update.sh and setup_cron.sh files
+- Pattern of adding logging and error handling
+
+---
+id: parrot_mcp_server-production-ready-push
+trigger: "When preparing for production deployment"
+confidence: 0.8
+domain: workflow
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Production Ready Push
+
+## Action
+
+Bundle robust CLI, automation, CI, documentation and best practices into single comprehensive update
+
+## Evidence
+
+- Commit: Production-ready: robust Bash CLI, automation, CI, docs, and best practices
+- Shows pattern of comprehensive production preparation
+
+---
+id: parrot_mcp_server-security-architecture
+trigger: "When implementing security features"
+confidence: 0.6
+domain: architecture
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Security Architecture
+
+## Action
+
+Create layered security control plane with scaffolded architecture
+
+## Evidence
+
+- Commit: Add layered security control plane scaffold
+- Shows architectural approach to security
+
