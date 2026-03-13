@@ -266,10 +266,11 @@ class AdaptiveGuard:
         self._update(profile, stats, now_ns)
 
         # Apply pressure decay.
-        stats.anomaly_pressure = min(1.0, stats.anomaly_pressure * self._pressure_decay + score * 0.1)
+        stats.anomaly_pressure = min(1.0, stats.anomaly_pressure * self._pressure_decay + score * self._pressure_gain)
 
         # Threshold tightens under sustained pressure.
-        effective_threshold = self._score_threshold * (1.0 - stats.anomaly_pressure * 0.3)
+        effective_threshold = self._score_threshold * (1.0 - stats.anomaly_pressure * self._threshold_sensitivity)
+
 
         if score >= effective_threshold:
             self._quarantine[profile.source_ip] = _Quarantine(
