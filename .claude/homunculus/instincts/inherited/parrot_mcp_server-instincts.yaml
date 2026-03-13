@@ -1,0 +1,511 @@
+# Instincts generated from https://github.com/canstralian/parrot_mcp_server
+# Generated: 2026-03-13T12:35:00.336Z
+# Version: 2.0
+
+---
+id: parrot_mcp_server-commit-length
+trigger: "when writing a commit message"
+confidence: 0.6
+domain: git
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Commit Length
+
+## Action
+
+Keep commit messages concise (under 50 characters)
+
+## Evidence
+
+- Average commit message length: 49 chars
+- Based on 90 commits
+
+---
+id: parrot_mcp_server-naming-files
+trigger: "when creating a new file"
+confidence: 0.8
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Naming Files
+
+## Action
+
+Use snake_case naming convention
+
+## Evidence
+
+- Analyzed file naming patterns in repository
+- Dominant pattern: snake_case
+
+---
+id: parrot_mcp_server-export-style
+trigger: "when exporting from a module"
+confidence: 0.7
+domain: code-style
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Export Style
+
+## Action
+
+Prefer mixed exports
+
+## Evidence
+
+- Export pattern analysis
+- Dominant style: mixed
+
+---
+id: parrot_mcp_server-test-separate
+trigger: "when writing tests"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Test Separate
+
+## Action
+
+Place tests in the tests/ or __tests__/ directory, mirroring src structure
+
+## Evidence
+
+- Separate test directory pattern detected
+- Tests live in dedicated test folders
+
+---
+id: parrot_mcp_server-workflow-feature-development
+trigger: "when implementing a new feature"
+confidence: 0.75
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Workflow Feature Development
+
+## Action
+
+Follow the feature-development workflow:
+1. Add feature implementation
+2. Add tests for feature
+3. Update documentation
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~5x per month
+- Files: **/*.test.*
+
+---
+id: parrot_mcp_server-workflow-github-workflow-permissions-fix
+trigger: "when doing github workflow permissions fix"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Workflow Github Workflow Permissions Fix
+
+## Action
+
+Follow the github-workflow-permissions-fix workflow:
+1. Identify workflow file with missing permissions
+2. Add permissions section with read-only defaults
+3. Merge via pull request
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: .github/workflows/*.yml
+
+---
+id: parrot_mcp_server-workflow-copilot-codex-guide-updates
+trigger: "when doing copilot codex guide updates"
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Workflow Copilot Codex Guide Updates
+
+## Action
+
+Follow the copilot-codex-guide-updates workflow:
+1. Update COPILOT_CODEX_GUIDE.md with new sections
+2. Make multiple incremental commits
+3. Merge via pull request
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~10x per month
+- Files: docs/COPILOT_CODEX_GUIDE.md
+
+---
+id: parrot_mcp_server-workflow-readme-documentation-updates
+trigger: "when doing readme documentation updates"
+confidence: 0.7
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Workflow Readme Documentation Updates
+
+## Action
+
+Follow the readme-documentation-updates workflow:
+1. Modify README.md content
+2. Commit changes directly or via PR
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~4x per month
+- Files: README.md
+
+---
+id: parrot_mcp_server-workflow-log-file-cleanup
+trigger: "when doing log file cleanup"
+confidence: 0.65
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Workflow Log File Cleanup
+
+## Action
+
+Follow the log-file-cleanup workflow:
+1. Identify log files in commits
+2. Remove from tracking
+3. Update .gitignore if needed
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~3x per month
+- Files: logs/parrot.log, rpi-scripts/logs/parrot.log
+
+---
+id: parrot_mcp_server-workflow-script-configuration-updates
+trigger: "when doing script configuration updates"
+confidence: 0.6
+domain: workflow
+source: repo-analysis
+source_repo: https://github.com/canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Workflow Script Configuration Updates
+
+## Action
+
+Follow the script-configuration-updates workflow:
+1. Modify common_config.sh or related scripts
+2. Update corresponding test files
+3. Test and merge changes
+
+## Evidence
+
+- Workflow detected from commit patterns
+- Frequency: ~2x per month
+- Files: rpi-scripts/common_config.sh, rpi-scripts/test_mcp_local.sh, rpi-scripts/tests/*.bats
+
+---
+id: parrot_mcp_server-snake-case-files
+trigger: "When creating new Python files"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Snake Case Files
+
+## Action
+
+Use snake_case naming convention for file names
+
+## Evidence
+
+- Pattern seen in parrot_mcp_server folder structure
+- Consistent across all Python modules
+
+---
+id: parrot_mcp_server-camel-case-functions
+trigger: "When defining functions in Python code"
+confidence: 0.85
+domain: code-style
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Camel Case Functions
+
+## Action
+
+Use camelCase naming convention for function names
+
+## Evidence
+
+- Detected in codeStyle analysis
+- Mixed with snake_case but camelCase is preferred
+
+---
+id: parrot_mcp_server-pascal-case-classes
+trigger: "When defining classes in Python code"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Pascal Case Classes
+
+## Action
+
+Use PascalCase naming convention for class names
+
+## Evidence
+
+- Standard Python convention confirmed in analysis
+- Consistent across codebase
+
+---
+id: parrot_mcp_server-screaming-snake-constants
+trigger: "When defining constants in Python code"
+confidence: 0.9
+domain: code-style
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Screaming Snake Constants
+
+## Action
+
+Use SCREAMING_SNAKE_CASE naming convention for constants
+
+## Evidence
+
+- Standard Python convention detected in analysis
+- Consistent pattern in configuration files
+
+---
+id: parrot_mcp_server-separate-test-files
+trigger: "When writing tests for new features"
+confidence: 0.85
+domain: testing
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Separate Test Files
+
+## Action
+
+Create test files in separate test directories using *.test.* naming pattern
+
+## Evidence
+
+- Architecture shows testLocation: separate
+- Feature-development workflow includes **/*.test.* files
+
+---
+id: parrot_mcp_server-test-after-feature
+trigger: "When implementing new features"
+confidence: 0.8
+domain: testing
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Test After Feature
+
+## Action
+
+Add tests immediately after feature implementation in same commit sequence
+
+## Evidence
+
+- Feature-development workflow shows: Add feature implementation → Add tests for feature
+- Pattern seen 5 times in workflow analysis
+
+---
+id: parrot_mcp_server-descriptive-commits
+trigger: "When making commits"
+confidence: 0.75
+domain: git
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Descriptive Commits
+
+## Action
+
+Write descriptive commit messages averaging 49 characters with clear action intent
+
+## Evidence
+
+- Average commit length: 49 characters
+- Examples show clear action-oriented messages like 'feat: Major refinements', 'docs: expand Copilot'
+
+---
+id: parrot_mcp_server-prefix-commit-types
+trigger: "When committing documentation or feature changes"
+confidence: 0.7
+domain: git
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Prefix Commit Types
+
+## Action
+
+Use prefixes like 'docs:', 'feat:', 'fix:' for commit categorization
+
+## Evidence
+
+- Examples show 'docs: expand Copilot and Codex guide', 'feat: Major refinements'
+- Some commits use prefixes while others don't
+
+---
+id: parrot_mcp_server-workflow-permissions-fix
+trigger: "When code scanning alerts appear for missing workflow permissions"
+confidence: 0.95
+domain: workflow
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Workflow Permissions Fix
+
+## Action
+
+Add permissions section with read-only defaults to .github/workflows/*.yml files
+
+## Evidence
+
+- github-workflow-permissions-fix pattern occurs 2x/month
+- Specific workflow targeting .github/workflows/*.yml files
+
+---
+id: parrot_mcp_server-codex-guide-iteration
+trigger: "When refining AI assistant configuration or addressing schema issues"
+confidence: 0.98
+domain: workflow
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Codex Guide Iteration
+
+## Action
+
+Update docs/COPILOT_CODEX_GUIDE.md with incremental commits and merge via PR
+
+## Evidence
+
+- Highest frequency pattern: 10x/month
+- Specific file target: docs/COPILOT_CODEX_GUIDE.md
+- Multiple incremental commits pattern
+
+---
+id: parrot_mcp_server-readme-maintenance
+trigger: "When project information needs updating or enhancement"
+confidence: 0.9
+domain: workflow
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Readme Maintenance
+
+## Action
+
+Modify README.md content with direct commits or PR
+
+## Evidence
+
+- Pattern occurs 4x/month
+- Multiple examples: 'Update README.md', 'Updated README.md to enhance content'
+
+---
+id: parrot_mcp_server-log-cleanup
+trigger: "When log files are inadvertently added to version control"
+confidence: 0.88
+domain: workflow
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Log Cleanup
+
+## Action
+
+Remove logs/parrot.log and rpi-scripts/logs/parrot.log from tracking and update .gitignore
+
+## Evidence
+
+- Pattern occurs 3x/month
+- Specific files: logs/parrot.log, rpi-scripts/logs/parrot.log
+- Workflow includes gitignore updates
+
+---
+id: parrot_mcp_server-script-config-updates
+trigger: "When fixing shell script issues or improving configuration management"
+confidence: 0.85
+domain: workflow
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Script Config Updates
+
+## Action
+
+Modify rpi-scripts/common_config.sh and update corresponding test files in rpi-scripts/tests/*.bats
+
+## Evidence
+
+- Pattern occurs 2x/month
+- Specific files: rpi-scripts/common_config.sh, rpi-scripts/tests/*.bats
+- Test and configuration coupling pattern
+
+---
+id: parrot_mcp_server-github-actions-ci
+trigger: "When setting up continuous integration"
+confidence: 0.9
+domain: architecture
+source: repo-analysis
+source_repo: canstralian/parrot_mcp_server
+---
+
+# Parrot_mcp_server Github Actions Ci
+
+## Action
+
+Use multiple workflow files: build.yml, integration-tests.yml, lint.yml, test.yml in .github/workflows/
+
+## Evidence
+
+- Config files show 4 separate CI workflows
+- rpi-scripts has separate ci.yml workflow
+- Comprehensive testing approach
+

@@ -1,0 +1,33 @@
+{
+  "signal_reactor": {
+    "max_concurrency": 1024,
+    "timeout_ms": 500,
+    "log_level": "DEBUG"
+  },
+  "security_core": {
+    "mode": "adaptive",
+    "anomaly_threshold": 0.85,
+    "sandbox_enabled": true,
+    "innate": {
+      "max_path_depth": 10,
+      "max_header_size_bytes": 8192,
+      "block_patterns": [
+        "../", "..\\",
+        "<script", "javascript:",
+        "' OR ", "\" OR ",
+        "/etc/passwd", "/proc/self"
+      ]
+    },
+    "adaptive": {
+      "baseline_window_seconds": 300,
+      "pressure_multiplier": 1.5,
+      "quarantine_ttl_seconds": 60,
+      "min_samples_for_baseline": 20
+    }
+  },
+  "plugin_system": {
+    "hot_reload": true,
+    "isolation_level": "containerized",
+    "plugin_dir": "src/plugins"
+  }
+}

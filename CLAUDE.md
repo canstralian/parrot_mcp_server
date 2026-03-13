@@ -1,5 +1,32 @@
 # Parrot MCP Server — Claude Code Instructions
 
+## Project Philosophy
+
+**Architecture as Biology:** The Signal Reactor is the nervous system — non-blocking, event-driven,
+always alive. The Security Core is adaptive immunity — it learns baselines, detects deviations, and
+quarantines anomalies without halting the organism.
+
+**Precision over Boilerplate:** No fluff. Code must be circuit-clear, auditable, and secure by
+default. If a library handles it cleanly, use it. Don't reinvent wheels unless performance demands it.
+
+**Forensic Visibility:** Every change must preserve the observability pipeline. Structured logs +
+nanosecond message IDs + tracing are not optional — they are the diagnostic nervous system.
+
+---
+
+## Technical Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Backend | Python 3.11+ (asyncio), Flask (API surface) |
+| Validation | `pydantic` v2 — all external inputs validated via schema models |
+| Database | PostgreSQL (via Alembic migrations) |
+| Frontend | React (functional components, Tailwind CSS) |
+| Environment | Kali Linux / WSL2 Ubuntu, VS Code |
+| Security | `bandit` + `safety` audits, sandboxed plugins, zero-trust endpoints |
+
+---
+
 ## Project Overview
 
 Lightweight Model Context Protocol (MCP) server with a **dual Bash + Python architecture**:
@@ -98,6 +125,37 @@ shfmt -w cli.sh scripts/*.sh rpi-scripts/*.sh
 - Test files: `rpi-scripts/tests/*.bats`
 - Tests load config via `load ../common_config.sh`
 - Rate limiter tests: `rpi-scripts/tests/rate_limiter.bats`
+
+---
+
+## Key Architecture Components
+
+### Signal Reactor (`src/parrot_mcp_server/signal_reactor.py`)
+Async event bus — the nervous system. Dispatches signals to registered module hooks via
+`asyncio.gather`. Connect modules with `reactor.connect(signal, callback)`.
+
+### Security Core (`src/parrot_mcp_server/security_core.py`)
+Adaptive immunity middleware. Two-layer threat model:
+- **Innate layer** — static rules block known-bad patterns immediately (injection, traversal)
+- **Adaptive layer** — per-endpoint baseline scoring; anomaly threshold tightens under pressure
+
+### Plugin System
+- New plugins: `src/plugins/`, must implement `BaseModule` interface
+- Hot reload supported (`params.json:plugin_system.hot_reload`)
+- Isolation level: containerized (see `params.json`)
+
+### Configuration Bus (`params.json`)
+Runtime-tunable parameters for concurrency, anomaly thresholds, and sandbox settings.
+Do not hardcode values that belong in `params.json`.
+
+---
+
+## Common Workflows
+
+- **New Plugin:** `src/plugins/<name>.py`, implement `BaseModule`, register via Signal Reactor
+- **Schema Update:** update `src/models/`, generate migration: `alembic revision --autogenerate`
+- **Security Audit:** `bandit -r src/ && safety check`
+- **Signal Wiring:** `reactor.connect("event_name", async_handler_fn)`
 
 ---
 
