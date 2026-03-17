@@ -1,0 +1,278 @@
+version: "1.0"
+source: parrot_mcp_server
+confidence: 0.75
+commit_count: 93
+generated: "2026-03-17"
+
+instincts:
+
+  # ── GIT (3) ────────────────────────────────────────────────────────────────
+
+  - id: git-commit-imperative-style
+    domain: git
+    confidence: 0.9
+    description: >
+      Commit messages use short, imperative subject lines starting with an
+      action verb (Add, Fix, Implement, Update, Create, Remove). No period
+      at end. Keep under ~72 characters.
+    examples:
+      - "Add initial implementation of Parrot MCP Server"
+      - "Fix ShellCheck warnings in start_mcp_server.sh"
+      - "Implement rate limiter with correct cleanup logic and comprehensive tests"
+    anti_examples:
+      - "added the feature"
+      - "fixed bug"
+      - "WIP"
+
+  - id: git-pr-branch-naming
+    domain: git
+    confidence: 0.85
+    description: >
+      Feature branches use descriptive kebab-case names. Automated Claude
+      branches follow the pattern `claude/<description>-<sessionId>`.
+      Never push to main/master without a PR.
+    examples:
+      - "feature/rate-limiter"
+      - "fix/shellcheck-warnings"
+      - "claude/import-skill-instincts-NcT6j"
+
+  - id: git-pr-workflow
+    domain: git
+    confidence: 0.8
+    description: >
+      All code changes go through PRs targeting `main`. PRs must pass CI
+      (shellcheck lint, BATS tests) before merge. Keep PRs focused on a
+      single concern.
+
+  # ── CODE STYLE (6) ─────────────────────────────────────────────────────────
+
+  - id: bash-shebang-and-strict-mode
+    domain: code-style
+    confidence: 0.98
+    description: >
+      Every Bash script begins with `#!/usr/bin/env bash` followed immediately
+      by `set -euo pipefail`. This is mandatory — no exceptions.
+    pattern: |
+      #!/usr/bin/env bash
+      set -euo pipefail
+
+  - id: bash-source-common-config
+    domain: code-style
+    confidence: 0.95
+    description: >
+      All scripts must source `rpi-scripts/common_config.sh` for centralized
+      config, logging helpers, and validation utilities. Never reimplement
+      logging or config inline.
+    pattern: |
+      source "$(dirname "$0")/../rpi-scripts/common_config.sh"
+
+  - id: bash-naming-conventions
+    domain: code-style
+    confidence: 0.92
+    description: >
+      Environment variables use PARROT_ prefix in UPPER_SNAKE_CASE.
+      Functions use parrot_ prefix in lower_snake_case. Local variables
+      use lowercase with no prefix.
+    examples:
+      - "PARROT_LOG_DIR, PARROT_RATE_LIMIT, PARROT_IPC_DIR"
+      - "parrot_check_rate_limit(), parrot_validate_email(), parrot_log()"
+      - "local user, local operation, local temp_file"
+
+  - id: bash-quoting-discipline
+    domain: code-style
+    confidence: 0.9
+    description: >
+      Always double-quote variable expansions and command substitutions.
+      Use [[ ]] for conditionals. Never use unquoted $@ or $*.
+    examples:
+      - '"$1", "$@", "$(command)"'
+      - '[[ "$choice" == "q" ]]'
+      - '[ -f "$file" ]'
+    anti_examples:
+      - "$1 without quotes"
+      - "[ $var -eq 1 ]"
+
+  - id: bash-input-validation-before-use
+    domain: code-style
+    confidence: 0.88
+    description: >
+      Validate all external inputs using parrot_validate_* helpers before
+      use. Sanitize with parrot_sanitize_input() when accepting free-form
+      strings. Reject absolute paths and directory traversal in path params.
+    validators:
+      - "parrot_validate_email()"
+      - "parrot_validate_number()"
+      - "parrot_validate_path()"
+      - "parrot_validate_script_name()"
+      - "parrot_sanitize_input()"
+
+  - id: bash-explicit-over-clever
+    domain: code-style
+    confidence: 0.85
+    description: >
+      Favor explicit, auditable logic over clever one-liners. Document edge
+      cases in comments. Use AWK for structured text processing rather than
+      complex sed pipelines. Function bodies should be readable without
+      mental model overhead.
+
+  # ── TESTING (3) ────────────────────────────────────────────────────────────
+
+  - id: testing-bats-framework
+    domain: testing
+    confidence: 0.97
+    description: >
+      All Bash tests use BATS (Bash Automated Testing System), not pytest.
+      Test files are `rpi-scripts/tests/*.bats`. Run with:
+      `bats rpi-scripts/tests/*.bats`
+    pattern: |
+      #!/usr/bin/env bats
+      setup() {
+          load ../common_config.sh
+          # initialize test environment
+      }
+      teardown() {
+          # cleanup test artifacts
+      }
+      @test "descriptive test name" {
+          run command_to_test arg1 arg2
+          [ "$status" -eq 0 ]
+          [[ "$output" == *"expected pattern"* ]]
+      }
+
+  - id: testing-setup-teardown-isolation
+    domain: testing
+    confidence: 0.9
+    description: >
+      Each test must use setup() to initialize and teardown() to clean up.
+      Tests must be fully isolated — no shared mutable state between @test
+      blocks. Temp dirs/files created in setup must be removed in teardown.
+
+  - id: testing-security-edge-cases
+    domain: testing
+    confidence: 0.85
+    description: >
+      BATS test suites must include security edge cases: command injection
+      attempts, directory traversal, null bytes, oversized inputs, and
+      boundary values. See `rpi-scripts/tests/config_validation.bats` for
+      reference patterns.
+
+  # ── WORKFLOW (13) ──────────────────────────────────────────────────────────
+
+  - id: workflow-cli-sh-only
+    domain: workflow
+    confidence: 0.97
+    description: >
+      The canonical way to run any script is `./cli.sh <name>` (no .sh
+      extension). Never invoke scripts in `rpi-scripts/scripts/` directly.
+      The CLI wrapper handles path resolution and error logging.
+
+  - id: workflow-shellcheck-before-commit
+    domain: workflow
+    confidence: 0.95
+    description: >
+      Run shellcheck and shfmt on all modified shell scripts before every
+      commit. ShellCheck must pass with zero warnings — use `# shellcheck
+      disable=SCxxxx` only as last resort with a comment explaining why.
+    commands:
+      - "shellcheck cli.sh scripts/*.sh rpi-scripts/*.sh"
+      - "shfmt -w cli.sh scripts/*.sh rpi-scripts/*.sh"
+
+  - id: workflow-log-format-structured
+    domain: workflow
+    confidence: 0.93
+    description: >
+      All log entries use the structured format with nanosecond-precision
+      message IDs. Use parrot_info/warn/error/debug helpers — never echo
+      directly to logs. Format: `[YYYY-MM-DD HH:MM:SS] [LEVEL] [msgid:NS] msg`
+    helpers:
+      - "parrot_info 'message'"
+      - "parrot_warn 'message'"
+      - "parrot_error 'message'"
+      - "parrot_debug 'message'"
+
+  - id: workflow-mcp-spec-compliance
+    domain: workflow
+    confidence: 0.92
+    description: >
+      MCP protocol spec compliance is non-negotiable. Consult the MCP spec
+      before any protocol-affecting change. Semantic compliance takes priority
+      over literal compliance (preserve intent). All protocol changes must
+      update `rpi-scripts/test_mcp_local.sh`.
+
+  - id: workflow-github-actions-permissions
+    domain: workflow
+    confidence: 0.9
+    description: >
+      All GitHub Actions workflows must declare explicit `permissions` blocks.
+      Default: `permissions: contents: read`. Add only the minimum additional
+      permissions required. This prevents security scanning alerts.
+    pattern: |
+      permissions:
+        contents: read
+
+  - id: workflow-github-actions-pinned-versions
+    domain: workflow
+    confidence: 0.88
+    description: >
+      Pin all GitHub Actions to major versions (e.g., `actions/checkout@v4`,
+      `actions/upload-artifact@v4`). Use continue-on-error: true for
+      non-blocking test steps. Set artifact retention-days explicitly (30 days
+      for logs, 7 days for test results).
+
+  - id: workflow-ipc-security-model
+    domain: workflow
+    confidence: 0.87
+    description: >
+      IPC uses `/tmp/mcp_in.json` and `/tmp/mcp_bad.json` — insecure by design
+      for development. For production: set `PARROT_IPC_DIR=/run/parrot/` with
+      `700` permissions. Never log IPC file contents containing API keys.
+
+  - id: workflow-secure-temp-files
+    domain: workflow
+    confidence: 0.85
+    description: >
+      Always use `parrot_mktemp()` to create temporary files — never use
+      predictable names. `parrot_mktemp` creates files with `chmod 600`
+      immediately after mktemp. Use `mv` for atomic file replacement.
+
+  - id: workflow-rate-limiter-usage
+    domain: workflow
+    confidence: 0.83
+    description: >
+      Use `parrot_check_rate_limit "$user" "$operation"` before any
+      rate-sensitive operation. The AWK-based implementation uses atomic
+      file ops and a sliding window. Rate limit config: `PARROT_RATE_LIMIT`
+      (default 100) and `PARROT_RATE_LIMIT_WINDOW` (default 3600s).
+
+  - id: workflow-retry-with-backoff
+    domain: workflow
+    confidence: 0.82
+    description: >
+      Use `parrot_retry [max_attempts] <command>` for transient failures.
+      Implements exponential backoff: delay doubles on each failure
+      (default start: 5s). Never busy-loop or use fixed sleeps for retries.
+
+  - id: workflow-new-script-checklist
+    domain: workflow
+    confidence: 0.88
+    description: >
+      New scripts go in `rpi-scripts/scripts/<name>.sh`, must be `chmod +x`,
+      and named with alphanumeric/underscore/hyphen only. Script must source
+      common_config.sh, use `set -euo pipefail`, and have a BATS test file.
+
+  - id: workflow-python-build-backend
+    domain: workflow
+    confidence: 0.85
+    description: >
+      Python package uses hatchling (not setuptools). Requires Python ≥3.11.
+      Entry point: `parrot-mcp = "parrot_mcp_server.server:main"`. Key deps:
+      mcp>=1.0.0, pydantic>=2.0.0, httpx>=0.27.0, openai>=1.0.0.
+
+  - id: workflow-engagement-auth-gate
+    domain: workflow
+    confidence: 0.82
+    description: >
+      All red/purple team tool calls in `src/parrot_mcp_server/auth.py:38`
+      require an active engagement with validated scope and time bounds.
+      Never bypass the auth gate — add new tools through the authorized
+      engagement flow only.
