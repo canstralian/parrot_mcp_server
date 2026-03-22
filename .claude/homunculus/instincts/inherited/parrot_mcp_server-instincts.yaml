@@ -224,7 +224,7 @@ instincts:
     confidence: 0.87
     description: >
       IPC uses `/tmp/mcp_in.json` and `/tmp/mcp_bad.json` — insecure by design
-      for development. For production: set `PARROT_IPC_DIR=/run/parrot/` with
+      for development. For production: set `PARROT_IPC_DIR=/run/parrot-mcp` with
       `700` permissions. Never log IPC file contents containing API keys.
 
   - id: workflow-secure-temp-files
