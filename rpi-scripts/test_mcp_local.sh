@@ -12,6 +12,7 @@ SERVER="./start_mcp_server.sh"
 STOP="./stop_mcp_server.sh"
 
 # Start the server
+echo "[TEST] Starting MCP server..."
 $SERVER &
 SERVER_PID=$!
 sleep 2
@@ -41,3 +42,4 @@ fi
 # Stop the server
 $STOP || true
 kill $SERVER_PID 2>/dev/null || true
+echo "[TEST] Test completed."
