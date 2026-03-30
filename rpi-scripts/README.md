@@ -2,7 +2,7 @@
 # Raspberry Pi 5 Bash Script Library
 
 This project is a robust, production-ready library of Bash scripts for Raspberry Pi 5, managed by a central CLI tool (`cli.sh`).
-It includes system maintenance, automation, and developer-friendly features for reliability and ease of use.
+It includes system maintenance, automation, forensics analysis, and developer-friendly features for reliability and ease of use.
 
 ## Usage
 
@@ -25,6 +25,24 @@ It includes system maintenance, automation, and developer-friendly features for 
 ```sh
 ./cli.sh hello
 ```
+
+## Forensics Capabilities
+
+The MCP server includes comprehensive forensics analysis tools for memory and disk forensics:
+
+### Memory Forensics
+Analyze memory dumps using Volatility 3:
+```sh
+./cli.sh memory_forensics -d /path/to/memory.dump -p "pslist,netscan,malfind"
+```
+
+### Disk Forensics
+Analyze disk images using SleuthKit:
+```sh
+./cli.sh disk_forensics -i /path/to/disk.dd -o timeline
+```
+
+For detailed documentation, see [docs/FORENSICS.md](docs/FORENSICS.md).
 
 ## Automated Maintenance Scheduling
 
